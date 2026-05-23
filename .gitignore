@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+dist/
+*.egg-info/
+.idea
+.venv/
+node_modules
+.pnpm-store
+.pytest_cache/
+.coverage
+*.log
+report.json

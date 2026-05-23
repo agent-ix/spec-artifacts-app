@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    tags: [ "v*.*.*" ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  publish-to-pypi:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Encode key to base64
+      id: encode_key
+      run: echo "gcp_key_64=$(echo -n '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' | base64 -w 0)" >> "$GITHUB_OUTPUT"
+
+    - name: Publish
+      uses: agent-ix/python-service-actions/publish-to-pypi@main
+      with:
+        username: _json_key_base64
+        password: ${{ steps.encode_key.outputs.gcp_key_64 }}
+        registry_url: https://${{ vars.GCP_REGION }}-python.pkg.dev/${{ vars.GCP_PROJECT_NAME }}/${{ vars.GCP_PYPI }}
+
+  ci:
+    uses: agent-ix/python-service-actions/.github/workflows/lib-ci.yml@main
+    with:
+      extra_index_url: https://${{ vars.GCP_REGION }}-python.pkg.dev/${{ vars.GCP_PROJECT_NAME }}/${{ vars.GCP_PYPI }}/simple/
+    secrets:
+      GCP_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}

@@ -1,0 +1,152 @@
+[project]
+name = "spec_artifacts_app"
+dynamic = ["version"]
+
+[tool.poetry]
+name = "spec_artifacts_app"
+version = "0.1.0"  # Placeholder, dynamically replaced
+description = "Filament Module: application/composite spec artifacts including master-requirements — Jinja .md.j2 templates"
+authors = ["Agent IX <agents@agent-ix.dev>"]
+packages = [{ include = "spec_artifacts_app" }]
+
+[tool.poetry.dependencies]
+python = ">=3.13,<3.14"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^26.1.0"
+poetry-dynamic-versioning = "^1.9.1"
+poethepoet = "^0.34.0"
+py-deps = "*"
+py-project = "^0.4.4"
+pytest = "^9.0.2"
+pytest-cov = "^7.0.0"
+pytest-json-report = "^1.5.0"
+ruff = "^0.14.13"
+pytest-results = { version = "^0.2.0", python = ">=3.12" }
+
+[tool.poetry.scripts]
+build-tools = "scripts.build_tools:main"
+
+[tool.poe.tasks]
+
+[tool.poe.tasks.version]
+cmd = "build-tools version"
+help = "Print computed version"
+
+[tool.poe.tasks.info]
+cmd = "build-tools info"
+help = "Show git and version info"
+
+[tool.poe.tasks.build]
+cmd = "build-tools build"
+help = "Build distribution (wheel + sdist)"
+
+[tool.poe.tasks.clean]
+cmd = "build-tools clean"
+help = "Remove build artifacts"
+
+[tool.poe.tasks.test]
+cmd = "pytest"
+help = "Run tests with coverage"
+
+[tool.poe.tasks.test-integrations]
+cmd = "pytest tests_integration/ -v -s --no-cov -m integration"
+help = "Run integration tests (requires Kind cluster)"
+
+[tool.poe.tasks.lint]
+sequence = ["ruff-check", "black-check"]
+help = "Run all linters (ruff + black)"
+
+[tool.poe.tasks.ruff-check]
+cmd = "ruff check ."
+help = "Check with ruff"
+
+[tool.poe.tasks.black-check]
+cmd = "black --check ."
+help = "Check with black"
+
+[tool.poe.tasks.format]
+sequence = ["black", "ruff-fix"]
+help = "Format code (black + ruff --fix)"
+
+[tool.poe.tasks.black]
+cmd = "black ."
+help = "Format with black"
+
+[tool.poe.tasks.ruff-fix]
+cmd = "ruff check --fix ."
+help = "Fix with ruff"
+
+# Package Management (py-deps integration with conditional locking)
+# Exit 0 = no change, Exit 1 = change detected (need lock), Exit 2 = error
+[tool.poe.tasks.update-deps]
+shell = "py-deps update --keep-major || [ $? -eq 1 ] && poetry lock"
+help = "Update deps (keep major versions)"
+
+[tool.poe.tasks.update-deps-latest]
+shell = "py-deps update || [ $? -eq 1 ] && poetry lock"
+help = "Update deps (latest versions)"
+
+[tool.poe.tasks.add-dep]
+shell = "py-deps add ${package} || [ $? -eq 1 ] && poetry lock"
+help = "Add a dependency"
+
+[tool.poe.tasks.add-dev-dep]
+shell = "py-deps add ${package} --dev || [ $? -eq 1 ] && poetry lock"
+help = "Add a dev dependency"
+
+[tool.poe.tasks.use-local-dep]
+shell = "py-deps use-local ${package} || [ $? -eq 1 ] && poetry lock"
+help = "Switch dep to local registry"
+
+[tool.poe.tasks.use-upstream-dep]
+shell = "py-deps use-upstream ${package} || [ $? -eq 1 ] && poetry lock"
+help = "Switch dep to upstream registry"
+
+[tool.pytest.ini_options]
+addopts = "--cov=spec_artifacts_app --cov-report=term-missing --cov-fail-under=100 --json-report --json-report-file=report.json"
+
+# ALL WARNINGS MUST BE TREATED AS ERRORS, NO EXCEPTION!
+filterwarnings = ["error"]
+
+markers = [
+    "integration: Integration tests (require Kind cluster)",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py313"
+
+[tool.ruff.lint]
+# Enable the same rules that flake8 was checking
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "TID", # flake8-tidy-imports
+]
+# Match the flake8 ignores
+ignore = ["E203"]
+
+[tool.ruff.lint.flake8-tidy-imports]
+ban-relative-imports = "all"
+
+[[tool.poetry.source]]
+name = "internal-pypi"
+url = "https://us-west1-python.pkg.dev/agent-ix/internal-pypi/simple/"
+priority = "supplemental"
+
+[[tool.poetry.source]]
+name = "local-pypi"
+url = "http://pypi.ix/root/dev/+simple/"
+priority = "explicit"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+style = "pep440"
+
+[build-system]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
+build-backend = "poetry_dynamic_versioning.backend"

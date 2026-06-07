@@ -8,6 +8,9 @@ version = "0.1.0"  # Placeholder, dynamically replaced
 description = "Filament Module: application/composite spec artifacts including master-requirements — Jinja .md.j2 templates"
 authors = ["Agent IX <agents@agent-ix.dev>"]
 packages = [{ include = "spec_artifacts_app" }]
+include = [
+    { path = "spec_artifacts_app/manifest.yaml", format = ["sdist", "wheel"] },
+]
 
 [tool.poetry.dependencies]
 python = ">=3.13,<3.14"

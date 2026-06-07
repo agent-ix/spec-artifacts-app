@@ -23,13 +23,7 @@ grammars:
 artifact_types:
 - name: ApplicationSpec
   grammar_ref: app-spec
-  template_ref: templates/applicationspec.md.j2
   frontmatter_schema_ref: schemas/applicationspec-frontmatter.schema.json
-  required_sections:
-  - name: Description
-    level: 2
-  - name: Dependencies
-    level: 2
   defaults:
     id_pattern: ApplicationSpec-{next:03d}
   allowed_links:
@@ -40,13 +34,7 @@ artifact_types:
   lint_rules_ref: []
 - name: MasterRequirements
   grammar_ref: app-spec
-  template_ref: templates/masterrequirements.md.j2
   frontmatter_schema_ref: schemas/masterrequirements-frontmatter.schema.json
-  required_sections:
-  - name: Description
-    level: 2
-  - name: Dependencies
-    level: 2
   defaults:
     id_pattern: MasterRequirements-{next:03d}
   allowed_links:

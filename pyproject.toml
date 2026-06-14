@@ -1,6 +1,7 @@
 [project]
 name = "spec_artifacts_app"
 dynamic = ["version"]
+license = "MIT"
 
 [tool.poetry]
 name = "spec_artifacts_app"

@@ -1,7 +1,7 @@
 ---
 id: FR-001
 title: "Module manifest activates against filament-core"
-artifact_type: FR
+type: FR
 relationships:
   - target: "ix://agent-ix/filament-core-service/FR-035"
     type: "implements"

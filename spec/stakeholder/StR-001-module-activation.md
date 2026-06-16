@@ -1,7 +1,7 @@
 ---
 id: StR-001
 title: "Application composite specs"
-artifact_type: StR
+type: StR
 ---
 # [StR-001] Application composite specs
 

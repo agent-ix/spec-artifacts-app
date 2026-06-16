@@ -1,7 +1,7 @@
 ---
 id: IT-001
 title: "Manifest activation roundtrip against filament-core"
-artifact_type: IT
+type: IT
 relationships:
   - target: "ix://agent-ix/spec-artifacts-app/FR-001"
     type: "verifies"

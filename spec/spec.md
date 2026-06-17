@@ -1,3 +1,8 @@
+---
+id: AS-001
+title: "spec-artifacts-app application spec"
+type: ApplicationSpec
+---
 # Specification: spec-artifacts-app
 
 ## Purpose

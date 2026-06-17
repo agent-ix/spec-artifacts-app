@@ -5,21 +5,34 @@ type: StR
 ---
 # [StR-001] Application composite specs
 
-## Stakeholder
+## Stakeholder Need
 
-Filament platform / spec authors / agent CLI generators.
+The Filament platform, spec authors, and agent CLI generators require that
+multi-service applications **shall** be able to express composite specs that
+aggregate per-service requirements into a master-requirements rollup, so that an
+application's contributions are declared once and consumed consistently across the
+platform.
 
-## Need
+## Rationale
 
-Multi-service applications need composite specs aggregating per-service requirements with master-requirements rollup.
+Multi-service applications today have no single, authoritative way to roll up the
+requirements of their constituent services. Without an aggregating composite spec,
+authors must duplicate and manually reconcile per-service requirements, and agent
+generators have no canonical source to read from. A composite spec with a
+master-requirements rollup removes that duplication and gives every consumer one
+trustworthy view of what the application declares.
 
-## Acceptance Criteria
+## Validation Criteria
 
-| ID | Criteria |
-|----|----------|
-| StR-001-AC-1 | A Module activation against filament-core registers the contents this module declares. |
-| StR-001-AC-2 | Agent CLI generators (minijinja-cli) can produce valid artifacts using the templates and schemas this module ships. |
+This need is considered satisfied when activating this Module against
+filament-core registers the contents it declares, and when agent CLI generators
+(minijinja-cli) can produce valid artifacts using the templates and schemas this
+Module ships. Satisfaction is judged by demonstrating both outcomes against a
+filament-core instance.
 
 ## Dependencies
 
-- **Upstream**: filament-core-service FR-035 (Module Manifest Schema)
+Relationships at the stakeholder level. **Upstream**: filament-core-service FR-035
+(Module Manifest Schema), which defines the activation contract this need relies
+on. **Downstream**: the functional requirement covering manifest activation and the
+integration test that verifies it end to end.

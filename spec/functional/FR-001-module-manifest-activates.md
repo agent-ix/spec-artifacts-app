@@ -12,19 +12,18 @@ relationships:
 
 The system **SHALL** publish a Filament Module manifest (`spec_artifacts_app/manifest.yaml`) that conforms to filament-core-service FR-035 v1.0.0 and activates idempotently against `POST /api/v1/modules/activate`.
 
-## Specification
 
-### Inputs
+## Inputs
 
 - `manifest.yaml` (this repo's package)
 - Activation endpoint: `POST /api/v1/modules/activate`
 
-### Outputs
+## Outputs
 
 - Module row in `modules` table
 - Contributed archetypes, object_types, grammars, artifact_types per the manifest
 
-### Behavior
+## Behavior
 
 The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0. Re-activation **SHALL** be a no-op (idempotent by content hash per FR-026-AC-1).
 

@@ -10,7 +10,7 @@ relationships:
 
 ## Description
 
-The system **SHALL** publish a Filament Module manifest (`spec_artifacts_app/manifest.yaml`) that conforms to filament-core-service FR-035 v1.0.0 and activates idempotently against `POST /api/v1/modules/activate`.
+The system **SHALL** publish a Filament Module manifest (`spec_artifacts_app/manifest.yaml`) that conforms to filament-core-service [FR-035](ix://agent-ix/filament-core-service/FR-035) v1.0.0 and activates idempotently against `POST /api/v1/modules/activate`.
 
 
 ## Inputs
@@ -38,5 +38,5 @@ The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0. Re
 
 ## Dependencies
 
-- **Upstream**: filament-core-service FR-035, FR-026, FR-034
+- **Upstream**: filament-core-service [FR-035](ix://agent-ix/filament-core-service/FR-035), FR-026, FR-034
 - **Downstream**: consumer agents/editors discovering this module's contributions

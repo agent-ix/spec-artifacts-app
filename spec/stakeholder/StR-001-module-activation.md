@@ -32,7 +32,7 @@ filament-core instance.
 
 ## Dependencies
 
-Relationships at the stakeholder level. **Upstream**: filament-core-service FR-035
+Relationships at the stakeholder level. **Upstream**: filament-core-service [FR-035](ix://agent-ix/filament-core-service/FR-035)
 (Module Manifest Schema), which defines the activation contract this need relies
 on. **Downstream**: the functional requirement covering manifest activation and the
 integration test that verifies it end to end.

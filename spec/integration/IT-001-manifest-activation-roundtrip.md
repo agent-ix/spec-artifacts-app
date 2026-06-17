@@ -15,7 +15,7 @@ filament-core-service instance: activating `spec_artifacts_app/manifest.yaml`
 against `POST /api/v1/modules/activate` shall create the Module row and land every
 declared contribution (archetypes, object_types, grammars, artifact_types) in the
 database, and re-activating the same manifest shall be an idempotent no-op. This
-exercises FR-001 acceptance criteria AC-2, AC-3 and AC-4.
+exercises [FR-001](../functional/FR-001-module-manifest-activates.md) acceptance criteria AC-2, AC-3 and AC-4.
 
 ## Target Integration
 

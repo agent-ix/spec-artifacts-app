@@ -2,7 +2,7 @@
 
 > Filament Module: application/composite spec artifact templates (ApplicationSpec, MasterRequirements) — absorbed spec-master-requirements
 
-Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`ix-spec`](https://github.com/agent-ix/ix-spec).
+Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`quoin`](https://github.com/agent-ix/quoin).
 
 ## Installing quire-cli
 
@@ -32,17 +32,17 @@ This module also defines the `Application Spec` archetype (kind `application-spe
 
 ## How this module is used
 
-### With ix-spec (recommended)
+### With quoin (recommended)
 
 ```bash
-ix-spec plugin install path:../spec-artifacts-app
-ix-spec catalog list
-ix-spec catalog show ApplicationSpec
-ix-spec write . --types ApplicationSpec
-ix-spec review
+quoin plugin install path:../spec-artifacts-app
+quoin catalog list
+quoin catalog show ApplicationSpec
+quoin write . --types ApplicationSpec
+quoin review
 ```
 
-See https://github.com/agent-ix/ix-spec.
+See https://github.com/agent-ix/quoin.
 
 ### With quire-cli directly
 

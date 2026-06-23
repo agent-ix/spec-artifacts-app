@@ -1,7 +1,7 @@
 [project]
 name = "spec_artifacts_app"
 dynamic = ["version"]
-license = "MIT"
+license = "AGPL-3.0-or-later"
 
 [tool.poetry]
 name = "spec_artifacts_app"

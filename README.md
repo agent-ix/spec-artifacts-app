@@ -21,14 +21,15 @@ npm install -g @agent-ix/quire-cli
 
 See https://github.com/agent-ix/quire-cli#install for details.
 
-## Artifact types provided
+## What's in this module
 
-| Kind | ID pattern | Description |
-|------|-----------|-------------|
-| `ApplicationSpec` | `ApplicationSpec-{next:03d}` | Doc-backed composite application spec (`app-spec` grammar); frontmatter requires `id`/`title`/`type`; links via `contains`, `depends_on`, `references`. |
-| `MasterRequirements` | `MasterRequirements-{next:03d}` | Master requirements artifact under the `app-spec` grammar (absorbed from `spec-master-requirements`); frontmatter requires `id`/`title`/`type`; links via `aggregates`, `depends_on`, `references`. |
+This module gives you the top-level document kinds for specifying a whole application — the documents that gather requirements together and describe the system as a whole. They sit above the individual requirement artifacts (`StR`, `FR`, `NFR`, …) and tie them into one specification.
 
-This module also defines the `Application Spec` archetype (kind `application-spec`): a doc-backed, membership-supporting composite that expects `MasterRequirements`, `StR`, `FR`, and `NFR` artifacts.
+| Kind | Type | What it's for |
+|:-----|:-----|:--------------|
+| `ApplicationSpec` | Application Spec | The top-level document for an application — describes the system as a whole and gathers together the requirements and specs that make it up. |
+| `MasterRequirements` | Master Requirements | The front page of a specification — its purpose, scope, and the set of requirements it rolls up. |
+
 
 ## How this module is used
 

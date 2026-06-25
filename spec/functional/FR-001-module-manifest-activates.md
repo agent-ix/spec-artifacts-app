@@ -6,7 +6,7 @@ relationships:
   - target: "ix://agent-ix/filament-core-service/FR-035"
     type: "implements"
 ---
-# [FR-001] Module manifest activates against filament-core
+# FR-001: Module manifest activates against filament-core
 
 ## Description
 

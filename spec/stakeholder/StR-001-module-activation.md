@@ -3,7 +3,7 @@ id: StR-001
 title: "Application composite specs"
 type: StR
 ---
-# [StR-001] Application composite specs
+# StR-001: Application composite specs
 
 ## Stakeholder Need
 

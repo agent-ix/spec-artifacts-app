@@ -2,7 +2,7 @@
   "name": "@agent-ix/spec-artifacts-app",
   "version": "0.0.0-managed",
   "description": "Filament Module: application/composite spec artifacts including master-requirements",
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "author": "Agent IX <agents@agent-ix.dev>",
   "keywords": [
     "agent-ix",

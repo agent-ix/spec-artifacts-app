@@ -6,8 +6,6 @@ name: Release npm
 # module payload to the tarball root; no build/test toolchain needed here.
 
 on:
-  push:
-    tags: ["v*.*.*"]
   workflow_dispatch:
     inputs:
       version:

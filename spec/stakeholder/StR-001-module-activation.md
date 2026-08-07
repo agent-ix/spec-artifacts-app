@@ -24,11 +24,13 @@ trustworthy view of what the application declares.
 
 ## Validation Criteria
 
-This need is considered satisfied when activating this Module against
-filament-core registers the contents it declares, and when agent CLI generators
-(minijinja-cli) can produce valid artifacts using the templates and schemas this
-Module ships. Satisfaction is judged by demonstrating both outcomes against a
-filament-core instance.
+
+| ID | Criteria | Validation |
+|----|----------|------------|
+| StR-001-VC-1 | Activating this Module against filament-core registers the contents it declares. | Inspection |
+| StR-001-VC-2 | Agent CLI generators (minijinja-cli) can produce valid artifacts using the templates and schemas this Module ships. | Demonstration |
+
+Satisfaction is judged by demonstrating both outcomes against a filament-core instance.
 
 ## Dependencies
 

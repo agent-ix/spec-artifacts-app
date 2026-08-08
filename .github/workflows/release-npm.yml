@@ -1,47 +1,26 @@
 name: Release npm
 
 # Publish the Filament module to public npm as @agent-ix/<repo> on a vX.Y.Z tag.
-# Parallel to the existing PyPI publish in ci.yml — same tags drive both channels.
-# Data-only package: the `prepack` script (scripts/stage-npm.mjs) flattens the
-# module payload to the tarball root; no build/test toolchain needed here.
+# Parallel to the PyPI publish in ci.yml — same tags drive both channels, both
+# dispatched manually.
+#
+# The publish itself lives in nodejs-actions so all module repos share one
+# tokenless OIDC implementation. This file must keep the name release-npm.yml:
+# that filename is what the package's Trusted Publisher on npmjs.com matches.
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g. 0.4.0); defaults to the latest vX.Y.Z tag"
+        description: "Version to publish (e.g. 0.5.0); defaults to the triggering vX.Y.Z tag"
         required: false
 
 permissions:
   contents: read
-  id-token: write # reserved for OIDC trusted publishing (token-free) later
+  id-token: write # OIDC token for npm Trusted Publishing
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          registry-url: "https://registry.npmjs.org"
-
-      - name: Resolve version
-        id: ver
-        shell: bash
-        run: |
-          V="${{ github.event.inputs.version }}"
-          [ -z "$V" ] && V="${GITHUB_REF_NAME#v}"
-          echo "version=$V" >> "$GITHUB_OUTPUT"
-
-      - name: Set package.json version
-        run: npm version --no-git-tag-version --allow-same-version "${{ steps.ver.outputs.version }}"
-
-      - name: Publish to npm
-        # Bootstrap auth: set an NPM_TOKEN secret (automation token) on the repo/org.
-        # To go token-free later, drop NODE_AUTH_TOKEN and add `--provenance`
-        # (requires the package's Trusted Publisher to be configured on npmjs.com).
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public --no-git-checks
+    uses: agent-ix/nodejs-actions/.github/workflows/release-npm-module.yml@main
+    with:
+      version: ${{ inputs.version }}

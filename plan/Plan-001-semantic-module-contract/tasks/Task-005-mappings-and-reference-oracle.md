@@ -2,7 +2,7 @@
 id: Task-005
 title: "FR-004 — mappings.yaml, its schema, and the reference mapping oracle"
 type: Task
-status: pending
+status: done
 track: B
 priority: P0
 relationships:
@@ -31,13 +31,13 @@ support, not module code: the module ships data only.
 
 ## Subtasks
 
-- [ ] **`mappings.schema.json`.** The six kinds, the per-property shape, the `prose_only` + `reason` pair, the `alternate_form` object, and the `imported_types` map.
-- [ ] **`scripts/build_mappings.py`.** Derive `mappings.yaml` from `manifest.yaml`, so a column list, a locator name, or an id pattern is written once and cannot drift. `--check` writes nothing and fails on drift.
-- [ ] **One entry per property.** `fields` is one `typed-table` entry carrying a `sysml-fence` `alternate_form` — never two entries, which is what would make "exactly once" unsatisfiable for the one property that has two authored forms.
-- [ ] **Round-trip policy.** `authority: markdown` and `round_trip: derived` per model; `lossless: true` on `section` and `ocl-clause`, `false` on the rest; the dropped frontmatter key set declared per model.
-- [ ] **The reference mapping.** Builds a record from a document: frontmatter identity, byte-exact sections with line spans, typed rows with per-cell parses, `FieldDecl` rows, `ClauseRef` clauses with `invariantsText` beside them, and provenance.
-- [ ] **Failure discipline.** Every failure in one document reported together, none first-only, and no partial record when any failure is found.
-- [ ] **Read-only.** No file in the module or its test support writes a Markdown document; the oracle opens every document read-only, and the check enumerates the tree rather than sampling it.
+- [x] **`mappings.schema.json`.** The six kinds, the per-property shape, the `prose_only` + `reason` pair, the `alternate_form` object, and the `imported_types` map.
+- [x] **`scripts/build_mappings.py`.** Derive `mappings.yaml` from `manifest.yaml`, so a column list, a locator name, or an id pattern is written once and cannot drift. `--check` writes nothing and fails on drift.
+- [x] **One entry per property.** `fields` is one `typed-table` entry carrying a `sysml-fence` `alternate_form` — never two entries, which is what would make "exactly once" unsatisfiable for the one property that has two authored forms.
+- [x] **Round-trip policy.** `authority: markdown` and `round_trip: derived` per model; `lossless: true` on `section` and `ocl-clause`, `false` on the rest; the dropped frontmatter key set declared per model.
+- [x] **The reference mapping.** Builds a record from a document: frontmatter identity, byte-exact sections with line spans, typed rows with per-cell parses, `FieldDecl` rows, `ClauseRef` clauses with `invariantsText` beside them, and provenance.
+- [x] **Failure discipline.** Every failure in one document reported together, none first-only, and no partial record when any failure is found.
+- [x] **Read-only.** No file in the module or its test support writes a Markdown document; the oracle opens every document read-only, and the check enumerates the tree rather than sampling it.
 
 ## Deliverables
 

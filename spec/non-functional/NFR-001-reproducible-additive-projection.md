@@ -67,10 +67,10 @@ is this requirement's, measured rather than asserted.
 
 | Metric | Target | Threshold | Method |
 |--------|--------|-----------|--------|
-| Byte differences between two consecutive `make schemas` runs on one tree | 0 files | 0 files | Run `make schemas` twice and `git status --porcelain spec_artifacts_app/schemas spec_artifacts_app/manifest.yaml` |
-| Network reads during `make schemas-check` and `make test` | 0 | 0 | Run with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire`; both exit 0 |
-| Locators added by this change that are required | 0 of the added set | 0 of the added set | Diff the manifest's locator set against the branch point and assert every added locator carries `required: false` |
-| Wall time of `make schemas-check` | 10 s | 30 s | `time make schemas-check` on the reference machine |
+| Byte differences between two consecutive `make schemas` runs on one tree | 0 files | 0 files | Test (two `make schemas` runs compared byte-for-byte) |
+| Network reads during `make schemas-check` and `make test` | 0 | 0 | Demonstration (both targets run with the network namespace disabled) |
+| Locators added by this change that are required | 0 of the added set | 0 of the added set | Analysis (locator set diffed against the branch point) |
+| Wall time of `make schemas-check` | 10 s | 30 s | Test (performance benchmark: `time make schemas-check` on the reference machine) |
 
 ## Verification
 
@@ -93,7 +93,7 @@ this requirement.
 |----|----------|--------------|
 | NFR-001-AC-1 | Two consecutive `make schemas` runs on one tree leave `spec_artifacts_app/schemas` and `spec_artifacts_app/manifest.yaml` byte-identical — `git status --porcelain` over both reports zero files. | Test (TC-030) |
 | NFR-001-AC-2 | `make schemas-check` and `make test` both exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire`. | Demonstration (TC-031) |
-| NFR-001-AC-3 | Every `body_extraction` locator this change adds, diffed against the branch point, carries `required: false`, except `title` and `purpose`, which the pre-change document already carries. | Inspection (TC-032) |
+| NFR-001-AC-3 | Every `body_extraction` locator this change adds, diffed against the branch point, carries `required: false`, except `title` and `purpose`, which the pre-change document already carries. | Analysis (TC-032) |
 | NFR-001-AC-4 | `make schemas-check` completes within 30 s on the reference machine. | Test (TC-033) |
 
 ## Dependencies

@@ -112,5 +112,5 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "The record of an `ApplicationSpec` document: an application's identity, its\nboundaries, capabilities, actors, interfaces, data dependencies, UI rendering\nrequirements, and the requirements it aggregates.\n\nThis model describes an application *declaration*. runtime state (deployment,\nhealth, uptime) is not modelled: a deployed instance's condition belongs to\nthe platform that runs it, never to the document that specifies it\n(FR-002-CON-4)."
+  "description": "The record of an `ApplicationSpec` document: an application's identity, its\nboundaries, capabilities, actors, interfaces, data dependencies, UI rendering\nrequirements, and the requirements it aggregates.\n\nThis model describes an application *declaration*, and\nruntime state (deployment, health, uptime) is not modelled: a deployed\ninstance's condition belongs to the platform that runs it, never to the\ndocument that specifies it (FR-002-CON-4)."
 }

@@ -176,7 +176,7 @@ Round-trip policy:
 |----|------------|------|------------|
 | FR-004-CON-1 | The mapping SHALL keep every existing heading and column order the corpus already uses; the forms it adds are the optional sections FR-005 introduces. | Compatibility | Test (TC-018) |
 | FR-004-CON-2 | The mapping SHALL carry clause text under `## Invariants` as opaque bytes; no code in this module tokenizes, typechecks, or evaluates it. | Boundary | Test (TC-019) |
-| FR-004-CON-3 | The mapping SHALL read Markdown and write nothing back; no file in the module derives Markdown from a record. | Boundary | Inspection (TC-020) |
+| FR-004-CON-3 | The mapping SHALL read Markdown and write nothing back; no file in the module derives Markdown from a record. | Boundary | Analysis (TC-020) |
 
 ## Acceptance Criteria
 

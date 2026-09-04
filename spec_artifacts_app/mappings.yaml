@@ -59,6 +59,7 @@ models:
         kind: frontmatter
         path:
         - title
+        locator: title
         required: true
         lossless: false
       type:
@@ -286,6 +287,7 @@ models:
         kind: frontmatter
         path:
         - title
+        locator: title
         required: true
         lossless: false
       type:

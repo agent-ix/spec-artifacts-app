@@ -98,7 +98,7 @@ frontmatter what it expects to be refused and why.
 |----|------------|------|------------|
 | FR-005-CON-1 | Every locator added by this change SHALL be optional, except `title` and `purpose`, which the pre-change document already carries. | Compatibility | Test (TC-018) |
 | FR-005-CON-2 | A negative fixture SHALL violate exactly one rule, so that a refusal identifies the rule. | Integrity | Test (TC-026) |
-| FR-005-CON-3 | The module SHALL ship no `.md.j2` template and no `template_ref`; skeletons are the authoring source. | Scope | Test (TC-027) |
+| FR-005-CON-3 | The module SHALL ship no `.md.j2` template and no `template_ref`; skeletons are the authoring source. | Scope | Analysis (TC-027) |
 
 ## Acceptance Criteria
 
@@ -109,7 +109,7 @@ frontmatter what it expects to be refused and why.
 | FR-005-AC-3 | Each skeleton carries at least one `### <clauseId>` heading under `## Invariants` owning exactly one `ocl`-tagged fence, and the record built from it carries one `ClauseRef` per heading. | Test (TC-019) |
 | FR-005-AC-4 | Each negative fixture declares `expect` and `because` in frontmatter, is refused by the check it names, and the refusal names the rule; a negative fixture that is accepted fails the suite naming the fixture and the expectation. | Test (TC-026) |
 | FR-005-AC-5 | The `ApplicationSpec` locators added by this change are all optional except `title` and `purpose`, and `spec/spec.md` as committed at the branch point validates unchanged under the new manifest. | Test (TC-018) |
-| FR-005-AC-6 | The module ships no file matching `*.md.j2` and no `template_ref` key anywhere in `manifest.yaml`. | Test (TC-027) |
+| FR-005-AC-6 | The module ships no file matching `*.md.j2` and no `template_ref` key anywhere in `manifest.yaml`. | Analysis (TC-027) |
 | FR-005-AC-7 | The negative fixture set covers, one fixture each: a missing required section, a typed table with a wrong column header, a row id with the wrong prefix, a row id repeated in one table, a section carrying both a typed table and a `sysml` fence, an `ImportedTypeRef` naming an undeclared module, a `### <clauseId>` heading owning two fences, and an `ocl` fence owned by no `###` heading. | Test (TC-026) |
 
 ## Dependencies

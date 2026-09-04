@@ -62,12 +62,16 @@ cmd = "pytest"
 help = "Run tests with coverage"
 
 [tool.poe.tasks.schemas]
-shell = "node scripts/generate-schemas.mjs && python scripts/build_mappings.py"
-help = "Emit the JSON Schemas from TypeSpec, refresh the manifest digests, and rebuild mappings.yaml"
+shell = """node scripts/generate-schemas.mjs \
+  && python scripts/build_mappings.py \
+  && python scripts/build_legacy_manifest.py"""
+help = "Emit the JSON Schemas, refresh the manifest digests, and rebuild the derived data files"
 
 [tool.poe.tasks.schemas-check]
-shell = "node scripts/generate-schemas.mjs --check && python scripts/build_mappings.py --check"
-help = "Fail when the committed schemas, manifest digests, or mappings differ from the source"
+shell = """node scripts/generate-schemas.mjs --check \
+  && python scripts/build_mappings.py --check \
+  && python scripts/build_legacy_manifest.py --check"""
+help = "Fail when the committed schemas, digests, mappings, or legacy fixture differ from the source"
 
 [tool.poe.tasks.dev-quire]
 shell = "pip install --index-url http://pypi.ix/root/dev/+simple/ --trusted-host pypi.ix 'quire>=0.46.0'"

@@ -16,6 +16,8 @@ report.json
 /manifest.yaml
 /schemas/
 /skeletons/
+/mappings.yaml
+/mappings.schema.json
 *.tgz
 
 # git worktrees created under the repo

@@ -2,7 +2,7 @@
 id: Task-009
 title: "FR-001 re-verification, trace tags, and coverage reconciliation"
 type: Task
-status: pending
+status: done
 track: C
 priority: P1
 relationships:
@@ -24,11 +24,11 @@ that says whether any of it landed.
 
 ## Subtasks
 
-- [ ] **FR-001 at 0.2.0.** The manifest still validates against the bundled FR-035 schema with the block and the references present. Neither the missing-library nor the missing-schema branch skips: a gate that reports "passed" because it could not run is not a gate.
-- [ ] **Trace tags on every test.** `@pytest.mark.trace("TC-0NN", "<criterion>")` directly above the test function, and the `trace` marker registered so `filterwarnings = ["error"]` does not turn an unregistered marker into a failure.
-- [ ] **Check the three ways a tag binds to nothing.** A `black`-wrapped marker binds nothing silently; a tag on a module docstring or a plain helper binds nothing; and a bare `TC-` id in a comment binds to the *next* symbol, so a comment explaining an untagged test mints the very trace it disclaims. Grep for all three before opening the PR.
-- [ ] **Reconcile the numbers.** Run `quire coverage` and state what its headline counts against what `spec/tests.md` counts — they are different populations, and saying so is the point.
-- [ ] **Record the manual offline gate.** NFR-001 metric 2 is a manual run; it is recorded as such and no CI job is claimed for it.
+- [x] **FR-001 at 0.2.0.** The manifest still validates against the bundled FR-035 schema with the block and the references present. Neither the missing-library nor the missing-schema branch skips: a gate that reports "passed" because it could not run is not a gate.
+- [x] **Trace tags on every test.** `@pytest.mark.trace("TC-0NN", "<criterion>")` directly above the test function, and the `trace` marker registered so `filterwarnings = ["error"]` does not turn an unregistered marker into a failure.
+- [x] **Check the three ways a tag binds to nothing.** A `black`-wrapped marker binds nothing silently; a tag on a module docstring or a plain helper binds nothing; and a bare `TC-` id in a comment binds to the *next* symbol, so a comment explaining an untagged test mints the very trace it disclaims. Grep for all three before opening the PR.
+- [x] **Reconcile the numbers.** Run `quire coverage` and state what its headline counts against what `spec/tests.md` counts — they are different populations, and saying so is the point.
+- [x] **Record the manual offline gate.** NFR-001 metric 2 is a manual run; it is recorded as such and no CI job is claimed for it.
 
 ## Deliverables
 

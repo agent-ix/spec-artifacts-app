@@ -329,10 +329,10 @@ model RequirementRef {
  * boundaries, capabilities, actors, interfaces, data dependencies, UI rendering
  * requirements, and the requirements it aggregates.
  *
- * This model describes an application *declaration*. runtime state (deployment,
- * health, uptime) is not modelled: a deployed instance's condition belongs to
- * the platform that runs it, never to the document that specifies it
- * (FR-002-CON-4).
+ * This model describes an application *declaration*, and
+ * runtime state (deployment, health, uptime) is not modelled: a deployed
+ * instance's condition belongs to the platform that runs it, never to the
+ * document that specifies it (FR-002-CON-4).
  */
 model ApplicationSpec {
   id: ArtifactId;

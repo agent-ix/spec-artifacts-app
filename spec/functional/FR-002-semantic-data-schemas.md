@@ -202,15 +202,19 @@ Free text and scope:
 
 - The models SHALL type `name`, `description`, `contract`, `requirement`, and
   `Verification.method` as strings with `minLength: 1`.
-- The models SHALL constrain every property of every emitted object schema —
+- The models SHALL constrain every property of every emitted object schema:
   after following `$ref` it carries `pattern`, `minLength`, `minimum`, `enum`,
   `const`, or `format`, or is an object of such properties, or an array of such
-  items, or `boolean`/`null` — or SHALL declare it free text, in which case the
-  models SHALL carry `free text:` and the reason in its description. The closed
-  free-text set is exactly `Section.text`, `Provenance.path`,
-  `Verification.method`, `Verification.annotation`, `Boundary.description`,
-  `Capability.description`, `Actor.description`, `Interface.contract`, and
-  `RenderingRequirement.requirement`; every other property is constrained.
+  items, or `boolean`/`null`. This admits no exception — a free-text property is
+  still `NonEmptyText`, so it is still constrained.
+- The models SHALL additionally declare, with a description beginning
+  `free text:` and carrying the reason, every property whose *vocabulary* is
+  open — a prose cell no lint rule and no registry owns. The declared set SHALL
+  be exactly `Section.text`, `Provenance.path`, `Verification.method`,
+  `Verification.annotation`, `Boundary.description`, `Capability.description`,
+  `Actor.description`, `Interface.contract`, and `RenderingRequirement.requirement`.
+  Widening the set is a decision recorded here, never a side effect of adding a
+  model.
 - No model SHALL carry a property named `deployed`, `running`, `health`,
   `uptime`, `instanceCount`, or `lastDeployedAt`: an application *declaration*
   and a deployed application's runtime state stay distinct.
@@ -223,8 +227,8 @@ Free text and scope:
 |----|------------|------|------------|
 | FR-002-CON-1 | The models SHALL declare exactly the fields the locators, the frontmatter schemas, and the FR-004 mappings produce: no field without a Markdown source, no locator output without a field. | Integrity | Test (TC-001, TC-002) |
 | FR-002-CON-2 | The emitted bundle SHALL carry no `$ref` outside the module base and the semantic-core 0.1.0 base, so that a consumer resolves every reference without a network read. | Boundary | Test (TC-003) |
-| FR-002-CON-3 | The repository SHALL pin `@typespec/compiler` and `@typespec/json-schema` at 1.15.0 and `@agent-ix/semantic-core` at 0.1.0 with a committed lockfile, no `file:` or `link:` reference, and no `.npmrc` in the repository. | Reproducibility | Test (TC-004) |
-| FR-002-CON-4 | No model SHALL carry a property named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`: declaration and runtime state stay distinct. | Scope | Test (TC-005) |
+| FR-002-CON-3 | The repository SHALL pin `@typespec/compiler` and `@typespec/json-schema` at 1.15.0 and `@agent-ix/semantic-core` at 0.1.0 with a committed lockfile, no `file:` or `link:` reference, and no `.npmrc` in the repository. | Reproducibility | Analysis (TC-004) |
+| FR-002-CON-4 | No model SHALL carry a property named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`: declaration and runtime state stay distinct. | Scope | Analysis (TC-005) |
 | FR-002-CON-5 | The `@jsonSchema` base SHALL embed the manifest `version`; a version bump edits both in one commit. | Integrity | Test (TC-006) |
 
 ## Acceptance Criteria
@@ -234,14 +238,14 @@ Free text and scope:
 | FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json` and `MasterRequirements.json`, each a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/<Model>.json`, and each `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
 | FR-002-AC-2 | Every declared artifact type of `manifest.yaml` has an emitted model file, and every support model and scalar named in Outputs is emitted as its own file; the emitted set is exactly the `files` list of `toolchain.json`, with no extra and no missing entry. | Test (TC-007) |
 | FR-002-AC-3 | Every `$ref` across the emitted bundle resolves to a shipped sibling or to a file name of the semantic-core 0.1.0 bundle, with no network read; no `$ref` names another module's base, another semantic-core version, or an unshipped file. | Test (TC-003) |
-| FR-002-AC-4 | Every property of every emitted object schema is constrained by `pattern`, `minLength`, `minimum`, `enum`, `const`, or `format` (after following `$ref`), or is an object or array of such, or is `boolean`/`null` — or its description carries `free text:` and a reason and its name is in the closed list the test enumerates. | Test (TC-002) |
-| FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008) |
-| FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Test (TC-005) |
+| FR-002-AC-4 | Every property of every emitted object schema is constrained by `pattern`, `minLength`, `minimum`, `enum`, `const`, or `format` (after following `$ref`), or is an object or array of such, or is `boolean`/`null`; and the set of properties whose description begins `free text:` is exactly the nine the Behavior section names — a tenth fails the check. | Test (TC-002) |
+| FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008, TC-030) |
+| FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Analysis (TC-005) |
 | FR-002-AC-7 | The digest recomputed over the emitted files (`sha256(concat(name + "\n" + bytes))`, sorted by name) equals the digest recorded in `toolchain.json`, with no toolchain run. | Test (TC-007) |
 | FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`, and the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects every negative fixture that produces a record at all, including one carrying a property no model declares. | Test (TC-009) |
 | FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
 | FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.1.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
-| FR-002-AC-11 | The repository carries no `.npmrc`, `package.json` pins `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0, and `@agent-ix/semantic-core` 0.1.0 exactly, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Test (TC-004) |
+| FR-002-AC-11 | The repository carries no `.npmrc`, `package.json` pins `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0, and `@agent-ix/semantic-core` 0.1.0 exactly, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Analysis (TC-004) |
 
 ## Dependencies
 

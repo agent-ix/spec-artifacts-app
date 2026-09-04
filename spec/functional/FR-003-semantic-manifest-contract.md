@@ -93,9 +93,15 @@ are both detectable from the manifest alone.
   the module's test suite SHALL fail naming the artifact type, the recorded
   digest, and the computed digest.
 - If the manifest declares a `semantic` key outside the admitted set, a
-  `data_schema` mixing `schema`/`digest` with any other key, a `package` that is
-  not `<org>/<repo>`, or a `targets` value outside the registry, then the bundled
-  FR-035 schema SHALL reject the manifest naming the key or value.
+  `package` that is not `<org>/<repo>`, or a `targets` value outside the
+  registry, then the bundled FR-035 schema SHALL reject the manifest naming the
+  key or value.
+- The bundled FR-035 schema does *not* reject a `data_schema` mixing
+  `schema`/`digest` with another key on an *artifact* type: `ArtifactTypeEntry.data_schema`
+  is typed `{type: object}`, and only `ObjectTypeEntry.data_schema` carries the
+  FR-073 `oneOf`. The module SHALL record that as a strict expected failure
+  naming agent-ix/quoin#341 rather than assert a refusal the schema does not
+  make.
 
 Imports, cycles, and missing references:
 
@@ -165,7 +171,7 @@ Evidence, not obligation:
 | FR-003-AC-3 | With the block and the references present, `quire.Registry.load_from` over the module's parent directory lists every archetype the manifest declares and `validate_document` passes every shipped skeleton — the block breaks no consumer. | Test (TC-013) |
 | FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` at an exact version and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
 | FR-003-AC-5 | An import graph built from this module plus synthesized dynamic-module fixtures fails on a cycle naming every module on it in deterministic traversal order, distinctly from the missing-import failure of AC-4; the fixtures exercise a two-module cycle, a three-module cycle, and an acyclic graph that must pass. No fixture is read from the machine's installed module root. | Test (TC-015) |
-| FR-003-AC-6 | The bundled FR-035 schema rejects `semantic: {…, foo: 1}` naming `foo`, rejects `data_schema: {schema: x.json, digest: sha256:…, type: object}`, rejects `package: ix://agent-ix/x`, and rejects `targets: [go]`. The engine-side half — a module load that names the refused key or the refused path — is an expected failure naming agent-ix/quire-rs#221 and agent-ix/quire-rs#394. | Test (TC-016) |
+| FR-003-AC-6 | The bundled FR-035 schema rejects `semantic: {…, foo: 1}` naming `foo`, rejects `package: ix://agent-ix/x`, and rejects `targets: [go]`. Two halves of this criterion are expected failures rather than claims: the schema does **not** reject `data_schema: {schema: x.json, digest: sha256:…, type: object}` on an *artifact* type, because `ArtifactTypeEntry.data_schema` is typed `{type: object}` while only `ObjectTypeEntry.data_schema` carries the FR-073 `oneOf` (agent-ix/quoin#341); and no engine load names the refused key or the refused path (agent-ix/quire-rs#221, agent-ix/quire-rs#394). Each is recorded as a strict expected failure naming its issue. | Test (TC-016) |
 | FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) validates under the bundled FR-035 schema and loads under quire with the same artifact types as the current manifest. | Test (TC-011) |
 | FR-003-AC-8 | A copy of the module with one `data_schema.digest` altered by one hex digit is refused at load. Recorded as a strict expected failure naming agent-ix/quire-rs#394 until an engine that diagnoses the mismatch is published. | Test (TC-017) |
 

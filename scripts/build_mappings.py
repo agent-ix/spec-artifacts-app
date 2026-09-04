@@ -67,7 +67,11 @@ SECTIONS = {
     "scope": ("scope", "Scope", False),
     "system_overview": ("systemOverview", "System Overview", False),
     "structure": ("structure", "Structure", False),
-    "requirements_architecture": ("requirementsArchitecture", "Requirements Architecture", False),
+    "requirements_architecture": (
+        "requirementsArchitecture",
+        "Requirements Architecture",
+        False,
+    ),
     "references": ("references", "References", False),
 }
 
@@ -128,7 +132,10 @@ TABLES = {
     ),
 }
 
-MODEL_OF = {"ApplicationSpec": "ApplicationSpec", "MasterRequirements": "MasterRequirements"}
+MODEL_OF = {
+    "ApplicationSpec": "ApplicationSpec",
+    "MasterRequirements": "MasterRequirements",
+}
 
 
 class NoAliasDumper(yaml.SafeDumper):
@@ -151,11 +158,35 @@ def properties_for(artifact_type: dict[str, Any]) -> dict[str, Any]:
     """Build the property map of one artifact type from its own locators."""
     match = locators(artifact_type)
     props: dict[str, Any] = {
-        "id": {"kind": "frontmatter", "path": ["id"], "required": True, "lossless": False},
-        "title": {"kind": "frontmatter", "path": ["title"], "required": True, "lossless": False},
-        "type": {"kind": "frontmatter", "path": ["type"], "required": True, "lossless": False},
+        "id": {
+            "kind": "frontmatter",
+            "path": ["id"],
+            "required": True,
+            "lossless": False,
+        },
+        # The `title` locator asserts the document's H1 exists; the value the
+        # record carries comes from frontmatter, which is the only place a
+        # title is authoritative here. The locator is named so no locator is
+        # left unmapped (FR-002-CON-1).
+        "title": {
+            "kind": "frontmatter",
+            "path": ["title"],
+            "locator": "title",
+            "required": True,
+            "lossless": False,
+        },
+        "type": {
+            "kind": "frontmatter",
+            "path": ["type"],
+            "required": True,
+            "lossless": False,
+        },
         "status": {"kind": "frontmatter", "path": ["status"], "lossless": False},
-        "relationships": {"kind": "frontmatter", "path": ["relationships"], "lossless": False},
+        "relationships": {
+            "kind": "frontmatter",
+            "path": ["relationships"],
+            "lossless": False,
+        },
         "provenance": {"kind": "provenance", "lossless": False},
     }
 
@@ -244,7 +275,11 @@ def build() -> str:
         "models": models,
     }
     return HEADER + yaml.dump(
-        document, Dumper=NoAliasDumper, sort_keys=False, width=100, default_flow_style=False
+        document,
+        Dumper=NoAliasDumper,
+        sort_keys=False,
+        width=100,
+        default_flow_style=False,
     )
 
 
@@ -269,7 +304,9 @@ HEADER = """# Markdown mapping declaration for spec-artifacts-app (FR-004).
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--check", action="store_true", help="fail on drift; write nothing")
+    parser.add_argument(
+        "--check", action="store_true", help="fail on drift; write nothing"
+    )
     args = parser.parse_args()
 
     text = build()
@@ -277,12 +314,15 @@ def main() -> int:
         current = MAPPINGS_PATH.read_text() if MAPPINGS_PATH.exists() else None
         if current != text:
             print(
-                f"{MAPPINGS_PATH.relative_to(REPO_ROOT)} differs from the manifest it is "
-                "derived from; run `make mappings` and commit the result.",
+                f"{MAPPINGS_PATH.relative_to(REPO_ROOT)} differs from the "
+                "manifest it derives from; run `make schemas` and commit it.",
                 file=sys.stderr,
             )
             return 1
-        print(f"mappings-check: {MAPPINGS_PATH.relative_to(REPO_ROOT)} matches the manifest")
+        print(
+            "mappings-check: "
+            f"{MAPPINGS_PATH.relative_to(REPO_ROOT)} matches the manifest"
+        )
         return 0
     MAPPINGS_PATH.write_text(text)
     print(f"mappings: wrote {MAPPINGS_PATH.relative_to(REPO_ROOT)}")

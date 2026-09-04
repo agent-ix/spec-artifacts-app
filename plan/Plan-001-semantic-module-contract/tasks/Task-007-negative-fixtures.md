@@ -2,7 +2,7 @@
 id: Task-007
 title: "FR-005 — The eight negative fixtures and the accepted-fixture gate"
 type: Task
-status: pending
+status: done
 track: B
 priority: P1
 relationships:
@@ -22,10 +22,10 @@ and the gate that fails when one of them is accepted.
 
 ## Subtasks
 
-- [ ] **Author the eight fixtures**, each declaring `expect` and `because` in frontmatter: a missing required section; a typed table with a wrong column header; a row id with the wrong prefix; a row id repeated in one table; a section carrying both a typed table and a `sysml` fence; an `ImportedTypeRef` naming an undeclared module; a `### <clauseId>` heading owning two fences; an `ocl` fence owned by no `###` heading.
-- [ ] **One rule each.** A fixture that violates two rules cannot tell you which one the refusal identified.
-- [ ] **The accepted-fixture gate.** A fixture the check its `expect` names does not refuse fails the suite naming the fixture and the expectation. A negative fixture that passes is a gate that is not gating.
-- [ ] **Route each fixture to the right check.** Some are refused by `validate_document` (the locator asserts), some by the reference mapping, and one by the schema. The `expect` value says which, and the test dispatches on it rather than trying all three.
+- [x] **Author the eight fixtures**, each declaring `expect` and `because` in frontmatter: a missing required section; a typed table with a wrong column header; a row id with the wrong prefix; a row id repeated in one table; a section carrying both a typed table and a `sysml` fence; an `ImportedTypeRef` naming an undeclared module; a `### <clauseId>` heading owning two fences; an `ocl` fence owned by no `###` heading.
+- [x] **One rule each.** A fixture that violates two rules cannot tell you which one the refusal identified.
+- [x] **The accepted-fixture gate.** A fixture the check its `expect` names does not refuse fails the suite naming the fixture and the expectation. A negative fixture that passes is a gate that is not gating.
+- [x] **Route each fixture to the right check.** Some are refused by `validate_document` (the locator asserts), some by the reference mapping, and one by the schema. The `expect` value says which, and the test dispatches on it rather than trying all three.
 
 ## Deliverables
 

@@ -29,6 +29,7 @@ trustworthy view of what the application declares.
 |----|----------|------------|
 | StR-001-VC-1 | Activating this Module against filament-core registers the contents it declares. | Inspection |
 | StR-001-VC-2 | An author starting from a skeleton this Module ships produces an artifact that `validate_document` accepts for its artifact type. | Demonstration |
+| StR-001-VC-3 | A consumer reads an application composite as a typed record, bound to the exact schema bytes the Module ships, without re-parsing the document's prose. | Demonstration |
 
 Satisfaction is judged by demonstrating both outcomes against a filament-core instance.
 

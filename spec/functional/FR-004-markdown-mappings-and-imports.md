@@ -92,10 +92,15 @@ Mapping kinds:
   `type.multiplicity` and the `Constraints` cell into the closed
   `ConstraintDecl` keyword vocabulary, and setting `identity` from the
   `identity` constraint token.
-- A `sysml-fence` mapping SHALL fill `fields` — the same property the
-  `## Properties` `typed-table` mapping fills — from a single fenced block
-  tagged `sysml` under the same heading, so that the two forms are alternates of
-  one declaration.
+- The `fields` property SHALL carry exactly one mapping entry, of kind
+  `typed-table`, whose `alternate_form` declares the `sysml-fence` kind, the
+  same heading, and the fence language. The two forms are alternates of one
+  declaration, so they are one entry with two forms and never two entries: a
+  second entry would make `fields` the one property AC-1's "exactly once" rule
+  could not hold for.
+- A `sysml-fence` alternate form SHALL fill `fields` from a single fenced block
+  tagged `sysml` under `## Properties`, and SHALL appear under no other
+  heading.
 - If one section carries both a typed table and a `sysml` fence, then the mapping
   SHALL fail naming the section's heading line, because one artifact carries one
   form.
@@ -106,9 +111,13 @@ Mapping kinds:
   sidecar array `invariantsText`, one entry per `ClauseRef` in the same order,
   each recording the fence's `startLine`, `endLine`, and body bytes. The record
   itself never carries the clause text, and no code in this module parses it.
-- The mapping SHALL emit `sourceSpan` only when the caller supplies a
-  `sourceIdentity`, because semantic-core `SourceLocus` requires
-  `sourceIdentity`, `path`, `startLine`, and `startColumn`.
+- The mapping SHALL emit `sourceSpan` on every `ClauseRef`, carrying the
+  caller's `sourceIdentity` when one is supplied. When none is, the mapping
+  SHALL default the identity to `ix://local/scope/spec` and SHALL record a
+  `semantic.source-identity-defaulted` advisory naming the line — matching the
+  quire engine rather than diverging from it. semantic-core `SourceLocus`
+  requires `sourceIdentity`, so omitting the span and defaulting the identity
+  are the only two options, and the engine already chose the second.
 - If a `## Invariants` section carries no fenced block, then the mapping SHALL
   leave `invariants` absent and SHALL NOT fail.
 - If a `### <clauseId>` heading is not an `Identifier`
@@ -119,9 +128,14 @@ Mapping kinds:
   then the mapping SHALL fail naming the fence's opening line.
 - A `provenance` mapping SHALL fill `provenance.path` from the document's
   corpus-relative path and `provenance.digest` from the document bytes as read,
-  with no line-ending normalization; it SHALL fill `provenance.sourceIdentity`
-  from the caller and SHALL leave it absent when the caller supplies none, and
-  SHALL NOT synthesize one.
+  with no line-ending normalization.
+- A `provenance` mapping SHALL fill `provenance.sourceIdentity` from the caller.
+- If the caller supplies no `sourceIdentity`, then a `provenance` mapping SHALL
+  leave `provenance.sourceIdentity` absent rather than synthesize one, because a
+  synthesized `ix://` value would be indistinguishable from an authored one.
+  `sourceSpan` differs deliberately: semantic-core `SourceLocus` cannot carry an
+  absent identity, so the clause mapping defaults it and says so, while
+  `Provenance` can, so it omits.
 
 Imported types:
 
@@ -168,11 +182,11 @@ Round-trip policy:
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-004-AC-1 | `mappings.yaml` validates against `mappings.schema.json`, declares every property of both exported models exactly once, names no undeclared property, uses only the six mapping kinds the manifest lists, and each `typed-table` column list equals the locator's `assert.columns`. | Test (TC-021) |
+| FR-004-AC-1 | `mappings.yaml` validates against `mappings.schema.json`, declares every property of both exported models exactly once — `fields` as one `typed-table` entry carrying a `sysml-fence` `alternate_form`, never as two entries — names no undeclared property, uses only the six mapping kinds the manifest lists, and each `typed-table` column list equals the locator's `assert.columns`. | Test (TC-021) |
 | FR-004-AC-2 | Every level-2 section of every shipped skeleton is named by a mapping entry that either fills a typed property or carries `prose_only: true` with a reason; a section named by neither fails the suite naming the heading. | Test (TC-022) |
 | FR-004-AC-3 | For each shipped skeleton the reference mapping produces a record that validates against its model's schema, and the `## Properties`, `## Boundaries`, `## Capabilities`, `## Actors`, `## Interfaces`, `## Data Dependencies`, `## UI Rendering Requirements`, and `## Requirements` rows map to the typed row objects FR-002 declares — `## Properties` to semantic-core `FieldDecl` entries and `## Boundaries` to `Boundary` rows, `Test (TC-001)` splitting into `method: Test`, `annotation: TC-001`, `testRefs: [TC-001]`. | Test (TC-023) |
 | FR-004-AC-4 | An `<org>/<repo>#<Type>` cell maps to an `ImportedTypeRef` carrying exactly `module` and `type`, no field of the imported type appears in the record, and a cell naming a module or a type absent from `semantic.imports` fails naming the line, the module, and the type. | Test (TC-024) |
-| FR-004-AC-5 | The `## Invariants` clause of the `ApplicationSpec` skeleton maps to a `ClauseRef` with `language: ocl` and `clauseId` equal to the `###` heading; with a caller-supplied `sourceIdentity` it also carries a `sourceSpan` whose `startLine`/`endLine` are the fence lines, and without one it carries no `sourceSpan`; the `invariantsText` entry equals the fence body byte-for-byte; a `### not-an-identifier` heading, a `tla`-tagged fence, a second fence under one heading, a repeated `clauseId`, and a fence owned by no `###` heading each fail naming the line; a prose `## Invariants` with no fence leaves `invariants` absent and does not fail. | Test (TC-019) |
+| FR-004-AC-5 | The `## Invariants` clause of the `ApplicationSpec` skeleton maps to a `ClauseRef` with `language: ocl` and `clauseId` equal to the `###` heading; it carries a `sourceSpan` whose `startLine`/`endLine` are the fence lines and whose `sourceIdentity` is the caller's, or `ix://local/scope/spec` with a `semantic.source-identity-defaulted` advisory when the caller supplies none; the `invariantsText` entry equals the fence body byte-for-byte; a `### not-an-identifier` heading, a `tla`-tagged fence, a second fence under one heading, a repeated `clauseId`, and a fence owned by no `###` heading each fail naming the line; a prose `## Invariants` with no fence leaves `invariants` absent and does not fail. | Test (TC-019) |
 | FR-004-AC-6 | A row id with the wrong prefix, a row id repeated in one table, a duplicated level-2 heading, a `requirements` row whose `target` is not `ix://`, and a section carrying both a typed table and a `sysml` fence each fail the mapping naming the line and yield no record, and all failures present in one document are reported together. | Test (TC-025) |
 | FR-004-AC-7 | `section` and `ocl-clause` properties carry `lossless: true` and `typed-table`, `sysml-fence`, and `frontmatter` properties carry `lossless: false` in `mappings.yaml`; every model records `authority: markdown` and `round_trip: derived`; and every model records the frontmatter keys its mapping drops. | Test (TC-021) |
 | FR-004-AC-8 | The `ApplicationSpec` document committed in this repository before this change (`spec/spec.md` at the branch point) maps to a record that validates against the new schema, so an existing valid application spec remains readable. | Test (TC-018) |
@@ -180,4 +194,10 @@ Round-trip policy:
 ## Dependencies
 
 - **Upstream**: [FR-002](./FR-002-semantic-data-schemas.md), [FR-003](./FR-003-semantic-manifest-contract.md) (the declared imports), [FR-005](./FR-005-executable-skeletons.md) (the locators and skeletons), quoin FR-071/FR-072, quire-rs FR-008
-- **Downstream**: agent-ix/quire-contract-ir#52, agent-ix/filament-core-data#36
+- **Downstream**: [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md), agent-ix/quire-contract-ir#52, agent-ix/filament-core-data#36
+
+The four functional requirements form a chain, not a cycle:
+[FR-005](./FR-005-executable-skeletons.md) (skeletons and locators) →
+[FR-002](./FR-002-semantic-data-schemas.md) (the models that type them) →
+[FR-003](./FR-003-semantic-manifest-contract.md) (the manifest that binds them)
+→ this requirement (the mapping that fills them).

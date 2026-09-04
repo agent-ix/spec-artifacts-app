@@ -37,6 +37,12 @@
     "structure": {
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
     },
+    "requirementsArchitecture": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
+    "references": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
     "fields": {
       "type": "array",
       "items": {

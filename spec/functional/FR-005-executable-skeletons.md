@@ -35,7 +35,8 @@ frontmatter what it expects to be refused and why.
 
 - The artifact types declared by `spec_artifacts_app/manifest.yaml`
   (`ApplicationSpec`, `MasterRequirements`).
-- The emitted models of [FR-002](./FR-002-semantic-data-schemas.md).
+- The semantic-core `FieldDecl` and `ClauseRef` grammar the `## Properties` and
+  `## Invariants` forms lower to.
 - The quoin `Properties` / `Invariants` conventions (quoin FR-071, FR-072).
 - `spec/spec.md` as committed at the branch point, the one existing
   `ApplicationSpec` document in this repository, which the added locators must
@@ -113,5 +114,9 @@ frontmatter what it expects to be refused and why.
 
 ## Dependencies
 
-- **Upstream**: [FR-002](./FR-002-semantic-data-schemas.md), [FR-004](./FR-004-markdown-mappings-and-imports.md), quoin FR-071/FR-072
-- **Downstream**: [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md), agent-ix/quire-contract-ir#52
+- **Upstream**: [US-001](../usecase/US-001-consume-application-artifacts-as-records.md), quoin FR-071/FR-072 (the `Properties` and `Invariants` forms), quire-rs FR-032 (`validate_document`)
+- **Downstream**: [FR-002](./FR-002-semantic-data-schemas.md) (types what these locators extract), [FR-004](./FR-004-markdown-mappings-and-imports.md) (maps them), [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md), agent-ix/quire-contract-ir#52
+
+This requirement is the head of the chain: it authors the Markdown forms and the
+locators, FR-002 types them, FR-003 binds them, FR-004 maps them. It depends on
+none of the three.

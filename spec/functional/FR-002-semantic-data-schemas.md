@@ -63,9 +63,13 @@ is not a field of any model.
   `DataAccessMode`, `BoundaryKind`, and `RequirementKind` — 39 emitted files in
   all, and no model or scalar the two exported models do not reach.
 - `spec_artifacts_app/schemas/toolchain.json`, recording the compiler, emitter,
-  and semantic-core versions, the emitted file list, and a SHA-256 digest
-  computed as `sha256(concat(name + "\n" + bytes))` over the emitted files in
-  sorted name order.
+  and semantic-core versions, the emitted file list, a SHA-256 digest computed
+  as `sha256(concat(name + "\n" + bytes))` over the emitted files in sorted name
+  order, and the `normalization` record — the named, versioned post-emit pass
+  that rewrites a relative `$id` or `$ref` to an absolute one, together with
+  whether it applied and to which files. A pass inside the reproducibility
+  boundary that went unrecorded would make the bundle a function of two things
+  where `toolchain.json` names one.
 - `make schemas` (regenerate) and `make schemas-check` (fail on any byte
   difference), each run after `npm ci`. The hand-authored
   `*-frontmatter.schema.json` files in the same directory are not projections and
@@ -125,13 +129,18 @@ Identity, status, provenance:
   Scope).
 - Record property names SHALL be the camelCase form of the frontmatter key or
   locator name with a trailing `_table` dropped (`data_dependencies_table` →
-  `dataDependencies`).
+  `dataDependencies`, `system_overview` → `systemOverview`).
+- The one pair of locators whose property name is not derived from them is
+  `properties_table` and `properties_fence`, which both fill `fields`: the
+  property is the list of field declarations, not the section, and the two
+  locators are the two authored forms of one declaration. `mappings.yaml`
+  records the rename, and it is the only one.
 
 Application structure:
 
-- The `ApplicationSpec` model SHALL carry `purpose: Section` as its one required
-  section, and the optional sections `scope`, `systemOverview`, and `structure`
-  as `Section`.
+- Both models SHALL carry `purpose: Section` as their one required section, and
+  the optional sections `scope`, `systemOverview`, `structure`,
+  `requirementsArchitecture`, and `references` as `Section`.
 - Both models SHALL carry `fields?: FieldDecl[]` (semantic-core, `minItems: 1`),
   one entry per row of the typed `## Properties` table
   (`Field | Type | Multiplicity | Constraints`) or, as the alternate form of the
@@ -197,7 +206,11 @@ Free text and scope:
   after following `$ref` it carries `pattern`, `minLength`, `minimum`, `enum`,
   `const`, or `format`, or is an object of such properties, or an array of such
   items, or `boolean`/`null` — or SHALL declare it free text, in which case the
-  models SHALL carry `free text:` and the reason in its description.
+  models SHALL carry `free text:` and the reason in its description. The closed
+  free-text set is exactly `Section.text`, `Provenance.path`,
+  `Verification.method`, `Verification.annotation`, `Boundary.description`,
+  `Capability.description`, `Actor.description`, `Interface.contract`, and
+  `RenderingRequirement.requirement`; every other property is constrained.
 - No model SHALL carry a property named `deployed`, `running`, `health`,
   `uptime`, `instanceCount`, or `lastDeployedAt`: an application *declaration*
   and a deployed application's runtime state stay distinct.

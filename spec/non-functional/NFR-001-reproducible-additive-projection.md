@@ -8,6 +8,8 @@ relationships:
     type: "constrains"
   - target: "ix://agent-ix/spec-artifacts-app/FR-003"
     type: "constrains"
+  - target: "ix://agent-ix/spec-artifacts-app/FR-005"
+    type: "constrains"
 ---
 # NFR-001: Schema projection is reproducible, offline, and additively compatible
 
@@ -27,6 +29,15 @@ a way that invalidates a document valid before the change.
 - Operational context: a clean clone with `npm ci` and `poetry install`, and the
   quire wheel provisioned by `make dev-quire`; the only network access is the
   package install itself.
+- Toolchain preconditions: Node 20 or later (`@typespec/compiler` 1.15.0
+  requires it) and Python 3.13. `make dev-quire` installs `quire >= 0.46.0`,
+  the first wheel exposing `extract_semantic`, from the local `pypi.ix` index;
+  publishing it to an index a repository may commit against is
+  agent-ix/quire-rs#392, which is why it is a documented target and not a
+  declared dependency.
+- Reference machine: the machine that recorded the release notes for the
+  version under test, whose Node, Python, and CPU are named there. Metric 4 is a
+  bound on that machine, not a portable number.
 - npm-configuration precondition: `@agent-ix/semantic-core` 0.1.0 resolves only
   from the registry the developer's npm configuration routes the `@agent-ix`
   scope to — today the local npm.ix registry. The repository carries no `.npmrc`
@@ -87,5 +98,5 @@ this requirement.
 
 ## Dependencies
 
-- **Upstream**: [FR-002](../functional/FR-002-semantic-data-schemas.md), [FR-003](../functional/FR-003-semantic-manifest-contract.md)
+- **Upstream**: [FR-002](../functional/FR-002-semantic-data-schemas.md), [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md) (whose locators metric 3 measures)
 - **Downstream**: the release gauntlet of this module

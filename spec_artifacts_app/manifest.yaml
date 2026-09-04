@@ -13,14 +13,13 @@ semantic:
   exports:
   - ApplicationSpec
   - MasterRequirements
+  # FR-035 types `imports` as `<org>/<repo>` -> exact semver, and nothing more.
+  # The *types* this module references from each imported package are declared
+  # in `mappings.yaml` under `imported_types`, because the contract has no place
+  # for them yet (agent-ix/quoin#339). The suite checks every `ImportedTypeRef`
+  # against both: the package here, the type there.
   imports:
-    agent-ix/spec-artifacts-iso:
-    - StR
-    - US
-    - FR
-    - NFR
-    - IT
-    - TC
+    agent-ix/spec-artifacts-iso: 0.2.0
   targets: [json-schema, markdown]
   mappings: [frontmatter, section, typed-table, sysml-fence, ocl-clause, provenance]
   compatibility_posture: additive
@@ -49,9 +48,9 @@ artifact_types:
   frontmatter_schema_ref: schemas/applicationspec-frontmatter.schema.json
   data_schema:
     schema: schemas/ApplicationSpec.json
-    digest: sha256:05b6ebca02ede11ff5172b6a7bd658923d24cc62940a59591c835034f03d0b10
+    digest: sha256:c5001ee93b05e688bcea4b8efea02e4c3b69ea92bf0ae43f8593cd913a8ee247
   defaults:
-    id_pattern: ApplicationSpec-{next:03d}
+    id_pattern: AS-{next:03d}
   allowed_links:
   - contains
   - depends_on
@@ -91,6 +90,18 @@ artifact_types:
         structure:
           from: section_body
           after_heading: Structure
+          required: false
+          assert:
+            level: 2
+        requirements_architecture:
+          from: section_body
+          after_heading: Requirements Architecture
+          required: false
+          assert:
+            level: 2
+        references:
+          from: section_body
+          after_heading: References
           required: false
           assert:
             level: 2
@@ -214,9 +225,9 @@ artifact_types:
   frontmatter_schema_ref: schemas/masterrequirements-frontmatter.schema.json
   data_schema:
     schema: schemas/MasterRequirements.json
-    digest: sha256:5bfb26cb942c15625b6a89d07346f84926eeaac268f7d162279c78728d814393
+    digest: sha256:91138f6c57477c5fa45532859f5dbc6de9195b9fb7287bd51cee221483fd8410
   defaults:
-    id_pattern: MasterRequirements-{next:03d}
+    id_pattern: MR-{next:03d}
   allowed_links:
   - aggregates
   - depends_on
@@ -253,6 +264,18 @@ artifact_types:
         structure:
           from: section_body
           after_heading: Structure
+          required: false
+          assert:
+            level: 2
+        requirements_architecture:
+          from: section_body
+          after_heading: Requirements Architecture
+          required: false
+          assert:
+            level: 2
+        references:
+          from: section_body
+          after_heading: References
           required: false
           assert:
             level: 2

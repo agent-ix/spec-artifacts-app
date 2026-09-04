@@ -346,6 +346,8 @@ model ApplicationSpec {
   scope?: Section;
   systemOverview?: Section;
   structure?: Section;
+  requirementsArchitecture?: Section;
+  references?: Section;
 
   /**
    * The application's identity attributes, declared as one typed row per field
@@ -389,6 +391,8 @@ model MasterRequirements {
   scope?: Section;
   systemOverview?: Section;
   structure?: Section;
+  requirementsArchitecture?: Section;
+  references?: Section;
 
   /**
    * The specification's identity attributes, declared as one typed row per

@@ -90,7 +90,23 @@ record instead of as prose.
 - Deciding which module owns the `MasterRequirements` artifact type. Both this
   Module and `spec-artifacts-iso` declare one; the overlap predates this ticket
   and resolving it is a cross-module vocabulary decision filed as
-  `agent-ix/quoin#345`, not a side effect of this schema set.
+  `agent-ix/quoin#338`, not a side effect of this schema set.
+- Installing this Module under a quoin carrying the FR-070 reader. quoin
+  resolves `semantic.exports` and `data_schema` against `object_types` only, so
+  a Module whose semantic types are artifact types is refused at install
+  (`agent-ix/quoin#336`). The published quoin carries no semantic-block reader
+  at all, so the block is inert to every quoin a user can install today; the
+  amendment is quoin's to make and this Module does not bend its exports to it.
+- Declaring, in the manifest, *which types* this Module imports from a package.
+  FR-035 types `semantic.imports` as package to exact semver and carries no type
+  list, so the list is declared in `mappings.yaml` under `imported_types` and
+  the contract amendment is `agent-ix/quoin#339`.
+- Validating an artifact-type record against its `data_schema` at load time.
+  quire's `validate_document` validates a *declaration* record
+  (`{fields, clauses, operations}`) and never reaches an artifact-type record,
+  so no engine validates this Module's `ApplicationSpec` or `MasterRequirements`
+  record today (`agent-ix/quire-rs#393`). Until it lands, this Module's own test
+  suite is the record oracle.
 - Closing the `status` frontmatter vocabulary. Closing it is a sweep-and-report,
   not a side effect of this schema set.
 - Making the offline, no-network run a CI job. NFR-001 records it as a manual

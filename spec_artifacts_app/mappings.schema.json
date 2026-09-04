@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/mappings.schema.json",
+  "title": "spec-artifacts-app Markdown mapping declaration",
+  "description": "The schema mappings.yaml validates against (FR-004). A malformed mapping is a schema error here rather than a reader's surprise.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "mapping_version",
+    "module",
+    "kinds",
+    "imported_types",
+    "models"
+  ],
+  "properties": {
+    "mapping_version": {
+      "const": "1.0.0"
+    },
+    "module": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*/[a-z][a-z0-9-]*$"
+    },
+    "kinds": {
+      "description": "The mapping kinds this file uses; must equal the manifest's semantic.mappings list.",
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/kind"
+      }
+    },
+    "imported_types": {
+      "description": "Types this module references from each package semantic.imports pins. FR-035 types `imports` as package -> exact semver and carries no type list (agent-ix/quoin#339), so the list lives here.",
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9-]*/[a-z][a-z0-9-]*$"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
+        }
+      }
+    },
+    "models": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[A-Z][A-Za-z0-9]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/model"
+      }
+    }
+  },
+  "$defs": {
+    "kind": {
+      "enum": [
+        "frontmatter",
+        "section",
+        "typed-table",
+        "sysml-fence",
+        "ocl-clause",
+        "provenance"
+      ]
+    },
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema",
+        "artifact_type",
+        "authority",
+        "round_trip",
+        "dropped_frontmatter_keys",
+        "properties"
+      ],
+      "properties": {
+        "schema": {
+          "type": "string",
+          "pattern": "^schemas/[A-Za-z0-9]+\\.json$"
+        },
+        "artifact_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "const": "markdown"
+        },
+        "round_trip": {
+          "const": "derived"
+        },
+        "dropped_frontmatter_keys": {
+          "description": "Frontmatter keys the mapping drops. Declared so the loss is stated rather than silent; the emitted models are sealed, so an undeclared key cannot reach the record.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "properties": {
+          "type": "object",
+          "minProperties": 1,
+          "propertyNames": {
+            "pattern": "^[a-z][A-Za-z0-9]*$"
+          },
+          "additionalProperties": {
+            "$ref": "#/$defs/property"
+          }
+        }
+      }
+    },
+    "property": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "lossless"
+      ],
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/kind"
+        },
+        "lossless": {
+          "type": "boolean"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "prose_only": {
+          "description": "A structured section with no typed form. Requires a reason; the explicit designation FR-004-AC-2 demands.",
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "heading": {
+          "type": "string",
+          "minLength": 1
+        },
+        "columns": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "row_model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "id_pattern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "language": {
+          "type": "string",
+          "minLength": 1
+        },
+        "cell_parses": {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^[A-Za-z][A-Za-z0-9 ]*$"
+          },
+          "additionalProperties": {
+            "enum": [
+              "id",
+              "verification",
+              "imported-type-ref",
+              "id-list",
+              "enum",
+              "text",
+              "multiplicity",
+              "constraints"
+            ]
+          }
+        },
+        "alternate_form": {
+          "description": "The same declarations authored another way. One artifact carries one form; the alternate is a separate file.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "heading",
+            "language"
+          ],
+          "properties": {
+            "kind": {
+              "$ref": "#/$defs/kind"
+            },
+            "heading": {
+              "type": "string",
+              "minLength": 1
+            },
+            "language": {
+              "type": "string",
+              "minLength": 1
+            },
+            "locator": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "prose_only": {
+                "const": true
+              }
+            },
+            "required": [
+              "prose_only"
+            ]
+          },
+          "then": {
+            "required": [
+              "reason"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "typed-table"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "heading",
+              "columns",
+              "locator"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "section"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "heading",
+              "locator"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "frontmatter"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "path"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "ocl-clause"
+              }
+            },
+            "required": [
+              "kind"
+            ]
+          },
+          "then": {
+            "required": [
+              "heading",
+              "language",
+              "locator"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

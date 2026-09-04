@@ -133,19 +133,25 @@ def test_the_module_ships_no_template_and_no_template_ref():
 
 @pytest.mark.trace("TC-018", "TC-032", "FR-005-AC-5", "FR-005-CON-1", "NFR-001-AC-3")
 def test_every_locator_this_change_adds_is_optional():
-    """Additive compatibility, measured against the branch point.
+    """Additive compatibility, measured against a transcribed baseline.
 
-    Diffed rather than asserted: a claim that the change is additive is only
-    worth what the comparison behind it is worth.
+    The baseline is a committed fixture, not `git show origin/main:...`. A
+    freeze gate asks "is this change additive?", and that question is about a
+    fixed pair of states. Reading the "before" side from a moving ref makes the
+    gate compare the branch to itself the moment it merges: `before_locators`
+    becomes the current set, nothing is ever "added", and `assert added > 0`
+    fails. The comparison stops meaning anything before it fails, which is the
+    worse half.
+
+    A versioning gate ("did this bump relative to what is released?") does
+    legitimately track the trunk. This is not one of those.
     """
-    baseline = subprocess.run(
-        ["git", "show", "origin/main:spec_artifacts_app/manifest.yaml"],
-        cwd=str(REPO_ROOT),
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout
-    before = yaml.safe_load(baseline)
+    baseline_path = BASELINE_DIR / "manifest.yaml"
+    assert baseline_path.is_file(), (
+        "the transcribed pre-change manifest is not committed; this gate "
+        "cannot run without it"
+    )
+    before = yaml.safe_load(baseline_path.read_text(encoding="utf-8"))
     before_locators = {
         entry["name"]: set(locators(entry)) for entry in before["artifact_types"]
     }
@@ -166,9 +172,11 @@ def test_every_locator_this_change_adds_is_optional():
                 f"{entry['name']}.{name} is a new required locator; every locator "
                 "this change adds must be optional (FR-005-CON-1)"
             )
-    assert (
-        added > 0
-    ), "no locator was added; the skeletons' sections would not be asserted"
+    assert added > 0, (
+        "no locator was added against the transcribed baseline; either this "
+        "change adds none, or the baseline fixture has drifted into a copy of "
+        "the current manifest and the gate is no longer comparing two states"
+    )
 
 
 @pytest.mark.trace("TC-018", "FR-004-AC-8", "FR-004-CON-1", "FR-005-AC-5")

@@ -36,6 +36,12 @@ if (!inner) {
 // The whole shipped payload, identical in the sdist, the wheel and the npm
 // tarball (FR-002 Outputs). The TypeSpec toolchain is a build input and never
 // ships.
+// `postpack` passes --clean: remove the staged copies so the working tree goes
+// back to having exactly one source of truth. Without it a `npm pack` leaves
+// duplicates of the payload at the repo root, and the next reader has to know
+// which of the two is authoritative.
+const clean = process.argv.includes("--clean");
+
 const PAYLOAD = [
   "manifest.yaml",
   "mappings.yaml",
@@ -44,13 +50,22 @@ const PAYLOAD = [
   "skeletons",
 ];
 for (const item of PAYLOAD) {
+  const to = join(root, item);
+  if (clean) {
+    if (existsSync(to)) {
+      rmSync(to, { recursive: true, force: true });
+      console.log(`stage-npm: removed staged ${item}`);
+    }
+    continue;
+  }
   const from = join(root, inner, item);
   if (!existsSync(from)) continue;
-  const to = join(root, item);
   rmSync(to, { recursive: true, force: true });
   cpSync(from, to, { recursive: true });
   console.log(`stage-npm: ${inner}/${item} -> ${item}`);
 }
+
+if (clean) process.exit(0);
 
 // Version sync: when packing from a CI tag (vX.Y.Z), stamp package.json so the
 // tarball is named/published at the tag version. No-op locally (no env / no match).

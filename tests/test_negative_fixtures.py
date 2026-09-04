@@ -18,9 +18,20 @@ from tests.support.reference_mapping import (
 )
 
 #: `expect` -> the surface that must refuse the fixture. The value dispatches,
-#: rather than the test trying all three surfaces and accepting any refusal:
-#: a fixture refused by the wrong check is a fixture that proves nothing.
+#: rather than the test trying every surface and accepting any refusal: a
+#: fixture refused by the wrong check is a fixture that proves nothing.
 SURFACES = {"validate", "mapping"}
+
+#: Fixtures whose rule the *mapping* also enforces, and the code it uses. A
+#: fixture the archetype refuses is not thereby excused from the oracle: both
+#: read the same document and both are supposed to know the rule, so dispatching
+#: only to the surface named in `expect` would leave the oracle's branch
+#: untested and its diagnostic dead.
+ALSO_REFUSED_BY_THE_MAPPING = {
+    "missing-required-section.md": "missing-required-section",
+    "table-columns-mismatch.md": "table-columns-mismatch",
+    "row-id-wrong-prefix.md": "row-id-pattern",
+}
 
 
 def _fixtures() -> list[pathlib.Path]:
@@ -102,6 +113,21 @@ def test_every_negative_fixture_is_refused_by_the_check_it_names(mappings, manif
             accepted.append(f"{path.name} (expected mapping.{code})")
 
     assert not accepted, f"negative fixtures that were accepted: {accepted}"
+
+
+@pytest.mark.trace("TC-026", "TC-035", "FR-005-AC-4")
+def test_the_mapping_also_refuses_the_fixtures_whose_rule_it_knows(mappings, manifest):
+    """Both surfaces read the same document, so both must know the same rules."""
+    for name, code in ALSO_REFUSED_BY_THE_MAPPING.items():
+        path = NEGATIVE_DIR / name
+        with pytest.raises(MappingFailure) as raised:
+            ReferenceMapping(mappings, manifest, "ApplicationSpec").build(
+                path.read_text(), str(path)
+            )
+        assert set(raised.value.codes) == {code}, (
+            f"{name}: the mapping refused with {sorted(set(raised.value.codes))}, "
+            f"not {code!r}"
+        )
 
 
 @pytest.mark.trace("TC-026", "FR-005-CON-2")

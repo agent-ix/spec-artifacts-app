@@ -14,7 +14,10 @@ installed is not reproducible, and NFR-001 says the suite is.
 from __future__ import annotations
 
 import dataclasses
+import pathlib
 from typing import Any, Iterable
+
+import yaml
 
 
 @dataclasses.dataclass(frozen=True)
@@ -22,6 +25,31 @@ class ImportDiagnostic:
     code: str
     message: str
     modules: tuple[str, ...] = ()
+
+
+def load_graph(roots: Iterable[pathlib.Path]) -> dict[str, list[str]]:
+    """Build the import graph by reading `manifest.yaml` under each root.
+
+    The caller hands in the roots — this module's own directory, plus whatever
+    dynamic-module fixtures a test synthesized. Nothing here discovers a module
+    on its own, and in particular nothing reads the machine's installed Filament
+    module root: a graph whose nodes depend on what a developer happens to have
+    installed is not reproducible, and NFR-001 says the suite is.
+
+    A root with no `manifest.yaml`, or one whose manifest declares no `semantic`
+    block, contributes no node — an unrelated directory in a fixture tree is not
+    a module.
+    """
+    graph: dict[str, list[str]] = {}
+    for root in roots:
+        manifest_path = pathlib.Path(root) / "manifest.yaml"
+        if not manifest_path.is_file():
+            continue
+        manifest = yaml.safe_load(manifest_path.read_text()) or {}
+        if not manifest.get("semantic"):
+            continue
+        graph[package_of(manifest)] = sorted(imports_of(manifest))
+    return graph
 
 
 def imports_of(manifest: dict[str, Any]) -> dict[str, str]:

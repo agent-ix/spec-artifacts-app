@@ -6,7 +6,7 @@ license = "AGPL-3.0-or-later"
 [tool.poetry]
 name = "spec_artifacts_app"
 version = "0.1.0"  # Placeholder, dynamically replaced
-description = "Filament Module: application/composite spec artifacts including master-requirements — Jinja .md.j2 templates"
+description = "Filament Module: application/composite spec artifacts (ApplicationSpec, MasterRequirements) with semantic data schemas, Markdown mappings and authoring skeletons"
 authors = ["Agent IX <agents@agent-ix.dev>"]
 packages = [{ include = "spec_artifacts_app" }]
 include = [
@@ -132,7 +132,18 @@ shell = "py-deps use-upstream ${package} || [ $? -eq 1 ] && poetry lock"
 help = "Switch dep to upstream registry"
 
 [tool.pytest.ini_options]
-addopts = "--cov=spec_artifacts_app --cov-report=term-missing --cov-fail-under=100 --json-report --json-report-file=report.json"
+# The gate covers the shipped package AND the test oracle. The oracle is the
+# record authority until an engine-side extractor exists (agent-ix/quire-rs#393),
+# so an unexecuted branch of it is an unexecuted rule of this module's contract —
+# which is exactly how nine of its diagnostics went untested until a review
+# counted them. The two derived-data generators run as subprocesses (that is what
+# makes their `--check` gates real), so they are covered by behaviour in
+# tests/test_derived_data.py rather than by line count; `scripts/build_tools.py`
+# is cookiecutter build tooling and is not this ticket's to gate.
+addopts = """--cov=spec_artifacts_app \
+  --cov=tests/support \
+  --cov-report=term-missing --cov-fail-under=100 \
+  --json-report --json-report-file=report.json"""
 
 # ALL WARNINGS MUST BE TREATED AS ERRORS, NO EXCEPTION!
 filterwarnings = ["error"]

@@ -33,13 +33,24 @@ ADMITTED_SEMANTIC_KEYS = {
 }
 
 
+def _with(manifest: dict, mutate) -> dict:
+    """A deep copy of the manifest with one deliberate defect applied."""
+    import copy
+
+    candidate = copy.deepcopy(manifest)
+    mutate(candidate)
+    return candidate
+
+
 def _validator(schema: dict):
     from jsonschema import Draft202012Validator
 
     return Draft202012Validator(schema)
 
 
+@pytest.mark.trace("TC-038", "FR-001-AC-1")
 def test_pack_exposes_manifest_path() -> None:
+    """The activation pipeline imports this package and reads `MANIFEST_PATH`."""
     assert pack.MANIFEST_PATH == pack.PACK_ROOT / "manifest.yaml"
     assert pack.MANIFEST_PATH.is_file()
 
@@ -147,10 +158,7 @@ def test_the_bundled_fr035_schema_rejects_the_four_malformed_forms(
     validator = _validator(fr035_schema)
 
     def rejected(mutate) -> list[str]:
-        import copy
-
-        candidate = copy.deepcopy(manifest)
-        mutate(candidate)
+        candidate = _with(manifest, mutate)
         return [
             ".".join(str(p) for p in error.absolute_path) or "<root>"
             for error in validator.iter_errors(candidate)
@@ -159,6 +167,12 @@ def test_the_bundled_fr035_schema_rejects_the_four_malformed_forms(
     unknown_key = rejected(lambda m: m["semantic"].update(foo=1))
     assert unknown_key, "an unknown `semantic` key was accepted"
     assert any("semantic" in path for path in unknown_key)
+    assert any(
+        "foo" in error.message
+        for error in validator.iter_errors(
+            _with(manifest, lambda m: m["semantic"].update(foo=1))
+        )
+    ), "the refusal does not name the offending key"
 
     bad_package = rejected(lambda m: m["semantic"].update(package="ix://agent-ix/x"))
     assert bad_package, "a `package` that is not `<org>/<repo>` was accepted"

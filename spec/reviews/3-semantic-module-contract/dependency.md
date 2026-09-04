@@ -1,5 +1,5 @@
 ---
-id: SR-003
+id: SR-008
 title: "Dependency and ordering review of the issue #3 semantic-module contract spec set"
 type: SpecReview
 analysis: dependency

@@ -15,8 +15,10 @@ specification to the test that backs it.
 `StR-XXX-VC-N` row, or one `Metric | Target | Threshold | Method` row of the NFR.
 It does not count tests: one test case may back several criteria and one
 criterion may take several. The `Test Case Summary` counts *test cases* — one row
-per `TC-NNN`, each of which binds to exactly one test symbol through a
-`@pytest.mark.trace` marker. The two totals are therefore different numbers of
+per `TC-NNN`. A test case is carried by **one or more** test symbols through a
+`@pytest.mark.trace` marker: eight of them take more than one, because the
+criterion they discharge has parts a single test cannot assert together (a
+control and its expected failure, a positive and its refusal). The two totals are therefore different numbers of
 different things, and `quire coverage` counts a third: written trace tags that
 bind to a symbol.
 
@@ -42,8 +44,26 @@ say why rather than being quietly dropped:
 
 - `FR-001-AC-2`, `FR-001-AC-3`, `FR-001-AC-4`, `IT-001-AC-1`, `IT-001-AC-2`,
   `StR-001-VC-1` need a running `filament-core-service` to activate against;
-  this package's suite runs no cluster. These six are the whole of the
-  `quire coverage` unbacked set, and they are unbacked on purpose.
+  this package's suite runs no cluster. Four of them — `FR-001-AC-2`,
+  `FR-001-AC-3`, `FR-001-AC-4` and `StR-001-VC-1` — are the whole of the
+  `quire coverage` unbacked set, and they are unbacked on purpose. The other
+  two, `IT-001-AC-1` and `IT-001-AC-2`, are not in the engine's minted
+  population at all: it mints FR and NFR acceptance criteria, StR validation
+  criteria and Test Case Summary rows, and neither IT acceptance criteria nor
+  `-CON-` rows.
+
+**Why the local matrix checks exist.** The `TestMatrix` archetype asserts a
+`Coverage Status` column while the ecosystem's `traceability.status.column` is
+`Status`, so `quire coverage` reports
+`[status-column-matches-nothing] ... Status classification was skipped, so
+complete-but-unbacked rows could not be checked` — the one check that would
+catch a `✅ Complete` row backed by nothing is off, for every repository, and no
+module can turn it on locally (renaming the column and adding a fifth both fail
+the archetype's exact-column assert). It is filed as agent-ix/quoin#343.
+TC-037 is the local substitute and covers more than the engine would: every
+`✅` row across all three coverage tables, including the fourteen `-CON-` rows
+and the five IT criteria the engine never mints, plus the reverse direction —
+no marker naming a test case the matrix does not declare, and no untagged test.
 - `NFR-001-AC-2` (metric 2) is the offline, no-network run; it is a manual gate
   of this repository recorded in the release notes, and no CI job is claimed for
   it.
@@ -69,7 +89,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 
 | Functional Req | Acceptance Criteria | Test Cases | Coverage Status |
 |----------------|---------------------|------------|-----------------|
-| FR-001 | FR-001-AC-1 | TC-036 | ✅ Complete |
+| FR-001 | FR-001-AC-1 | TC-036, TC-038 | ✅ Complete |
 | FR-001 | FR-001-AC-2 | — | 🚧 Needs a running filament-core-service |
 | FR-001 | FR-001-AC-3 | — | 🚧 Needs a running filament-core-service |
 | FR-001 | FR-001-AC-4 | — | 🚧 Needs a running filament-core-service |
@@ -84,7 +104,8 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-002 | FR-002-AC-9 | TC-006 | ✅ Complete |
 | FR-002 | FR-002-AC-10 | TC-010 | ✅ Complete |
 | FR-002 | FR-002-AC-11 | TC-004 | ✅ Complete |
-| FR-002 | FR-002-CON-1 | TC-001, TC-002 | ✅ Complete |
+| FR-002 | FR-002-AC-12 | TC-044 | ✅ Complete |
+| FR-002 | FR-002-CON-1 | TC-001, TC-002, TC-037 | ✅ Complete |
 | FR-002 | FR-002-CON-2 | TC-003 | ✅ Complete |
 | FR-002 | FR-002-CON-3 | TC-004 | ✅ Complete |
 | FR-002 | FR-002-CON-4 | TC-005 | ✅ Complete |
@@ -95,24 +116,24 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-003 | FR-003-AC-4 | TC-014 | ✅ Complete |
 | FR-003 | FR-003-AC-5 | TC-015 | ✅ Complete |
 | FR-003 | FR-003-AC-6 | TC-016 | ✅ Complete |
-| FR-003 | FR-003-AC-7 | TC-011 | ✅ Complete |
+| FR-003 | FR-003-AC-7 | TC-011, TC-043 | ✅ Complete |
 | FR-003 | FR-003-AC-8 | TC-017 | 🚧 Strict expected failure (agent-ix/quire-rs#394) |
 | FR-003 | FR-003-CON-1 | TC-011 | ✅ Complete |
 | FR-003 | FR-003-CON-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-CON-3 | TC-014 | ✅ Complete |
-| FR-004 | FR-004-AC-1 | TC-021 | ✅ Complete |
-| FR-004 | FR-004-AC-2 | TC-022 | ✅ Complete |
-| FR-004 | FR-004-AC-3 | TC-023 | ✅ Complete |
-| FR-004 | FR-004-AC-4 | TC-024 | ✅ Complete |
-| FR-004 | FR-004-AC-5 | TC-019 | ✅ Complete |
-| FR-004 | FR-004-AC-6 | TC-025 | ✅ Complete |
+| FR-004 | FR-004-AC-1 | TC-021, TC-042, TC-043 | ✅ Complete |
+| FR-004 | FR-004-AC-2 | TC-022, TC-042 | ✅ Complete |
+| FR-004 | FR-004-AC-3 | TC-023, TC-039, TC-041, TC-042 | ✅ Complete |
+| FR-004 | FR-004-AC-4 | TC-024, TC-040 | ✅ Complete |
+| FR-004 | FR-004-AC-5 | TC-019, TC-041, TC-042 | ✅ Complete |
+| FR-004 | FR-004-AC-6 | TC-025, TC-039, TC-041, TC-042 | ✅ Complete |
 | FR-004 | FR-004-AC-7 | TC-021 | ✅ Complete |
 | FR-004 | FR-004-AC-8 | TC-018 | ✅ Complete |
 | FR-004 | FR-004-CON-1 | TC-018 | ✅ Complete |
 | FR-004 | FR-004-CON-2 | TC-019 | ✅ Complete |
 | FR-004 | FR-004-CON-3 | TC-020 | ✅ Complete |
 | FR-005 | FR-005-AC-1 | TC-028 | ✅ Complete |
-| FR-005 | FR-005-AC-2 | TC-029 | ✅ Complete |
+| FR-005 | FR-005-AC-2 | TC-029, TC-041, TC-042 | ✅ Complete |
 | FR-005 | FR-005-AC-3 | TC-019 | ✅ Complete |
 | FR-005 | FR-005-AC-4 | TC-026 | ✅ Complete |
 | FR-005 | FR-005-AC-5 | TC-018 | ✅ Complete |
@@ -192,3 +213,11 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-034 | The module loads with every declared artifact type, every skeleton validates and extracts a record, the reference-form `data_schema` is reported verbatim, and the legacy-manifest fixture registers the same artifact types | Integration | P0 | IT-002-AC-1, StR-001-VC-3 | ✅ |
 | TC-035 | `validate_document` and the reference mapping refuse every negative fixture by the check its `expect` frontmatter names | Integration | P0 | IT-002-AC-3 | ✅ |
 | TC-036 | The manifest validates against the bundled FR-035 schema; neither the missing-library nor the missing-schema branch skips | Unit | P0 | FR-001-AC-1 | ✅ |
+| TC-037 | Every `✅` matrix row names test cases the summary declares and a trace marker carries; every summary row is carried; no marker names an undeclared case; no test is untagged — the check `quire coverage` skips here (agent-ix/quoin#343) | Static | P0 | FR-002-CON-1 | ✅ |
+| TC-038 | The package exposes `MANIFEST_PATH` as importable resource data, so the activation pipeline can read the manifest without knowing the layout | Unit | P1 | FR-001-AC-1 | ✅ |
+| TC-039 | Every cell parse of the reference mapping is exercised at its boundaries: a document with no frontmatter, an escaped pipe, an unbounded multiplicity, a parenthesis-free verification cell, every member of the closed constraint vocabulary, and a keyword outside it | Unit | P1 | FR-004-AC-3, FR-004-AC-6 | ✅ |
+| TC-040 | A malformed `<org>/<repo>#<Type>` cell is refused before the declaration check, and an undeclared type is refused after it | Unit | P1 | FR-004-AC-4 | ✅ |
+| TC-041 | Six malformed table and fence forms are each refused naming the line: a wrong cell count, a renamed Properties header, a short Properties row, an unparseable multiplicity, a `sysml` line that is not a declaration, and an unterminated clause fence | Unit | P1 | FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |
+| TC-043 | Each derived data file matches the manifest it is generated from; `--check` fails on drift naming the file and writes nothing; and regenerating a clobbered file restores the committed bytes | Unit | P1 | FR-003-AC-7, FR-004-AC-1 | ✅ |
+| TC-044 | The wheel, the sdist and the staged npm payload carry the same entry set, none carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root | Integration | P1 | FR-002-AC-12 | ✅ |
+| TC-042 | Absent optional forms leave their fields absent rather than empty — no `status`, no `relationships`, a prose `## Boundaries`, a prose `## Properties`, a clause heading with no fence — the `prose_only` designation validates and is refused without its reason, and no failure yields a partial record | Unit | P1 | FR-004-AC-1, FR-004-AC-2, FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |

@@ -1,5 +1,5 @@
 ---
-id: SR-001
+id: SR-005
 title: "EARS conformance review of the semantic module contract spec set"
 type: SpecReview
 analysis: ears-conformance

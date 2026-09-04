@@ -1,5 +1,5 @@
 ---
-id: SR-001
+id: SR-002
 title: "Integrity review of the #3 semantic-module contract spec"
 type: SpecReview
 analysis: integrity

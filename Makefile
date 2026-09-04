@@ -54,9 +54,14 @@ shell:
 test:
 	$(POE) test
 
+# There is no `tests_integration/` tree in this module and no cluster to run one
+# against: the integration this module has is the Quire engine boundary, and that
+# runs in the ordinary suite (IT-002). The target is kept so the Makefile matches
+# its siblings, and says so rather than failing with a bare "no such directory".
 .PHONY: test-integrations test-it
 test-integrations test-it:
-	$(POE) test-integrations
+	@echo "No cluster integration suite in this module. The engine-boundary tests"
+	@echo "(IT-002) run under \`make test\`; \`make dev-quire\` provisions the wheel.
 
 .PHONY: lint
 lint:

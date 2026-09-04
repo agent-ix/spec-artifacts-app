@@ -74,6 +74,13 @@ is not a field of any model.
   difference), each run after `npm ci`. The hand-authored
   `*-frontmatter.schema.json` files in the same directory are not projections and
   are outside both targets.
+- The shipped payload — identical in the wheel, the sdist and the npm tarball —
+  SHALL carry `manifest.yaml`, `mappings.yaml`, `mappings.schema.json`,
+  `schemas/` and `skeletons/`. The npm package root **is** the module root, so
+  `scripts/stage-npm.mjs` copies the payload up from the Python package at
+  `prepack` and removes the copies at `postpack`; the TypeSpec toolchain
+  (`typespec/`, `node_modules/`, the lockfile) is a build input and SHALL NOT
+  ship in any of the three.
 - The export-name to model map, fixed by this requirement and restated in
   [FR-003](./FR-003-semantic-manifest-contract.md): `ApplicationSpec` →
   `ApplicationSpec.json`, `MasterRequirements` → `MasterRequirements.json`. The
@@ -242,9 +249,10 @@ Free text and scope:
 | FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008, TC-030) |
 | FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Analysis (TC-005) |
 | FR-002-AC-7 | The digest recomputed over the emitted files (`sha256(concat(name + "\n" + bytes))`, sorted by name) equals the digest recorded in `toolchain.json`, with no toolchain run. | Test (TC-007) |
-| FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`, and the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects every negative fixture that produces a record at all, including one carrying a property no model declares. | Test (TC-009) |
+| FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`; the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects a record carrying a property no model declares. No negative fixture reaches the schema — every one is refused by the archetype or by the mapping first — so the sealing case is exercised by mutating a good record rather than by a fixture that does not exist. | Test (TC-009) |
 | FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
 | FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.1.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
+| FR-002-AC-12 | A built wheel, a built sdist and the staged npm payload carry the same entry set — `manifest.yaml`, `mappings.yaml`, `mappings.schema.json`, every file under `schemas/` and every file under `skeletons/` — none of them carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root. | Test (TC-044) |
 | FR-002-AC-11 | The repository carries no `.npmrc`, `package.json` pins `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0, and `@agent-ix/semantic-core` 0.1.0 exactly, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Analysis (TC-004) |
 
 ## Dependencies

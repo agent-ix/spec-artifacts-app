@@ -6,6 +6,7 @@ module docstring binds to nothing (quire-rs CR-061).
 
 from __future__ import annotations
 
+import pathlib
 import re
 
 import pytest
@@ -22,6 +23,7 @@ from tests.support.import_graph import (
     check_self_import,
     find_cycles,
     imports_of,
+    load_graph,
     package_of,
 )
 from tests.support.reference_mapping import MappingFailure, ReferenceMapping
@@ -116,6 +118,30 @@ def test_a_self_import_and_an_over_declared_import_each_have_their_own_diagnosti
     assert over[0].modules == ("agent-ix/spec-artifacts-iso",)
 
 
+def _empty_dir(path: pathlib.Path) -> pathlib.Path:
+    """A directory with no manifest: it must contribute no node."""
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _non_semantic_module(path: pathlib.Path) -> pathlib.Path:
+    """A manifest with no `semantic` block: a module, but not a semantic one.
+
+    It must contribute no node either. A module that predates the contract has
+    no imports to put in the graph, and giving it an empty node would make it
+    look like a package that imports nothing rather than one that declares
+    nothing.
+    """
+    path.mkdir(parents=True, exist_ok=True)
+    (path / "manifest.yaml").write_text(
+        yaml.safe_dump(
+            {"manifest_version": "1.0.0", "name": "pre-contract", "version": "0.1.0"},
+            sort_keys=False,
+        )
+    )
+    return path
+
+
 @pytest.mark.trace("TC-015", "FR-003-AC-5")
 def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_path):
     """Dynamic-module fixtures, written to a temporary directory by this test.
@@ -125,7 +151,7 @@ def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_p
     module root so the graph is the same on every machine.
     """
 
-    def module(name: str, imports: dict[str, str]) -> dict:
+    def module(group: str, name: str, imports: dict[str, str]) -> pathlib.Path:
         manifest = {
             "manifest_version": "1.0.0",
             "name": name.split("/")[-1],
@@ -137,33 +163,40 @@ def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_p
                 "imports": imports,
             },
         }
-        path = tmp_path / name.replace("/", "__")
+        path = tmp_path / group / name.replace("/", "__")
         path.mkdir(parents=True, exist_ok=True)
         (path / "manifest.yaml").write_text(yaml.safe_dump(manifest, sort_keys=False))
-        return manifest
+        return path
 
-    def graph_of(*manifests: dict) -> dict[str, list[str]]:
-        return {package_of(m): list(imports_of(m)) for m in manifests}
+    def graph_of(*roots: pathlib.Path) -> dict[str, list[str]]:
+        """Read the graph back off disk, so the fixtures are load-bearing."""
+        return load_graph(roots)
 
     # Acyclic: this must pass, or the check proves nothing about the cycles.
     acyclic = graph_of(
-        module("agent-ix/app", {"agent-ix/iso": "0.2.0"}),
-        module("agent-ix/iso", {}),
+        module("acyclic", "agent-ix/app", {"agent-ix/iso": "0.2.0"}),
+        module("acyclic", "agent-ix/iso", {}),
+        _empty_dir(tmp_path / "acyclic" / "not-a-module"),
+        _non_semantic_module(tmp_path / "acyclic" / "pre-contract"),
+    )
+    assert acyclic == {"agent-ix/app": ["agent-ix/iso"], "agent-ix/iso": []}, (
+        "the graph was not read off disk, or a directory with no manifest — or a "
+        "manifest with no semantic block — became a node"
     )
     assert find_cycles(acyclic) == []
 
     two = graph_of(
-        module("agent-ix/two-a", {"agent-ix/two-b": "0.1.0"}),
-        module("agent-ix/two-b", {"agent-ix/two-a": "0.1.0"}),
+        module("two", "agent-ix/two-a", {"agent-ix/two-b": "0.1.0"}),
+        module("two", "agent-ix/two-b", {"agent-ix/two-a": "0.1.0"}),
     )
     found = find_cycles(two)
     assert [d.code for d in found] == ["semantic.import-cycle"]
     assert found[0].modules == ("agent-ix/two-a", "agent-ix/two-b")
 
     three = graph_of(
-        module("agent-ix/three-c", {"agent-ix/three-a": "0.1.0"}),
-        module("agent-ix/three-a", {"agent-ix/three-b": "0.1.0"}),
-        module("agent-ix/three-b", {"agent-ix/three-c": "0.1.0"}),
+        module("three", "agent-ix/three-c", {"agent-ix/three-a": "0.1.0"}),
+        module("three", "agent-ix/three-a", {"agent-ix/three-b": "0.1.0"}),
+        module("three", "agent-ix/three-b", {"agent-ix/three-c": "0.1.0"}),
     )
     found = find_cycles(three)
     assert [d.code for d in found] == ["semantic.import-cycle"]
@@ -182,10 +215,10 @@ def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_p
 
     # A cycle that does not reach this module is reported the same way.
     detached = graph_of(
-        module("agent-ix/app2", {"agent-ix/iso2": "0.2.0"}),
-        module("agent-ix/iso2", {}),
-        module("agent-ix/x", {"agent-ix/y": "0.1.0"}),
-        module("agent-ix/y", {"agent-ix/x": "0.1.0"}),
+        module("detached", "agent-ix/app2", {"agent-ix/iso2": "0.2.0"}),
+        module("detached", "agent-ix/iso2", {}),
+        module("detached", "agent-ix/x", {"agent-ix/y": "0.1.0"}),
+        module("detached", "agent-ix/y", {"agent-ix/x": "0.1.0"}),
     )
     found = find_cycles(detached)
     assert [d.modules for d in found] == [("agent-ix/x", "agent-ix/y")]

@@ -1,5 +1,5 @@
 ---
-id: SR-001
+id: SR-004
 title: "Failure-domain review of the #3 semantic-module contract spec"
 type: SpecReview
 analysis: failure-domain

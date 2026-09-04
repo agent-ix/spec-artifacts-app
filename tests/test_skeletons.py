@@ -30,8 +30,6 @@ SKELETON_OF = {
     "MasterRequirements": ["master-requirements.md"],
 }
 
-H2 = re.compile(r"^## (.+?)\s*$", re.MULTILINE)
-
 
 def _headings(text: str) -> list[str]:
     """Level-2 headings outside fenced blocks and outside the leading comment."""
@@ -48,14 +46,6 @@ def _headings(text: str) -> list[str]:
         if match:
             out.append(match.group(1))
     return out
-
-
-def _table_headers(text: str) -> set[str]:
-    return {
-        line.strip()
-        for line in text.split("\n")
-        if line.strip().startswith("|") and "---" not in line
-    }
 
 
 @pytest.mark.trace("TC-028", "FR-005-AC-1")
@@ -181,7 +171,7 @@ def test_every_locator_this_change_adds_is_optional():
     ), "no locator was added; the skeletons' sections would not be asserted"
 
 
-@pytest.mark.trace("TC-018", "FR-004-AC-8", "FR-005-AC-5")
+@pytest.mark.trace("TC-018", "FR-004-AC-8", "FR-004-CON-1", "FR-005-AC-5")
 def test_the_pre_change_application_spec_still_validates_and_maps(
     build_record, schema_registry
 ):
@@ -237,3 +227,44 @@ def test_this_repositorys_own_application_spec_is_an_instance_of_the_contract(
     assert {row["source"]["module"] for row in record.data["requirements"]} == {
         "agent-ix/spec-artifacts-iso"
     }
+
+
+@pytest.mark.trace("TC-029", "FR-005-AC-2")
+def test_the_sysml_alternate_form_works_for_master_requirements_too(
+    mappings, manifest, build_record, tmp_path
+):
+    """`MasterRequirements` declares the alternate form; the module ships no
+    `sysml` skeleton for it, because one skeleton per artifact type is the
+    contract and the alternate is shown once. That leaves the declaration
+    untested unless a test authors the document — so this one does, from the
+    typed skeleton, rather than letting a declared form go unexercised.
+    """
+    from tests.support.reference_mapping import ReferenceMapping
+
+    typed = (SKELETONS_DIR / "master-requirements.md").read_text()
+    head = typed.index("\n## Properties\n")
+    tail = typed.index("\n## Requirements\n")
+    fence = (
+        "\n## Properties\n\n```sysml\n"
+        "attribute specification_id : UUID[1..1] { identity }\n"
+        "attribute slug : String[1..1] { pattern: /^[a-z][a-z0-9-]*$/ }\n"
+        "attribute revision : Integer[1..1] { min: 1 }\n"
+        "attribute approved_at : Timestamp[0..1]\n"
+        "```\n"
+    )
+    document = tmp_path / "master-requirements.sysml.md"
+    document.write_text(typed[:head] + fence + typed[tail:])
+
+    from_table = ReferenceMapping(mappings, manifest, "MasterRequirements").build(
+        typed, "master-requirements.md"
+    )
+    from_fence = ReferenceMapping(mappings, manifest, "MasterRequirements").build(
+        document.read_text(), "master-requirements.sysml.md"
+    )
+    assert from_table.data["fields"] == from_fence.data["fields"]
+
+    quire = require_quire()
+    result = quire.validate_document(
+        "MasterRequirements", str(PACKAGE_ROOT), document.read_text()
+    )
+    assert result["is_valid"], result["errors"]

@@ -58,9 +58,10 @@ frontmatter what it expects to be refused and why.
   `MasterRequirements` document describes no running system, so it declares
   none of them.
 - Negative fixtures under `tests/fixtures/negative/`, one per demonstrated rule.
-- `spec/spec.md` extended to author the sections the skeleton demonstrates, so
-  that this repository's own application spec is an instance of the contract it
-  publishes.
+- `spec/spec.md` extended to author the sections that apply to it — every one
+  the skeleton demonstrates except `## UI Rendering Requirements`, which this
+  Module omits because it renders nothing. Its omission is the demonstration:
+  an optional section a document has no use for is absent, not an empty table.
 
 ## Behavior
 

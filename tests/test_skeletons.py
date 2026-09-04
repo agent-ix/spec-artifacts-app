@@ -202,3 +202,38 @@ def test_the_pre_change_application_spec_still_validates_and_maps(
     assert not errors, [
         ("/".join(str(p) for p in e.absolute_path), e.message) for e in errors
     ]
+
+
+@pytest.mark.trace("TC-028", "FR-005-AC-1", "FR-005-AC-5")
+def test_this_repositorys_own_application_spec_is_an_instance_of_the_contract(
+    build_record, schema_registry
+):
+    """Dogfooding, and the only end-to-end case that is not a fixture.
+
+    `spec/spec.md` is a real authored document, not a skeleton written to pass:
+    it omits `## UI Rendering Requirements` because this module renders nothing,
+    which is exactly the optionality FR-005-CON-1 exists to preserve. If the
+    contract this module publishes cannot describe this module, it describes
+    nothing.
+    """
+    document = REPO_ROOT / "spec" / "spec.md"
+
+    quire = require_quire()
+    result = quire.validate_document(
+        "ApplicationSpec", str(PACKAGE_ROOT), document.read_text()
+    )
+    assert result["is_valid"], result["errors"]
+
+    record = build_record("ApplicationSpec", document)
+    errors = list(schema_registry("ApplicationSpec").iter_errors(record.data))
+    assert not errors, [
+        ("/".join(str(p) for p in e.absolute_path), e.message) for e in errors
+    ]
+
+    assert "renderingRequirements" not in record.data, (
+        "the module authored a UI rendering table; it renders nothing, and the "
+        "absent section is the point"
+    )
+    assert {row["source"]["module"] for row in record.data["requirements"]} == {
+        "agent-ix/spec-artifacts-iso"
+    }

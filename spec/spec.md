@@ -145,6 +145,104 @@ the filament-core-data code generators, and the Filament extraction API.
 - `integration/` — IT-XXX integration tests.
 - `tests.md` — the requirements test matrix.
 
+## Properties
+
+| Field | Type | Multiplicity | Constraints |
+|---|---|---|---|
+| module_name | String | 1..1 | identity, pattern: /^[a-z][a-z0-9-]*$/ |
+| manifest_version | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
+| contract_version | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
+| semantic_core | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
+| implementation_language | String | 1..1 | nonEmpty |
+
+## Boundaries
+
+| ID | Name | Kind | Description |
+|---|---|---|---|
+| AS-001-BND-1 | Application artifact types | owned | `ApplicationSpec` and `MasterRequirements` — their schemas, mappings, skeletons and locators are specified here. |
+| AS-001-BND-2 | ISO artifact types | consumed | `StR`, `US`, `FR`, `NFR`, `IT`, `TC` are owned by `spec-artifacts-iso` and referenced, never restated. |
+| AS-001-BND-3 | Validation and extraction engine | external | `quire-rs` enforces what this Module declares; its behaviour is not specified here. |
+| AS-001-BND-4 | Corpus promotion | deferred | Named so its absence is deliberate: no corpus repository is edited by this Module, and promotion is `agent-ix/quoin#291`. |
+
+## Capabilities
+
+| ID | Name | Description | Actors |
+|---|---|---|---|
+| AS-001-CAP-1 | Declare the application artifact types | Contribute the `application-spec` archetype, the `app-spec` grammar, and the two artifact types with their frontmatter schemas and locators. | AS-001-ACT-1, AS-001-ACT-2 |
+| AS-001-CAP-2 | Publish a typed record contract | Ship one emitted JSON Schema per artifact type, bound to the manifest by path and SHA-256 digest. | AS-001-ACT-3 |
+| AS-001-CAP-3 | Declare the Markdown mapping | Say, per record property, which authored form fills it and whether that form round-trips. | AS-001-ACT-3 |
+| AS-001-CAP-4 | Ship executable authoring fixtures | Skeletons that validate, extract, and map, with negative counterparts that must be refused. | AS-001-ACT-2 |
+
+## Actors
+
+| ID | Name | Kind | Description |
+|---|---|---|---|
+| AS-001-ACT-1 | Filament platform | service | Activates the manifest and serves the contributed artifact types. |
+| AS-001-ACT-2 | Spec author | human | Writes application composites from the shipped skeletons. |
+| AS-001-ACT-3 | Semantic consumer | service | Reads a composite as a typed record — the quire-contract-ir frontends, the filament-core-data generators, the Filament extraction API. |
+| AS-001-ACT-4 | Quire engine | service | Loads the module, validates documents, and extracts semantic records. |
+
+## Interfaces
+
+| ID | Name | Kind | Direction | Contract |
+|---|---|---|---|---|
+| AS-001-IFC-1 | Module manifest | file | outbound | `spec_artifacts_app/manifest.yaml` under filament-core-service FR-035 |
+| AS-001-IFC-2 | Emitted schema bundle | file | outbound | `spec_artifacts_app/schemas/<Model>.json`, JSON Schema 2020-12 |
+| AS-001-IFC-3 | Markdown mapping declaration | file | outbound | `spec_artifacts_app/mappings.yaml` under `mappings.schema.json` |
+| AS-001-IFC-4 | Activation endpoint | http_api | outbound | POST /api/v1/modules/activate |
+| AS-001-IFC-5 | Semantic-core grammar | library | inbound | `@agent-ix/semantic-core` 0.1.0 |
+
+## Data Dependencies
+
+| ID | Name | Source | Access |
+|---|---|---|---|
+| AS-001-DAT-1 | Stakeholder requirements referenced by a composite | agent-ix/spec-artifacts-iso#StR | read |
+| AS-001-DAT-2 | Functional requirements referenced by a composite | agent-ix/spec-artifacts-iso#FR | read |
+| AS-001-DAT-3 | Non-functional requirements referenced by a composite | agent-ix/spec-artifacts-iso#NFR | read |
+| AS-001-DAT-4 | Integration tests referenced by a composite | agent-ix/spec-artifacts-iso#IT | read |
+
+This Module declares no `## UI Rendering Requirements`. It renders nothing — it
+declares UI rendering requirements as *data* for the applications that do — and
+the section is optional precisely so a module with no surface omits it rather
+than authoring an empty table.
+
+## Requirements
+
+| ID | Kind | Source | Target |
+|---|---|---|---|
+| StR-001 | StR | agent-ix/spec-artifacts-iso#StR | ix://agent-ix/spec-artifacts-app/StR-001 |
+| US-001 | US | agent-ix/spec-artifacts-iso#US | ix://agent-ix/spec-artifacts-app/US-001 |
+| FR-001 | FR | agent-ix/spec-artifacts-iso#FR | ix://agent-ix/spec-artifacts-app/FR-001 |
+| FR-002 | FR | agent-ix/spec-artifacts-iso#FR | ix://agent-ix/spec-artifacts-app/FR-002 |
+| FR-003 | FR | agent-ix/spec-artifacts-iso#FR | ix://agent-ix/spec-artifacts-app/FR-003 |
+| FR-004 | FR | agent-ix/spec-artifacts-iso#FR | ix://agent-ix/spec-artifacts-app/FR-004 |
+| FR-005 | FR | agent-ix/spec-artifacts-iso#FR | ix://agent-ix/spec-artifacts-app/FR-005 |
+| NFR-001 | NFR | agent-ix/spec-artifacts-iso#NFR | ix://agent-ix/spec-artifacts-app/NFR-001 |
+| IT-001 | IT | agent-ix/spec-artifacts-iso#IT | ix://agent-ix/spec-artifacts-app/IT-001 |
+| IT-002 | IT | agent-ix/spec-artifacts-iso#IT | ix://agent-ix/spec-artifacts-app/IT-002 |
+
+## Invariants
+
+The clauses this Module's own declaration enforces. Each clause owns one `ocl`
+fence under its own `### <clauseId>` heading; the fence text is carried verbatim
+and is never evaluated here.
+
+### EveryExportedTypeCarriesADataSchema
+
+```ocl
+context ApplicationSpec
+inv EveryExportedTypeCarriesADataSchema:
+  self.requirements->forAll(r | r.source.module = 'agent-ix/spec-artifacts-iso')
+```
+
+### EveryDataDependencyNamesAnImportedModule
+
+```ocl
+context ApplicationSpec
+inv EveryDataDependencyNamesAnImportedModule:
+  self.dataDependencies->forAll(d | d.source.type->notEmpty())
+```
+
 ## Requirements Architecture
 
 The requirement classes trace from the stakeholder need for application composite

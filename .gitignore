@@ -17,3 +17,6 @@ report.json
 /schemas/
 /skeletons/
 *.tgz
+
+# git worktrees created under the repo
+.worktrees/

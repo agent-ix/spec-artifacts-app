@@ -31,10 +31,10 @@ The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0. Re
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-001-AC-1 | Manifest validates against FR-035 JSON Schema | Schema Test |
-| FR-001-AC-2 | Activation against clean filament-core succeeds with 200 | Integration Test |
-| FR-001-AC-3 | Re-activation returns no-op (same content hash) | Integration Test |
-| FR-001-AC-4 | Each declared archetype/object_type/artifact_type appears in the corresponding filament-core table after activation | Integration Test |
+| FR-001-AC-1 | Manifest validates against FR-035 JSON Schema | Test (TC-036) |
+| FR-001-AC-2 | Activation against clean filament-core succeeds with 200 | Demonstration |
+| FR-001-AC-3 | Re-activation returns no-op (same content hash) | Demonstration |
+| FR-001-AC-4 | Each declared archetype/object_type/artifact_type appears in the corresponding filament-core table after activation | Demonstration |
 
 ## Dependencies
 

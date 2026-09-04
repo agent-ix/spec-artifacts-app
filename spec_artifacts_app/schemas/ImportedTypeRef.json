@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ImportedTypeRef.json",
+  "type": "object",
+  "properties": {
+    "module": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ModuleRef.json"
+    },
+    "type": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/TypeName.json"
+    }
+  },
+  "required": [
+    "module",
+    "type"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "A reference to a type another module owns. The reference form this module\npublishes: a module and a type name, never a copy of the imported type's\nfields, and never a cross-module `$ref` (FR-002-AC-10)."
+}

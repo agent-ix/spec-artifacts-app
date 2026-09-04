@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json",
+  "type": "object",
+  "properties": {
+    "text": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "description": "free text: authored prose; its sentence grammar is an advisory lint, not a schema."
+    },
+    "startLine": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+    },
+    "endLine": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+    }
+  },
+  "required": [
+    "text",
+    "startLine",
+    "endLine"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "A level-2 section as extracted: byte-exact content and its 1-based line span."
+}

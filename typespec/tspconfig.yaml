@@ -1,0 +1,10 @@
+emit:
+  - "@typespec/json-schema"
+options:
+  "@typespec/json-schema":
+    file-type: json
+    emitter-output-dir: "{output-dir}"
+    # FR-002: seal every object schema so an undeclared property is refused
+    # rather than ignored. A record the mapping did not build cannot slip
+    # through as "extra keys the schema does not mention".
+    seal-object-schemas: true

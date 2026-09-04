@@ -6,11 +6,15 @@ license = "AGPL-3.0-or-later"
 [tool.poetry]
 name = "spec_artifacts_app"
 version = "0.1.0"  # Placeholder, dynamically replaced
-description = "Filament Module: application/composite spec artifacts including master-requirements — Jinja .md.j2 templates"
+description = "Filament Module: application/composite spec artifacts (ApplicationSpec, MasterRequirements) with semantic data schemas, Markdown mappings and authoring skeletons"
 authors = ["Agent IX <agents@agent-ix.dev>"]
 packages = [{ include = "spec_artifacts_app" }]
 include = [
     { path = "spec_artifacts_app/manifest.yaml", format = ["sdist", "wheel"] },
+    { path = "spec_artifacts_app/mappings.yaml", format = ["sdist", "wheel"] },
+    { path = "spec_artifacts_app/mappings.schema.json", format = ["sdist", "wheel"] },
+    { path = "spec_artifacts_app/schemas/*.json", format = ["sdist", "wheel"] },
+    { path = "spec_artifacts_app/skeletons/*.md", format = ["sdist", "wheel"] },
 ]
 
 [tool.poetry.dependencies]
@@ -19,6 +23,9 @@ python = ">=3.13,<3.14"
 
 [tool.poetry.group.dev.dependencies]
 black = "^26.1.0"
+jsonschema = "^4.26.0"
+referencing = "^0.37.0"
+pyyaml = "^6.0.3"
 poetry-dynamic-versioning = "^1.9.1"
 poethepoet = "^0.34.0"
 py-deps = "*"
@@ -53,6 +60,22 @@ help = "Remove build artifacts"
 [tool.poe.tasks.test]
 cmd = "pytest"
 help = "Run tests with coverage"
+
+[tool.poe.tasks.schemas]
+shell = """node scripts/generate-schemas.mjs \
+  && python scripts/build_mappings.py \
+  && python scripts/build_legacy_manifest.py"""
+help = "Emit the JSON Schemas, refresh the manifest digests, and rebuild the derived data files"
+
+[tool.poe.tasks.schemas-check]
+shell = """node scripts/generate-schemas.mjs --check \
+  && python scripts/build_mappings.py --check \
+  && python scripts/build_legacy_manifest.py --check"""
+help = "Fail when the committed schemas, digests, mappings, or legacy fixture differ from the source"
+
+[tool.poe.tasks.dev-quire]
+shell = "pip install --index-url http://pypi.ix/root/dev/+simple/ --trusted-host pypi.ix 'quire>=0.46.0'"
+help = "Install the Quire wheel the semantic tests need (see agent-ix/quire-rs#392)"
 
 [tool.poe.tasks.test-integrations]
 cmd = "pytest tests_integration/ -v -s --no-cov -m integration"
@@ -109,13 +132,25 @@ shell = "py-deps use-upstream ${package} || [ $? -eq 1 ] && poetry lock"
 help = "Switch dep to upstream registry"
 
 [tool.pytest.ini_options]
-addopts = "--cov=spec_artifacts_app --cov-report=term-missing --cov-fail-under=100 --json-report --json-report-file=report.json"
+# The gate covers the shipped package AND the test oracle. The oracle is the
+# record authority until an engine-side extractor exists (agent-ix/quire-rs#393),
+# so an unexecuted branch of it is an unexecuted rule of this module's contract —
+# which is exactly how nine of its diagnostics went untested until a review
+# counted them. The two derived-data generators run as subprocesses (that is what
+# makes their `--check` gates real), so they are covered by behaviour in
+# tests/test_derived_data.py rather than by line count; `scripts/build_tools.py`
+# is cookiecutter build tooling and is not this ticket's to gate.
+addopts = """--cov=spec_artifacts_app \
+  --cov=tests/support \
+  --cov-report=term-missing --cov-fail-under=100 \
+  --json-report --json-report-file=report.json"""
 
 # ALL WARNINGS MUST BE TREATED AS ERRORS, NO EXCEPTION!
 filterwarnings = ["error"]
 
 markers = [
     "integration: Integration tests (require Kind cluster)",
+    "trace: Bind a test to one or more spec ids (quire trace marker form)",
 ]
 
 [tool.ruff]

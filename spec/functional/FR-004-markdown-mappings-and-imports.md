@@ -86,9 +86,16 @@ Mapping kinds:
   `TC-[0-9]+` tokens found in `annotation`, in order; for a cell without
   parentheses the mapping SHALL set `method` alone with `testRefs: []` and no
   `annotation`. The mapping SHALL drop no byte of the cell.
-- A `sysml-fence` mapping SHALL fill the same property a `typed-table` mapping
-  fills, from a single fenced block tagged `sysml` under the same heading, so
-  that the two forms are alternates of one declaration.
+- A `typed-table` mapping SHALL fill `fields` from the `## Properties` table
+  whose header row is `Field | Type | Multiplicity | Constraints`, one
+  semantic-core `FieldDecl` per data row, splitting the `Multiplicity` cell into
+  `type.multiplicity` and the `Constraints` cell into the closed
+  `ConstraintDecl` keyword vocabulary, and setting `identity` from the
+  `identity` constraint token.
+- A `sysml-fence` mapping SHALL fill `fields` — the same property the
+  `## Properties` `typed-table` mapping fills — from a single fenced block
+  tagged `sysml` under the same heading, so that the two forms are alternates of
+  one declaration.
 - If one section carries both a typed table and a `sysml` fence, then the mapping
   SHALL fail naming the section's heading line, because one artifact carries one
   form.
@@ -163,7 +170,7 @@ Round-trip policy:
 |----|----------|--------------|
 | FR-004-AC-1 | `mappings.yaml` validates against `mappings.schema.json`, declares every property of both exported models exactly once, names no undeclared property, uses only the six mapping kinds the manifest lists, and each `typed-table` column list equals the locator's `assert.columns`. | Test (TC-021) |
 | FR-004-AC-2 | Every level-2 section of every shipped skeleton is named by a mapping entry that either fills a typed property or carries `prose_only: true` with a reason; a section named by neither fails the suite naming the heading. | Test (TC-022) |
-| FR-004-AC-3 | For each shipped skeleton the reference mapping produces a record that validates against its model's schema, and the `## Capabilities`, `## Actors`, `## Interfaces`, `## Data Dependencies`, `## UI Rendering Requirements`, and `## Requirements` rows map to the typed row objects FR-002 declares, `Test (TC-001)` splitting into `method: Test`, `annotation: TC-001`, `testRefs: [TC-001]`. | Test (TC-023) |
+| FR-004-AC-3 | For each shipped skeleton the reference mapping produces a record that validates against its model's schema, and the `## Properties`, `## Boundaries`, `## Capabilities`, `## Actors`, `## Interfaces`, `## Data Dependencies`, `## UI Rendering Requirements`, and `## Requirements` rows map to the typed row objects FR-002 declares — `## Properties` to semantic-core `FieldDecl` entries and `## Boundaries` to `Boundary` rows, `Test (TC-001)` splitting into `method: Test`, `annotation: TC-001`, `testRefs: [TC-001]`. | Test (TC-023) |
 | FR-004-AC-4 | An `<org>/<repo>#<Type>` cell maps to an `ImportedTypeRef` carrying exactly `module` and `type`, no field of the imported type appears in the record, and a cell naming a module or a type absent from `semantic.imports` fails naming the line, the module, and the type. | Test (TC-024) |
 | FR-004-AC-5 | The `## Invariants` clause of the `ApplicationSpec` skeleton maps to a `ClauseRef` with `language: ocl` and `clauseId` equal to the `###` heading; with a caller-supplied `sourceIdentity` it also carries a `sourceSpan` whose `startLine`/`endLine` are the fence lines, and without one it carries no `sourceSpan`; the `invariantsText` entry equals the fence body byte-for-byte; a `### not-an-identifier` heading, a `tla`-tagged fence, a second fence under one heading, a repeated `clauseId`, and a fence owned by no `###` heading each fail naming the line; a prose `## Invariants` with no fence leaves `invariants` absent and does not fail. | Test (TC-019) |
 | FR-004-AC-6 | A row id with the wrong prefix, a row id repeated in one table, a duplicated level-2 heading, a `requirements` row whose `target` is not `ix://`, and a section carrying both a typed table and a `sysml` fence each fail the mapping naming the line and yield no record, and all failures present in one document are reported together. | Test (TC-025) |

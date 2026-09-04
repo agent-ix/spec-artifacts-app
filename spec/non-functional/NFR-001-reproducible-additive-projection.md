@@ -70,6 +70,21 @@ point and asserts every added locator is optional. The offline run is a manual
 gate of this repository, recorded in the release notes; no CI job is claimed by
 this requirement.
 
+## Acceptance Criteria
+
+<!-- This NFR is measurable, so the Measurement table above carries the
+     obligations. The criteria below exist because each metric needs an
+     addressable id for the Test Matrix to trace to and for `quire coverage` to
+     bind a test symbol against; each row restates one metric's pass condition
+     and nothing else. -->
+
+| ID | Criteria | Verification |
+|----|----------|--------------|
+| NFR-001-AC-1 | Two consecutive `make schemas` runs on one tree leave `spec_artifacts_app/schemas` and `spec_artifacts_app/manifest.yaml` byte-identical — `git status --porcelain` over both reports zero files. | Test (TC-030) |
+| NFR-001-AC-2 | `make schemas-check` and `make test` both exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire`. | Demonstration (TC-031) |
+| NFR-001-AC-3 | Every `body_extraction` locator this change adds, diffed against the branch point, carries `required: false`, except `title` and `purpose`, which the pre-change document already carries. | Inspection (TC-032) |
+| NFR-001-AC-4 | `make schemas-check` completes within 30 s on the reference machine. | Test (TC-033) |
+
 ## Dependencies
 
 - **Upstream**: [FR-002](../functional/FR-002-semantic-data-schemas.md), [FR-003](../functional/FR-003-semantic-manifest-contract.md)

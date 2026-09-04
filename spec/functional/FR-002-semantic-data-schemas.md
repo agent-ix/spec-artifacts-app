@@ -51,16 +51,17 @@ is not a field of any model.
 - `spec_artifacts_app/schemas/ApplicationSpec.json` and
   `spec_artifacts_app/schemas/MasterRequirements.json`, the two exported models.
 - One emitted schema file for every support model the two reference:
-  `Section`, `HeadingRef`, `Provenance`, `Relationship`, `Verification`,
+  `Section`, `Provenance`, `Relationship`, `Verification`, `ImportedTypeRef`,
   `Boundary`, `Capability`, `Actor`, `Interface`, `DataDependency`,
-  `RenderingRequirement`, `RequirementRef`, and `ImportedTypeRef`.
+  `RenderingRequirement`, and `RequirementRef`.
 - One emitted schema file for every scalar and enum the models reference:
   `NonEmptyText`, `ArtifactId`, `CapabilityId`, `ActorId`, `BoundaryId`,
   `InterfaceId`, `DataDependencyId`, `RenderingRequirementId`,
   `RequirementRefId`, `TestCaseRef`, `EdgeVerb`, `IxTarget`, `Cardinality`,
-  `Sha256Digest`, `LineNumber`, `ArtifactStatus`, `ComponentType`, `ModuleRef`,
-  `TypeName`, `TagName`, `UiSurface`, `ActorKind`, `InterfaceKind`,
-  `InterfaceDirection`, `DataAccessMode`, `BoundaryKind`, and `RequirementKind`.
+  `Sha256Digest`, `LineNumber`, `ArtifactStatus`, `ModuleRef`, `TypeName`,
+  `UiSurface`, `ActorKind`, `InterfaceKind`, `InterfaceDirection`,
+  `DataAccessMode`, `BoundaryKind`, and `RequirementKind` — 39 emitted files in
+  all, and no model or scalar the two exported models do not reach.
 - `spec_artifacts_app/schemas/toolchain.json`, recording the compiler, emitter,
   and semantic-core versions, the emitted file list, and a SHA-256 digest
   computed as `sha256(concat(name + "\n" + bytes))` over the emitted files in
@@ -96,6 +97,9 @@ Projection:
 - The generator SHALL declare every property of every object schema inline (no
   `allOf`, `extends`, or spread), so that the Python `jsonschema` library and the
   Rust `jsonschema` crate agree on every record.
+- The generator SHALL seal every object schema
+  (`unevaluatedProperties: { not: {} }`), so that a property no model declares is
+  refused rather than ignored.
 - The generator SHALL render each file as `JSON.stringify(schema, null, 2)` plus
   one trailing newline, with no formatter dependency.
 - If `make schemas-check` finds a committed projection whose bytes differ from a
@@ -128,6 +132,11 @@ Application structure:
 - The `ApplicationSpec` model SHALL carry `purpose: Section` as its one required
   section, and the optional sections `scope`, `systemOverview`, and `structure`
   as `Section`.
+- Both models SHALL carry `fields?: FieldDecl[]` (semantic-core, `minItems: 1`),
+  one entry per row of the typed `## Properties` table
+  (`Field | Type | Multiplicity | Constraints`) or, as the alternate form of the
+  same declarations, one entry per declaration of a single `sysml` fence under
+  the same heading. The models SHALL NOT redeclare any property of `FieldDecl`.
 - The `ApplicationSpec` model SHALL carry `boundaries: Boundary[]`, one per data
   row of the optional `## Boundaries` table, where `Boundary` is `{ id:
   ^[A-Z]{2,4}-[0-9]+-BND-[0-9]+$, name, kind: BoundaryKind, description, line }`
@@ -159,9 +168,14 @@ Application structure:
   RequirementRef[]`, where `RequirementRef` is `{ id: RequirementRefId, kind:
   RequirementKind, source: ImportedTypeRef, target: IxTarget, line }` and
   `RequirementKind` is the closed set `StR`, `US`, `FR`, `NFR`, `IT`, `TC`.
-- The `ApplicationSpec` model SHALL carry `invariants?: ClauseRef[]`
-  (semantic-core, `minItems: 1`), filled by the FR-004 `ocl-clause` mapping from
-  an optional `## Invariants` section; the clause text is never parsed here.
+- Both models SHALL carry `invariants?: ClauseRef[]` (semantic-core,
+  `minItems: 1`), filled by the FR-004 `ocl-clause` mapping from an optional
+  `## Invariants` section; the clause text is never parsed here.
+- The `boundaries`, `capabilities`, `actors`, `interfaces`, `dataDependencies`,
+  and `renderingRequirements` properties belong to `ApplicationSpec` only. A
+  `MasterRequirements` document is the front page of a specification, not a
+  description of a running system, and its artifact type declares no locator
+  that would fill them.
 
 Imported types:
 
@@ -211,7 +225,7 @@ Free text and scope:
 | FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008) |
 | FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Test (TC-005) |
 | FR-002-AC-7 | The digest recomputed over the emitted files (`sha256(concat(name + "\n" + bytes))`, sorted by name) equals the digest recorded in `toolchain.json`, with no toolchain run. | Test (TC-007) |
-| FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`), and the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects every negative fixture that produces a record at all. | Test (TC-009) |
+| FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`, and the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects every negative fixture that produces a record at all, including one carrying a property no model declares. | Test (TC-009) |
 | FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
 | FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.1.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
 | FR-002-AC-11 | The repository carries no `.npmrc`, `package.json` pins `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0, and `@agent-ix/semantic-core` 0.1.0 exactly, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Test (TC-004) |

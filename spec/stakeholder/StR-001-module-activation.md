@@ -8,7 +8,7 @@ type: StR
 ## Stakeholder Need
 
 The Filament platform, spec authors, and agent CLI generators require that
-multi-service applications **shall** be able to express composite specs that
+the Filament platform **shall** register, validate, and serve composite specs that
 aggregate per-service requirements into a master-requirements rollup, so that an
 application's contributions are declared once and consumed consistently across the
 platform.
@@ -28,7 +28,7 @@ trustworthy view of what the application declares.
 | ID | Criteria | Validation |
 |----|----------|------------|
 | StR-001-VC-1 | Activating this Module against filament-core registers the contents it declares. | Inspection |
-| StR-001-VC-2 | Agent CLI generators (minijinja-cli) can produce valid artifacts using the templates and schemas this Module ships. | Demonstration |
+| StR-001-VC-2 | An author starting from a skeleton this Module ships produces an artifact that `validate_document` accepts for its artifact type. | Demonstration |
 
 Satisfaction is judged by demonstrating both outcomes against a filament-core instance.
 

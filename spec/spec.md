@@ -45,6 +45,15 @@ record instead of as prose.
   reference-form `data_schema` and a declared `imports` set; the Markdown
   mappings in `spec_artifacts_app/mappings.yaml`; and the skeletons rewritten as
   executable typed fixtures with negative counterparts.
+- The three fixture families the ticket names, minus the one it defers.
+  *Compatibility* fixtures: the legacy-manifest fixture (this manifest with the
+  `semantic` block and every `data_schema` removed) and the pre-change
+  `spec/spec.md` baseline, which together prove the change is additive.
+  *Dynamic-module* fixtures: minimal module manifests synthesized in a temporary
+  directory at test time, carrying only a `semantic` block, used to exercise the
+  missing-import and cross-module-cycle diagnostics of FR-003 without installing
+  or editing a real module. *Generated-language* fixtures are deferred; see Out
+  of Scope.
 
 ### Out of Scope
 

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RenderingRequirement.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RenderingRequirementId.json"
+    },
+    "surface": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/UiSurface.json"
+    },
+    "requirement": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "description": "free text: the authored rendering obligation; its EARS grammar is an advisory lint, not a schema."
+    },
+    "verification": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Verification.json"
+    },
+    "line": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+    }
+  },
+  "required": [
+    "id",
+    "surface",
+    "requirement",
+    "verification",
+    "line"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "One row of `## UI Rendering Requirements`: what a surface must render."
+}

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRef.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRefId.json"
+    },
+    "kind": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementKind.json"
+    },
+    "source": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ImportedTypeRef.json"
+    },
+    "target": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/IxTarget.json"
+    },
+    "line": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+    }
+  },
+  "required": [
+    "id",
+    "kind",
+    "source",
+    "target",
+    "line"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "One row of `## Requirements`: a requirement this composite rolls up. The\nrequirement's own fields belong to the module that owns its type; this record\ncarries only the reference."
+}

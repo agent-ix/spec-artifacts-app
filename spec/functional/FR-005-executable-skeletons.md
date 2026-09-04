@@ -48,10 +48,14 @@ frontmatter what it expects to be refused and why.
 - `spec_artifacts_app/skeletons/application-spec.sysml.md`, the alternate
   `sysml`-fence form of the same declarations.
 - `body_extraction` locators on both artifact types, added to a manifest that
-  today declares none: `title` (H1) and `purpose` (`## Purpose`) required, and
-  `scope`, `systemOverview`, `structure`, `boundaries`, `capabilities`, `actors`,
-  `interfaces`, `dataDependencies`, `renderingRequirements`, `requirements`, and
-  `invariants` optional.
+  today declares none. On both types: `title` (H1) and `purpose` (`## Purpose`)
+  required, and `scope`, `system_overview`, `structure`, `properties_table`,
+  `properties_fence`, `requirements_table`, and `invariants` optional. On
+  `ApplicationSpec` only, and all optional: `boundaries_table`,
+  `capabilities_table`, `actors_table`, `interfaces_table`,
+  `data_dependencies_table`, and `rendering_requirements_table` — a
+  `MasterRequirements` document describes no running system, so it declares
+  none of them.
 - Negative fixtures under `tests/fixtures/negative/`, one per demonstrated rule.
 - `spec/spec.md` extended to author the sections the skeleton demonstrates, so
   that this repository's own application spec is an instance of the contract it
@@ -65,7 +69,7 @@ frontmatter what it expects to be refused and why.
 - Each skeleton SHALL carry frontmatter satisfying its artifact type's
   `frontmatter_schema_ref`, including `id` matching `^[A-Z]{2,4}-[0-9]+$` and
   `type` equal to the artifact-type name.
-- Each typed `## Properties`-style table SHALL use the header row
+- Each skeleton's `## Properties` table SHALL use the header row
   `Field | Type | Multiplicity | Constraints` exactly, and each domain table
   (`## Capabilities`, `## Actors`, `## Interfaces`, `## Data Dependencies`,
   `## UI Rendering Requirements`, `## Requirements`, `## Boundaries`) SHALL use

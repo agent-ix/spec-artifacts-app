@@ -62,7 +62,12 @@ are both detectable from the manifest alone.
 - A legacy-manifest fixture at `tests/fixtures/manifest-legacy.yaml`: this
   manifest with the `semantic` block and every `data_schema` removed, which
   CON-1 uses to prove the module still validates and loads for a consumer that
-  predates the block.
+  predates the block. This is the compatibility fixture the ticket asks for.
+- Dynamic-module fixtures: minimal module manifests synthesized into a temporary
+  directory at test time, each carrying a `name`, a `version`, and a `semantic`
+  block and nothing else, used to build the import graphs AC-4 and AC-5 exercise.
+  They are synthesized rather than committed so that a cycle fixture cannot be
+  installed by accident, and no real module is edited to produce one.
 - `make manifest-digests`, folded into `make schemas`, which rewrites every
   `data_schema.digest` from the shipped bytes; the suite never hand-computes a
   digest.

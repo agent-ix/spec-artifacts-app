@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ApplicationSpec.json",
+  "type": "object",
+  "properties": {
+    "id": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ArtifactId.json"
+    },
+    "title": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json"
+    },
+    "type": {
+      "type": "string",
+      "const": "ApplicationSpec"
+    },
+    "status": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ArtifactStatus.json"
+    },
+    "relationships": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Relationship.json"
+      }
+    },
+    "provenance": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Provenance.json"
+    },
+    "purpose": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
+    "scope": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
+    "systemOverview": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
+    "structure": {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/FieldDecl.json"
+      },
+      "minItems": 1,
+      "description": "The application's identity attributes, declared as one typed row per field\nin `## Properties` (`Field | Type | Multiplicity | Constraints`) or, as the\nalternate form of the same declarations, as one `sysml` fence under the\nsame heading. Each row is a semantic-core `FieldDecl`; no field of it is\nredeclared here (quoin FR-071)."
+    },
+    "boundaries": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Boundary.json"
+      }
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Capability.json"
+      }
+    },
+    "actors": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Actor.json"
+      }
+    },
+    "interfaces": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Interface.json"
+      }
+    },
+    "dataDependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/DataDependency.json"
+      }
+    },
+    "renderingRequirements": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RenderingRequirement.json"
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRef.json"
+      }
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "type",
+    "relationships",
+    "provenance",
+    "purpose"
+  ],
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "The record of an `ApplicationSpec` document: an application's identity, its\nboundaries, capabilities, actors, interfaces, data dependencies, UI rendering\nrequirements, and the requirements it aggregates.\n\nThis model describes an application *declaration*. runtime state (deployment,\nhealth, uptime) is not modelled: a deployed instance's condition belongs to\nthe platform that runs it, never to the document that specifies it\n(FR-002-CON-4)."
+}

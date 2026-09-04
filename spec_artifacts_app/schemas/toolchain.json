@@ -1,0 +1,65 @@
+{
+  "compiler": {
+    "name": "@typespec/compiler",
+    "version": "1.15.0"
+  },
+  "emitter": {
+    "name": "@typespec/json-schema",
+    "version": "1.15.0"
+  },
+  "semanticCore": {
+    "name": "@agent-ix/semantic-core",
+    "version": "0.1.0"
+  },
+  "base": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/",
+  "normalization": {
+    "name": "absolute-id-and-ref",
+    "version": "1.0.0",
+    "issue": "https://github.com/agent-ix/spec-artifacts-app/issues/3",
+    "applied": false,
+    "rewrittenFiles": [],
+    "note": "no-op: the emitter left no relative $id or $ref"
+  },
+  "files": [
+    "Actor.json",
+    "ActorId.json",
+    "ActorKind.json",
+    "ApplicationSpec.json",
+    "ArtifactId.json",
+    "ArtifactStatus.json",
+    "Boundary.json",
+    "BoundaryId.json",
+    "BoundaryKind.json",
+    "Capability.json",
+    "CapabilityId.json",
+    "Cardinality.json",
+    "DataAccessMode.json",
+    "DataDependency.json",
+    "DataDependencyId.json",
+    "EdgeVerb.json",
+    "ImportedTypeRef.json",
+    "Interface.json",
+    "InterfaceDirection.json",
+    "InterfaceId.json",
+    "InterfaceKind.json",
+    "IxTarget.json",
+    "LineNumber.json",
+    "MasterRequirements.json",
+    "ModuleRef.json",
+    "NonEmptyText.json",
+    "Provenance.json",
+    "Relationship.json",
+    "RenderingRequirement.json",
+    "RenderingRequirementId.json",
+    "RequirementKind.json",
+    "RequirementRef.json",
+    "RequirementRefId.json",
+    "Section.json",
+    "Sha256Digest.json",
+    "TestCaseRef.json",
+    "TypeName.json",
+    "UiSurface.json",
+    "Verification.json"
+  ],
+  "digest": "sha256:59d002aecd54282e6688728ecd5f675b844c68e49d73b0246d25c62eaad8b4ea"
+}

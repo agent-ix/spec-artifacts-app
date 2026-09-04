@@ -20,7 +20,16 @@ per `TC-NNN`, each of which binds to exactly one test symbol through a
 different things, and `quire coverage` counts a third: written trace tags that
 bind to a symbol.
 
-**Rows that cannot be green in this repository.** Nine rows are marked `🚧` and
+**Two vocabularies, deliberately.** A `Verification` cell names an ISO/IEC/IEEE
+29148 *method* (Inspection, Analysis, Demonstration, Test); the `Type` column of
+the Test Case Summary names how the *test* is built (Unit, Static, Snapshot,
+Integration, Benchmark, Manual). They are different axes and are allowed to
+differ on one row: an obligation verified by `Inspection` is discharged by a
+`Static` test that enumerates the tree, and one verified by `Demonstration` is
+discharged by a `Manual` procedure. A row where the two disagree is not a
+defect; a row where the `Type` cannot possibly discharge the method is.
+
+**Rows that cannot be green in this repository.** Ten rows are marked `🚧` and
 say why rather than being quietly dropped:
 
 - `FR-001-AC-2`, `FR-001-AC-3`, `FR-001-AC-4`, `IT-001-AC-1`, `IT-001-AC-2`,
@@ -28,8 +37,9 @@ say why rather than being quietly dropped:
   this package's suite runs no cluster.
 - `StR-001-VC-2` is a `minijinja-cli` demonstration against a generated artifact
   and is likewise not run here.
-- `NFR-001` metric 2 is the offline, no-network run; it is a manual gate of this
-  repository recorded in the release notes, and no CI job is claimed for it.
+- `NFR-001-AC-2` (metric 2) is the offline, no-network run; it is a manual gate
+  of this repository recorded in the release notes, and no CI job is claimed for
+  it.
 - `FR-003-AC-8` / `IT-002-AC-2` (TC-017) is a **strict expected failure**, never
   a skip and never a silent pass: it asserts that a one-hex-digit `data_schema`
   digest edit is refused at load, which no published engine diagnoses
@@ -37,8 +47,9 @@ say why rather than being quietly dropped:
   silent-empty-model defect). A strict expected failure that starts passing fails
   the suite, so the arrival of a fixed engine is announced by the gate itself.
 
-An NFR has no `-AC-` ids — its criteria are its `Metric | Target | Threshold |
-Method` rows — so its rows trace to `NFR-001 (metric n)`.
+NFR-001 is measurable, so its `Metric | Target | Threshold | Method` rows carry
+the obligations; it also declares `NFR-001-AC-1..4`, one per metric, purely so
+each metric has an addressable id a matrix row and a trace tag can bind to.
 
 ## Requirements Traceability
 
@@ -103,10 +114,10 @@ Method` rows — so its rows trace to `NFR-001 (metric n)`.
 
 | Non-Functional Req | Verification Method | Evidence/Test Cases | Status |
 |--------------------|---------------------|---------------------|--------|
-| NFR-001 | Snapshot (metric 1: byte differences between two `make schemas` runs) | TC-030 | ✅ Complete |
-| NFR-001 | Manual (metric 2: network reads during `make schemas-check` and `make test`) | TC-031 | 🚧 Manual offline gate, no CI job claimed |
-| NFR-001 | Static (metric 3: locators added by this change that are required) | TC-032 | ✅ Complete |
-| NFR-001 | Benchmark (metric 4: wall time of `make schemas-check`) | TC-033 | ✅ Complete |
+| NFR-001 | Test (NFR-001-AC-1, metric 1: byte differences between two `make schemas` runs) | TC-030 | ✅ Complete |
+| NFR-001 | Demonstration (NFR-001-AC-2, metric 2: network reads during `make schemas-check` and `make test`) | TC-031 | 🚧 Manual offline gate, no CI job claimed |
+| NFR-001 | Inspection (NFR-001-AC-3, metric 3: locators added by this change that are required) | TC-032 | ✅ Complete |
+| NFR-001 | Test (NFR-001-AC-4, metric 4: wall time of `make schemas-check`) | TC-033 | ✅ Complete |
 
 ### Stakeholder and Integration Coverage
 
@@ -154,17 +165,17 @@ Method` rows — so its rows trace to `NFR-001 (metric n)`.
 | TC-020 | No file in the module or its test support writes a Markdown document, and the reference mapping opens every document read-only — enumerated over the tree, not sampled | Static | P2 | FR-004-CON-3 | ✅ |
 | TC-021 | `mappings.yaml` validates against `mappings.schema.json`, names every model property exactly once with one of the six mapping kinds, names no undeclared property, matches locator `assert.columns`, and records `authority`, `round_trip`, per-property `lossless`, and the dropped frontmatter keys | Unit | P0 | FR-004-AC-1, FR-004-AC-7 | ✅ |
 | TC-022 | Every level-2 section of every shipped skeleton is named by a mapping entry that fills a typed property or carries `prose_only: true` with a reason; a section named by neither fails naming the heading | Unit | P0 | FR-004-AC-2 | ✅ |
-| TC-023 | Each skeleton maps to a record that validates against its model, and the six domain tables map to the typed row objects, `Test (TC-001)` splitting into method, annotation, and testRefs | Snapshot | P0 | FR-004-AC-3 | ✅ |
+| TC-023 | Each skeleton maps to a record that validates against its model; the typed `## Properties` table maps to semantic-core `FieldDecl` entries; and `## Boundaries`, `## Capabilities`, `## Actors`, `## Interfaces`, `## Data Dependencies`, `## UI Rendering Requirements`, and `## Requirements` map to their typed row objects, `Test (TC-001)` splitting into method, annotation, and testRefs | Snapshot | P0 | FR-004-AC-3 | ✅ |
 | TC-024 | An `<org>/<repo>#<Type>` cell maps to an `ImportedTypeRef` of exactly `module` and `type`, no imported field appears in the record, and an undeclared module or type fails naming the line, the module, and the type | Unit | P0 | FR-004-AC-4 | ✅ |
 | TC-025 | A wrong-prefix row id, a row id repeated in one table, a duplicated H2, a non-`ix://` requirement target, and a section carrying both a table and a `sysml` fence each fail naming the line, all failures in one document are reported together, and no partial record is emitted | Unit | P0 | FR-004-AC-6 | ✅ |
 | TC-026 | Every negative fixture declares `expect` and `because`, violates exactly one rule, is refused by the check it names, and the eight enumerated rules each have a fixture; an accepted fixture fails naming the fixture and the expectation | Unit | P0 | FR-005-AC-4, FR-005-AC-7, FR-005-CON-2 | ✅ |
 | TC-027 | The module ships no `*.md.j2` file and no `template_ref` key anywhere in `manifest.yaml` | Static | P1 | FR-005-AC-6, FR-005-CON-3 | ✅ |
 | TC-028 | Each artifact type ships a skeleton whose headings and table header rows match its asserts in both directions, and every skeleton passes `validate_document` | Unit | P0 | FR-005-AC-1 | ✅ |
-| TC-029 | The `sysml`-fence skeleton declares the same field set in the same order as the typed-table skeleton, and both map to the same typed rows | Unit | P0 | FR-005-AC-2 | ✅ |
-| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and manifest digests | Snapshot | P1 | NFR-001 (metric 1) | ✅ |
-| TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire` | Manual | P2 | NFR-001 (metric 2) | 🚧 Manual offline gate |
-| TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001 (metric 3) | ✅ |
-| TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001 (metric 4) | ✅ |
+| TC-029 | The `sysml`-fence skeleton declares the same `FieldDecl` set in the same order as the typed `## Properties` table of its counterpart, and both fill `fields` identically | Unit | P0 | FR-005-AC-2 | ✅ |
+| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and manifest digests | Snapshot | P1 | NFR-001-AC-1 | ✅ |
+| TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
+| TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001-AC-3 | ✅ |
+| TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |
 | TC-034 | The module loads with every declared artifact type, every skeleton validates and extracts a record, the reference-form `data_schema` is reported verbatim, and the legacy-manifest fixture registers the same artifact types | Integration | P0 | IT-002-AC-1 | ✅ |
 | TC-035 | `validate_document` and the reference mapping refuse every negative fixture by the check its `expect` frontmatter names | Integration | P0 | IT-002-AC-3 | ✅ |
 | TC-036 | The manifest validates against the bundled FR-035 schema; neither the missing-library nor the missing-schema branch skips | Unit | P0 | FR-001-AC-1 | ✅ |

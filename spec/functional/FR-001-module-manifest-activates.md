@@ -25,13 +25,12 @@ The system **SHALL** publish a Filament Module manifest (`spec_artifacts_app/man
 
 ## Behavior
 
-The manifest **SHALL** validate against `module-manifest.schema.json` v1.0.0. Re-activation **SHALL** be a no-op (idempotent by content hash per FR-026-AC-1).
+The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation. That schema belongs to filament-core-service; this module keeps no copy of it, so conformance is observed at `POST /api/v1/modules/activate` (FR-001-AC-2) and nowhere else. Re-activation **SHALL** be a no-op (idempotent by content hash per FR-026-AC-1).
 
 ## Acceptance Criteria
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-001-AC-1 | Manifest validates against FR-035 JSON Schema | Test (TC-036) |
 | FR-001-AC-2 | Activation against clean filament-core succeeds with 200 | Demonstration |
 | FR-001-AC-3 | Re-activation returns no-op (same content hash) | Demonstration |
 | FR-001-AC-4 | Each declared archetype/object_type/artifact_type appears in the corresponding filament-core table after activation | Demonstration |

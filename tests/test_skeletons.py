@@ -7,7 +7,6 @@ module docstring binds to nothing (quire-rs CR-061).
 from __future__ import annotations
 
 import re
-import subprocess
 
 import pytest
 import yaml

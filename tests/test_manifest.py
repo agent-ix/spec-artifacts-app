@@ -11,8 +11,6 @@ import yaml
 
 import spec_artifacts_app as pack
 from tests.conftest import (
-    FR035_SCHEMA_DIGEST,
-    FR035_SCHEMA_PATH,
     LEGACY_MANIFEST_PATH,
     MODEL_OF,
     SCHEMAS_DIR,
@@ -33,50 +31,16 @@ ADMITTED_SEMANTIC_KEYS = {
 }
 
 
-def _with(manifest: dict, mutate) -> dict:
-    """A deep copy of the manifest with one deliberate defect applied."""
-    import copy
-
-    candidate = copy.deepcopy(manifest)
-    mutate(candidate)
-    return candidate
-
-
-def _validator(schema: dict):
-    from jsonschema import Draft202012Validator
-
-    return Draft202012Validator(schema)
-
-
-@pytest.mark.trace("TC-038", "FR-001-AC-1")
+@pytest.mark.trace("TC-038", "FR-001")
 def test_pack_exposes_manifest_path() -> None:
     """The activation pipeline imports this package and reads `MANIFEST_PATH`."""
     assert pack.MANIFEST_PATH == pack.PACK_ROOT / "manifest.yaml"
     assert pack.MANIFEST_PATH.is_file()
 
 
-@pytest.mark.trace("TC-036", "FR-001-AC-1")
-def test_the_manifest_validates_against_the_bundled_fr035_schema(
-    manifest, fr035_schema
-):
-    """Neither the missing-library nor the missing-schema branch skips.
-
-    A gate that reports "passed" because it could not run is the failure mode
-    this module's own history paid for: both preconditions are asserted, so an
-    environment that cannot run the check fails it.
-    """
-    assert (
-        FR035_SCHEMA_PATH.is_file()
-    ), "the FR-035 schema is not bundled with the tests"
-    errors = list(_validator(fr035_schema).iter_errors(manifest))
-    assert not errors, [
-        f"{'.'.join(str(p) for p in e.absolute_path)}: {e.message}" for e in errors
-    ]
-
-
 @pytest.mark.trace("TC-011", "FR-003-AC-1", "FR-003-AC-7", "FR-003-CON-1")
 def test_the_semantic_block_carries_the_nine_admitted_keys_and_adds_no_required_key(
-    manifest, semantic_block, fr035_schema
+    manifest, semantic_block
 ):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
@@ -92,15 +56,15 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_adds_no_required_
         "under `warning` would claim a sweep that never happened"
     )
 
-    # FR-003-CON-1 / AC-7: the same schema accepts the manifest a consumer that
-    # predates the block would see.
+    # FR-003-CON-1 / AC-7: the manifest a consumer that predates the block would
+    # see carries no root key and no artifact-type key this module added, and
+    # declares the same artifact types. That it still *loads* is asserted against
+    # the real engine in TC-034, which is the only oracle for it: no copy of the
+    # module-manifest schema lives in this repository (PLAT-902).
     legacy = yaml.safe_load(LEGACY_MANIFEST_PATH.read_text())
     assert "semantic" not in legacy
     assert all("data_schema" not in entry for entry in legacy["artifact_types"])
-    errors = list(_validator(fr035_schema).iter_errors(legacy))
-    assert not errors, [
-        f"{'.'.join(str(p) for p in e.absolute_path)}: {e.message}" for e in errors
-    ]
+    assert set(legacy) == set(manifest) - {"semantic"}
     assert [e["name"] for e in legacy["artifact_types"]] == [
         e["name"] for e in manifest["artifact_types"]
     ]
@@ -144,63 +108,3 @@ def test_a_one_byte_schema_edit_breaks_the_digest_naming_both_values(tmp_path):
     assert (
         recorded != computed
     ), "a one-byte edit produced the same digest; the binding is a no-op"
-
-
-@pytest.mark.trace("TC-016", "FR-003-AC-6")
-def test_the_bundled_fr035_schema_rejects_the_four_malformed_forms(
-    manifest, fr035_schema
-):
-    """The schema half of AC-6; its engine half is an expected failure below."""
-    assert sha256_of(FR035_SCHEMA_PATH) == FR035_SCHEMA_DIGEST, (
-        "the vendored FR-035 schema is not the revision this suite pins; a silent "
-        "divergence from upstream is a failing test, not an assumption"
-    )
-    validator = _validator(fr035_schema)
-
-    def rejected(mutate) -> list[str]:
-        candidate = _with(manifest, mutate)
-        return [
-            ".".join(str(p) for p in error.absolute_path) or "<root>"
-            for error in validator.iter_errors(candidate)
-        ]
-
-    unknown_key = rejected(lambda m: m["semantic"].update(foo=1))
-    assert unknown_key, "an unknown `semantic` key was accepted"
-    assert any("semantic" in path for path in unknown_key)
-    assert any(
-        "foo" in error.message
-        for error in validator.iter_errors(
-            _with(manifest, lambda m: m["semantic"].update(foo=1))
-        )
-    ), "the refusal does not name the offending key"
-
-    bad_package = rejected(lambda m: m["semantic"].update(package="ix://agent-ix/x"))
-    assert bad_package, "a `package` that is not `<org>/<repo>` was accepted"
-
-    bad_target = rejected(lambda m: m["semantic"].update(targets=["go"]))
-    assert bad_target, "an unregistered `targets` value was accepted"
-
-
-@pytest.mark.xfail(
-    strict=True,
-    reason=(
-        'agent-ix/quoin#341: `ArtifactTypeEntry.data_schema` is typed `{"type": '
-        '"object"}` in the FR-035 schema, while `ObjectTypeEntry.data_schema` '
-        "carries the FR-073 `oneOf`. An ambiguous reference form on an artifact "
-        "type is therefore accepted. Recorded as a strict expected failure so the "
-        "fix announces itself, never worked around by relaxing this module's own "
-        "manifest."
-    ),
-)
-@pytest.mark.trace("TC-016", "FR-003-AC-6")
-def test_the_fr035_schema_rejects_an_ambiguous_artifact_type_data_schema(
-    manifest, fr035_schema
-):
-    import copy
-
-    candidate = copy.deepcopy(manifest)
-    candidate["artifact_types"][0]["data_schema"]["type"] = "object"
-    errors = list(_validator(fr035_schema).iter_errors(candidate))
-    assert (
-        errors
-    ), "a `data_schema` mixing the reference form with another key was accepted"

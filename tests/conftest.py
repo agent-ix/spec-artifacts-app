@@ -11,6 +11,11 @@ Two policies live here and nowhere else:
 * **The emitted schemas are read from the committed tree**, and every ``$ref``
   resolves against the semantic-core package the pinned toolchain installs, so a
   record test validates against the real shipped bytes rather than a copy.
+* **No copy of the module-manifest schema lives here.** That schema belongs to
+  filament-core-service; a copy held in this repository could only be compared
+  against itself, so it would stay green after the real schema moved. The
+  consumers that read this manifest — the quire engine below, and quoin at
+  install — are the oracle (PLAT-902).
 """
 
 from __future__ import annotations
@@ -35,7 +40,6 @@ TYPESPEC_DIR = REPO_ROOT / "typespec"
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 NEGATIVE_DIR = FIXTURES / "negative"
 BASELINE_DIR = FIXTURES / "baseline"
-FR035_SCHEMA_PATH = FIXTURES / "module-manifest.schema.json"
 LEGACY_MANIFEST_PATH = FIXTURES / "manifest-legacy.yaml"
 SEMANTIC_CORE_DIR = (
     REPO_ROOT
@@ -47,13 +51,6 @@ SEMANTIC_CORE_DIR = (
 )
 
 SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.1.0/"
-
-#: filament-core-service FR-035 CR-003, revision a77f31e, as vendored by quoin.
-#: Recorded so a silent divergence from upstream is a failing test rather than an
-#: assumption (FR-003 Inputs).
-FR035_SCHEMA_DIGEST = (
-    "sha256:69cf9738600e7d8daa45ed5cd7231b17ca8dc58d068bd36af9b0d2c9b69dcbbc"
-)
 
 #: Artifact type -> emitted model, the FR-002 export map.
 MODEL_OF = {
@@ -173,11 +170,6 @@ def semantic_module(semantic_block: dict[str, Any]) -> dict[str, Any]:
 @pytest.fixture(scope="session")
 def skeletons() -> list[pathlib.Path]:
     return sorted(SKELETONS_DIR.glob("*.md"))
-
-
-@pytest.fixture(scope="session")
-def fr035_schema() -> dict[str, Any]:
-    return json.loads(FR035_SCHEMA_PATH.read_text())
 
 
 @pytest.fixture(scope="session")

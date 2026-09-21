@@ -67,11 +67,11 @@ no marker naming a test case the matrix does not declare, and no untagged test.
 - `NFR-001-AC-2` (metric 2) is the offline, no-network run; it is a manual gate
   of this repository recorded in the release notes, and no CI job is claimed for
   it.
-- `FR-003-AC-6` (TC-016) carries one strict expected failure: the FR-035 schema
-  types `ArtifactTypeEntry.data_schema` as a bare object while
-  `ObjectTypeEntry.data_schema` carries the quoin FR-073 `oneOf`, so an ambiguous
-  reference form on an *artifact* type is accepted upstream
-  (agent-ix/quoin#341). The other three refusals in that row hold today.
+- Whether the FR-035 module-manifest schema *rejects* a malformed `semantic`
+  block is filament-core-service's obligation, not this module's: no copy of
+  that schema lives here to judge it against (PLAT-902). The open upstream
+  defects — agent-ix/quoin#341, agent-ix/quire-rs#221, agent-ix/quire-rs#394 —
+  are recorded in FR-003 under its Acceptance Criteria.
 - `FR-003-AC-8` / `IT-002-AC-2` (TC-017) is a **strict expected failure**, never
   a skip and never a silent pass: it asserts that a one-hex-digit `data_schema`
   digest edit is refused at load, which no published engine diagnoses
@@ -89,7 +89,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 
 | Functional Req | Acceptance Criteria | Test Cases | Coverage Status |
 |----------------|---------------------|------------|-----------------|
-| FR-001 | FR-001-AC-1 | TC-036, TC-038 | ✅ Complete |
+| FR-001 | (no criterion is dischargeable in this repository; see FR-001 Behavior) | TC-038 | 🚧 Conformance is observed at activation |
 | FR-001 | FR-001-AC-2 | — | 🚧 Needs a running filament-core-service |
 | FR-001 | FR-001-AC-3 | — | 🚧 Needs a running filament-core-service |
 | FR-001 | FR-001-AC-4 | — | 🚧 Needs a running filament-core-service |
@@ -110,15 +110,14 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-002 | FR-002-CON-3 | TC-004 | ✅ Complete |
 | FR-002 | FR-002-CON-4 | TC-005 | ✅ Complete |
 | FR-002 | FR-002-CON-5 | TC-006 | ✅ Complete |
-| FR-003 | FR-003-AC-1 | TC-011 | ✅ Complete |
+| FR-003 | FR-003-AC-1 | TC-011, TC-034 | ✅ Complete |
 | FR-003 | FR-003-AC-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-AC-3 | TC-013 | ✅ Complete |
 | FR-003 | FR-003-AC-4 | TC-014 | ✅ Complete |
 | FR-003 | FR-003-AC-5 | TC-015 | ✅ Complete |
-| FR-003 | FR-003-AC-6 | TC-016 | ✅ Complete |
-| FR-003 | FR-003-AC-7 | TC-011, TC-043 | ✅ Complete |
+| FR-003 | FR-003-AC-7 | TC-011, TC-034, TC-043 | ✅ Complete |
 | FR-003 | FR-003-AC-8 | TC-017 | 🚧 Strict expected failure (agent-ix/quire-rs#394) |
-| FR-003 | FR-003-CON-1 | TC-011 | ✅ Complete |
+| FR-003 | FR-003-CON-1 | TC-011, TC-034 | ✅ Complete |
 | FR-003 | FR-003-CON-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-CON-3 | TC-014 | ✅ Complete |
 | FR-004 | FR-004-AC-1 | TC-021, TC-042, TC-043 | ✅ Complete |
@@ -187,12 +186,11 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-008 | `make schemas-check` exits 0 on the committed tree and non-zero naming the file after a one-byte edit to an emitted schema | Integration | P0 | FR-002-AC-5 | ✅ |
 | TC-009 | Every emitted object schema declares its properties inline, and the Python `jsonschema` validator accepts every skeleton record and rejects every negative fixture that produces a record | Unit | P0 | FR-002-AC-8 | ✅ |
 | TC-010 | No emitted property duplicates a property of an imported type and no `$ref` names a base other than this module's or semantic-core 0.1.0 | Unit | P0 | FR-002-AC-10 | ✅ |
-| TC-011 | The manifest validates under the bundled FR-035 schema with the `semantic` block, whose key set is exactly the nine declared keys; the block adds no required key; and the legacy-manifest fixture validates under the same schema and loads with the same artifact types | Unit | P0 | FR-003-AC-1, FR-003-AC-7, FR-003-CON-1 | ✅ |
+| TC-011 | The `semantic` block's key set is exactly the nine declared keys with the declared values; the block adds no required key; and the legacy-manifest fixture carries this manifest's key set minus `semantic` and declares the same artifact types (its load is TC-034) | Unit | P0 | FR-003-AC-1, FR-003-AC-7, FR-003-CON-1 | ✅ |
 | TC-012 | Every exported artifact type carries a `{schema, digest}` reference to an existing file whose SHA-256 equals the digest, `exports` equals the referencing set, no inline `data_schema` remains, and a one-byte schema edit fails naming the type and both digests | Unit | P0 | FR-003-AC-2, FR-003-CON-2 | ✅ |
 | TC-013 | `Registry.load_from` lists every declared artifact type with the `semantic` block and the `data_schema` references present, and `validate_document` passes every shipped skeleton | Integration | P0 | FR-003-AC-3 | ✅ |
 | TC-014 | `semantic.imports` names the imported modules and types, every `ImportedTypeRef` in a skeleton, fixture, or mapping names a declared module and type, an undeclared module and an undeclared type each fail naming both values, and a self-import fails | Unit | P0 | FR-003-AC-4, FR-003-CON-3 | ✅ |
 | TC-015 | A two-module and a three-module import cycle each fail naming every module on the cycle in traversal order, distinctly from the missing-import diagnostic | Unit | P0 | FR-003-AC-5 | ✅ |
-| TC-016 | The bundled FR-035 schema rejects an unknown `semantic` key naming it, a non-`<org>/<repo>` package, and an unregistered `targets` value, and is the revision this suite pins by digest; the ambiguous-`data_schema` refusal is a strict expected failure because `ArtifactTypeEntry.data_schema` is untyped upstream (agent-ix/quoin#341) | Unit | P0 | FR-003-AC-6 | 🚧 One half a strict expected failure |
 | TC-017 | A one-hex-digit `data_schema.digest` edit costs the bound archetype (the negative control: the unmutated copy keeps it), and the refusal is diagnosed — the second half is a strict expected failure until an engine diagnosing it is published (agent-ix/quire-rs#394) | Integration | P0 | FR-003-AC-8, IT-002-AC-2 | 🚧 Strict expected failure |
 | TC-018 | Every locator added by this change is optional except `title` and `purpose`; the pre-change `spec/spec.md` validates unchanged and maps to a record that validates against the new schema | Snapshot | P0 | FR-004-AC-8, FR-004-CON-1, FR-005-AC-5, FR-005-CON-1 | ✅ |
 | TC-019 | The `## Invariants` clause maps to a `ClauseRef` with `sourceSpan` only when a `sourceIdentity` is supplied, the `invariantsText` entry equals the fence bytes, five malformed clause forms each fail naming the line, a prose `## Invariants` leaves `invariants` absent, and no module code parses the clause | Unit | P0 | FR-004-AC-5, FR-004-CON-2, FR-005-AC-3 | ✅ |
@@ -212,9 +210,8 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |
 | TC-034 | The module loads with every declared artifact type, every skeleton validates and extracts a record, the reference-form `data_schema` is reported verbatim, and the legacy-manifest fixture registers the same artifact types | Integration | P0 | IT-002-AC-1, StR-001-VC-3 | ✅ |
 | TC-035 | `validate_document` and the reference mapping refuse every negative fixture by the check its `expect` frontmatter names | Integration | P0 | IT-002-AC-3 | ✅ |
-| TC-036 | The manifest validates against the bundled FR-035 schema; neither the missing-library nor the missing-schema branch skips | Unit | P0 | FR-001-AC-1 | ✅ |
 | TC-037 | Every `✅` matrix row names test cases the summary declares and a trace marker carries; every summary row is carried; no marker names an undeclared case; no test is untagged — the check `quire coverage` skips here (agent-ix/quoin#343) | Static | P0 | FR-002-CON-1 | ✅ |
-| TC-038 | The package exposes `MANIFEST_PATH` as importable resource data, so the activation pipeline can read the manifest without knowing the layout | Unit | P1 | FR-001-AC-1 | ✅ |
+| TC-038 | The package exposes `MANIFEST_PATH` as importable resource data, so the activation pipeline can read the manifest without knowing the layout | Unit | P1 | FR-001 | ✅ |
 | TC-039 | Every cell parse of the reference mapping is exercised at its boundaries: a document with no frontmatter, an escaped pipe, an unbounded multiplicity, a parenthesis-free verification cell, every member of the closed constraint vocabulary, and a keyword outside it | Unit | P1 | FR-004-AC-3, FR-004-AC-6 | ✅ |
 | TC-040 | A malformed `<org>/<repo>#<Type>` cell is refused before the declaration check, and an undeclared type is refused after it | Unit | P1 | FR-004-AC-4 | ✅ |
 | TC-041 | Six malformed table and fence forms are each refused naming the line: a wrong cell count, a renamed Properties header, a short Properties row, an unparseable multiplicity, a `sysml` line that is not a declaration, and an unterminated clause fence | Unit | P1 | FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |

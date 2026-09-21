@@ -37,13 +37,12 @@ are both detectable from the manifest alone.
   `artifact_types`, `doc_kinds`, and `frontmatter_schema_ref` values.
 - The emitted schemas of [FR-002](./FR-002-semantic-data-schemas.md) and the
   export-name to model map fixed there.
-- The FR-035 module-manifest schema, bundled for the suite at
-  `tests/fixtures/module-manifest.schema.json`, carrying the `semantic` block and
-  the reference-form `data_schema` of filament-core-service FR-035 CR-003. The
-  copy is vendored byte-for-byte from the revision `quoin` ships at
-  `src/semantic/schemas/module-manifest.schema.json`, and the suite records that
-  revision's SHA-256 so a silent divergence from upstream is a failing test
-  rather than an assumption.
+- The module-manifest schema of filament-core-service FR-035, as its owner
+  applies it at activation and as `quoin` and `quire` apply it at install and
+  load. This module names no revision of that schema and bundles no copy of it:
+  a copy held here could only be validated against itself, so it would stay
+  green after the real schema moved. The engines that read this manifest are
+  the oracle for every criterion below.
 - The quire engine the suite runs against: the wheel exposing
   `extract_semantic`, provisioned by `make dev-quire`. No index a repository may
   commit against carries it, so `quire` is not a declared dependency;
@@ -94,14 +93,14 @@ are both detectable from the manifest alone.
   digest, and the computed digest.
 - If the manifest declares a `semantic` key outside the admitted set, a
   `package` that is not `<org>/<repo>`, or a `targets` value outside the
-  registry, then the bundled FR-035 schema SHALL reject the manifest naming the
-  key or value.
-- The bundled FR-035 schema does *not* reject a `data_schema` mixing
-  `schema`/`digest` with another key on an *artifact* type: `ArtifactTypeEntry.data_schema`
-  is typed `{type: object}`, and only `ObjectTypeEntry.data_schema` carries the
-  FR-073 `oneOf`. The module SHALL record that as a strict expected failure
-  naming agent-ix/quoin#341 rather than assert a refusal the schema does not
-  make.
+  registry, then quire SHALL refuse the manifest at load: the module's
+  archetypes do not register. Refusal is observed at the consumer, which applies
+  the FR-035 schema itself.
+- An ambiguous `data_schema` on an *artifact* type — the reference form mixed
+  with another key — is admitted upstream, because `ArtifactTypeEntry.data_schema`
+  is typed `{type: object}` while only `ObjectTypeEntry.data_schema` carries the
+  FR-073 `oneOf` (agent-ix/quoin#341). Closing that gap is the schema owner's;
+  FR-003-CON-2 is this module's own obligation to carry no inline form.
 
 Imports, cycles, and missing references:
 
@@ -143,13 +142,13 @@ Evidence, not obligation:
 
 - Adding the `semantic` block and the `data_schema` references breaks no consumer
   that ignores them: the legacy-manifest fixture and the current manifest both
-  validate under the same FR-035 schema and both load under quire with the same
-  artifact types.
+  load under quire with the same artifact types (TC-034).
 - Naming what a module load refused is not available at this engine: an unknown
   manifest key empties the model silently (agent-ix/quire-rs#221) and a
   `data_schema` digest mismatch drops the artifact type with no diagnostic
-  (agent-ix/quire-rs#394). AC-6's "naming the key or the path" half is carried as
-  an explicit expected failure naming those issues rather than worked around.
+  (agent-ix/quire-rs#394). FR-003-AC-8 is carried as an explicit expected failure
+  naming those issues rather than worked around; FR-003-AC-6 claims only the
+  refusal, which is observable at the loader.
 - Resolving a reference-form `data_schema` into a stored snapshot at activation
   is filament-core-service#23; until it lands the service stores the reference
   verbatim, which is what [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md) asserts.
@@ -158,7 +157,7 @@ Evidence, not obligation:
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
-| FR-003-CON-1 | The manifest SHALL add no new required key at the manifest root or on any artifact-type entry, so that a consumer that ignores the `semantic` block loads the module as before; the suite carries a legacy-manifest fixture that validates under the same FR-035 schema. | Compatibility | Test (TC-011) |
+| FR-003-CON-1 | The manifest SHALL add no new required key at the manifest root or on any artifact-type entry, so that a consumer that ignores the `semantic` block loads the module as before; the legacy-manifest fixture loads under quire and registers the same artifact types. | Compatibility | Test (TC-034) |
 | FR-003-CON-2 | The manifest SHALL carry no inline `data_schema` object on any artifact type; the reference form is the only form. | Integrity | Test (TC-012) |
 | FR-003-CON-3 | `semantic.imports` SHALL NOT name this module's own `package`. | Integrity | Test (TC-014) |
 
@@ -166,17 +165,17 @@ Evidence, not obligation:
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-003-AC-1 | The manifest validates against the bundled FR-035 schema with the `semantic` block present, and the block's key set equals exactly `{contract_version, semantic_core, package, exports, imports, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs. | Test (TC-011) |
+| FR-003-AC-1 | The `semantic` block's key set equals exactly `{contract_version, semantic_core, package, exports, imports, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs, and the manifest carrying it loads under quire with every declared artifact type registered. | Test (TC-011, TC-034) |
 | FR-003-AC-2 | For each exported artifact type, `data_schema.schema` names an existing file under `spec_artifacts_app/schemas/` per the FR-002 map, `data_schema.digest` equals `sha256:` plus the hex SHA-256 of that file's bytes, and `exports` equals the set of artifact types carrying a reference; a one-byte edit to any emitted schema without a digest refresh fails the suite naming the artifact type and both digests. | Test (TC-012) |
 | FR-003-AC-3 | With the block and the references present, `quire.Registry.load_from` over the module's parent directory lists every archetype the manifest declares and `validate_document` passes every shipped skeleton — the block breaks no consumer. | Test (TC-013) |
 | FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` at an exact version and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
 | FR-003-AC-5 | An import graph built from this module plus synthesized dynamic-module fixtures fails on a cycle naming every module on it in deterministic traversal order, distinctly from the missing-import failure of AC-4; the fixtures exercise a two-module cycle, a three-module cycle, and an acyclic graph that must pass. No fixture is read from the machine's installed module root. | Test (TC-015) |
-| FR-003-AC-6 | The bundled FR-035 schema rejects `semantic: {…, foo: 1}` naming `foo`, rejects `package: ix://agent-ix/x`, and rejects `targets: [go]`. Two halves of this criterion are expected failures rather than claims: the schema does **not** reject `data_schema: {schema: x.json, digest: sha256:…, type: object}` on an *artifact* type, because `ArtifactTypeEntry.data_schema` is typed `{type: object}` while only `ObjectTypeEntry.data_schema` carries the FR-073 `oneOf` (agent-ix/quoin#341); and no engine load names the refused key or the refused path (agent-ix/quire-rs#221, agent-ix/quire-rs#394). Each is recorded as a strict expected failure naming its issue. | Test (TC-016) |
-| FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) validates under the bundled FR-035 schema and loads under quire with the same artifact types as the current manifest. | Test (TC-011) |
+| FR-003-AC-6 | A copy of the module whose `semantic` block carries an unknown key, a `package` that is not `<org>/<repo>`, or an unregistered `targets` value is refused at load: `quire.Registry.load_from` registers none of its archetypes, while the unmutated copy registers them. The refusal is claimed; naming the refused key or path is not (agent-ix/quire-rs#221). | Test (TC-016) |
+| FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) loads under quire with the same artifact types as the current manifest. | Test (TC-034, TC-043) |
 | FR-003-AC-8 | A copy of the module with one `data_schema.digest` altered by one hex digit is refused at load. Recorded as a strict expected failure naming agent-ix/quire-rs#394 until an engine that diagnoses the mismatch is published. | Test (TC-017) |
 
 ## Dependencies
 
-- **Upstream**: [FR-001](./FR-001-module-manifest-activates.md) (the FR-035 gate), [FR-002](./FR-002-semantic-data-schemas.md) (the referenced files), quoin FR-070 and FR-073 (agent-ix/quoin#293), quire-rs FR-069 (agent-ix/quire-rs#388)
+- **Upstream**: [FR-001](./FR-001-module-manifest-activates.md) (activation), [FR-002](./FR-002-semantic-data-schemas.md) (the referenced files), quoin FR-070 and FR-073 (agent-ix/quoin#293), quire-rs FR-069 (agent-ix/quire-rs#388)
 - **Blocked downstream**: `quoin module install` of this module cannot succeed once quoin's FR-070 reader ships, because it resolves `semantic.exports` and `data_schema` against `object_types` only and this module exports artifact types (agent-ix/quoin#336). The manifest keeps the exports as specified rather than bend to it; the amendment is quoin's.
 - **Downstream**: [FR-004](./FR-004-markdown-mappings-and-imports.md), [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md)

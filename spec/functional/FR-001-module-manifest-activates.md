@@ -34,6 +34,7 @@ The manifest **SHALL** conform to the module-manifest schema filament-core-servi
 | FR-001-AC-2 | Activation against clean filament-core succeeds with 200 | Demonstration |
 | FR-001-AC-3 | Re-activation returns no-op (same content hash) | Demonstration |
 | FR-001-AC-4 | Each declared archetype/object_type/artifact_type appears in the corresponding filament-core table after activation | Demonstration |
+| FR-001-AC-5 | The installed package exposes `MANIFEST_PATH` as importable resource data resolving to the shipped `manifest.yaml`, so an activation pipeline reads the manifest without knowing the package layout. | Test (TC-038) |
 
 ## Dependencies
 

@@ -7,11 +7,9 @@ module docstring binds to nothing (quire-rs CR-061).
 from __future__ import annotations
 
 import pytest
-import yaml
 
 import spec_artifacts_app as pack
 from tests.conftest import (
-    LEGACY_MANIFEST_PATH,
     MODEL_OF,
     SCHEMAS_DIR,
     artifact_types,
@@ -31,17 +29,15 @@ ADMITTED_SEMANTIC_KEYS = {
 }
 
 
-@pytest.mark.trace("TC-038", "FR-001")
+@pytest.mark.trace("TC-038", "FR-001-AC-5")
 def test_pack_exposes_manifest_path() -> None:
     """The activation pipeline imports this package and reads `MANIFEST_PATH`."""
     assert pack.MANIFEST_PATH == pack.PACK_ROOT / "manifest.yaml"
     assert pack.MANIFEST_PATH.is_file()
 
 
-@pytest.mark.trace("TC-011", "FR-003-AC-1", "FR-003-AC-7", "FR-003-CON-1")
-def test_the_semantic_block_carries_the_nine_admitted_keys_and_adds_no_required_key(
-    manifest, semantic_block
-):
+@pytest.mark.trace("TC-011", "FR-003-AC-1")
+def test_the_semantic_block_carries_the_nine_admitted_keys(semantic_block):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
     assert semantic_block["semantic_core"] == "0.1.0"
@@ -55,19 +51,6 @@ def test_the_semantic_block_carries_the_nine_admitted_keys_and_adds_no_required_
         "`sweep_report` is required only by `legacy_forms: error`; declaring it "
         "under `warning` would claim a sweep that never happened"
     )
-
-    # FR-003-CON-1 / AC-7: the manifest a consumer that predates the block would
-    # see carries no root key and no artifact-type key this module added, and
-    # declares the same artifact types. That it still *loads* is asserted against
-    # the real engine in TC-034, which is the only oracle for it: no copy of the
-    # module-manifest schema lives in this repository (PLAT-902).
-    legacy = yaml.safe_load(LEGACY_MANIFEST_PATH.read_text())
-    assert "semantic" not in legacy
-    assert all("data_schema" not in entry for entry in legacy["artifact_types"])
-    assert set(legacy) == set(manifest) - {"semantic"}
-    assert [e["name"] for e in legacy["artifact_types"]] == [
-        e["name"] for e in manifest["artifact_types"]
-    ]
 
 
 @pytest.mark.trace("TC-012", "FR-003-AC-2", "FR-003-CON-2")

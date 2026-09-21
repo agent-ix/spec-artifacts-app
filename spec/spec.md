@@ -77,9 +77,9 @@ record instead of as prose.
   committed dev dependency waits on that issue.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown manifest
   key empties the model silently) and `agent-ix/quire-rs#394` (a `data_schema`
-  digest mismatch drops the type with no diagnostic). FR-003-AC-6's "naming the
-  key or the path" half and FR-003-AC-8 are carried as explicit expected failures
-  naming those issues.
+  digest mismatch drops the type with no diagnostic). FR-003-AC-8 is carried as an
+  explicit expected failure naming those issues; FR-003-AC-6 claims the refusal
+  itself, which is observable at the loader, and not the diagnostic.
 - Record validation of a legacy-form artifact that declares `object:`:
   `agent-ix/quire-rs#391` (the engine validates an `unavailable` record as `{}`).
   No artifact this Module ships carries `object:`, and the defect is carried

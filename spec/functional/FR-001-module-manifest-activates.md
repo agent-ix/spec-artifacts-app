@@ -25,7 +25,7 @@ The system **SHALL** publish a Filament Module manifest (`spec_artifacts_app/man
 
 ## Behavior
 
-The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation. That schema belongs to filament-core-service; this module keeps no copy of it, so conformance is observed at `POST /api/v1/modules/activate` (FR-001-AC-2) and nowhere else. Re-activation **SHALL** be a no-op (idempotent by content hash per FR-026-AC-1).
+The manifest **SHALL** conform to the module-manifest schema filament-core-service applies at activation. That schema belongs to filament-core-service; this module keeps no copy of it, so conformance is settled at `POST /api/v1/modules/activate` (FR-001-AC-2) and nowhere else — and this package's suite runs no cluster, so FR-001-AC-2 is not exercised here. Nothing in this repository verifies FR-035 conformance or stands in for it. Re-activation **SHALL** be a no-op (idempotent by content hash per FR-026-AC-1).
 
 ## Acceptance Criteria
 

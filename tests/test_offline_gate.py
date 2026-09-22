@@ -32,7 +32,6 @@ def test_the_offline_gate_is_recorded_as_a_manual_procedure_with_no_ci_claim():
     for command in (
         "npm ci",
         "poetry install",
-        "make dev-quire",
         "make schemas-check",
         "make test",
     ):

@@ -20,8 +20,7 @@ Populate the environment **with** the network, then take it away:
 
 ```bash
 npm ci                # installs the pinned TypeSpec toolchain and semantic-core
-poetry install        # installs the test dependencies
-make dev-quire        # installs the Quire wheel (agent-ix/quire-rs#392)
+poetry install        # installs the test dependencies, including quire (internal-pypi)
 ```
 
 Then run both gates with no network:

@@ -128,13 +128,22 @@ def test_a_digest_mismatch_drops_the_bound_archetype(quire_engine, tmp_path):
 
 @pytest.mark.xfail(
     strict=True,
+    raises=AttributeError,
     reason=(
         "agent-ix/quire-rs#394: a `data_schema` digest mismatch drops the bound "
-        "archetype with no observable diagnostic and the module still loads, so "
-        "nothing tells a consumer the binding was refused. Recorded as a strict "
-        "expected failure naming the issue — never a skip, never a silent pass. "
-        "The sibling silent-failure defect is agent-ix/quire-rs#221. The negative "
-        "control above proves the binding itself is real."
+        "archetype, and quire-rs's own loader records the refusal as a "
+        "`semantic.data-schema-digest-mismatch` failure (src/semantic/resolver.rs, "
+        "pushed to `Registry::failures()` at src/loader/mod.rs) — but that "
+        "diagnostic is not exposed through the Python binding: `Registry.load_from` "
+        "is tolerant by contract (it never raises for this; see "
+        "src/registry.rs's `finish_tolerant`) and the Rust `failures()` accessor "
+        "has no `#[pymethods]` counterpart, so `registry.failures()` is an "
+        "`AttributeError` from Python today. Under 0.47.1 only the bound artifact "
+        "type is dropped, not the whole module — the negative control above "
+        "proves the binding itself is real. Recorded as a strict expected failure "
+        "naming the issue — never a skip, never a silent pass — and it will XPASS "
+        "(failing the suite) the moment `failures()` is exposed to Python. The "
+        "sibling silent-failure defect is agent-ix/quire-rs#221."
     ),
 )
 @pytest.mark.trace("TC-017", "FR-003-AC-8", "IT-002-AC-2")
@@ -145,12 +154,20 @@ def test_a_digest_mismatch_is_refused_with_a_diagnostic(quire_engine, tmp_path):
     altered = recorded[:-1] + ("0" if recorded[-1] != "0" else "1")
     (module / "manifest.yaml").write_text(text.replace(recorded, altered))
 
-    with pytest.raises(Exception) as raised:
-        quire_engine.Registry.load_from([str(tmp_path / "diagnosed")])
-    message = str(raised.value)
-    assert (
-        "ApplicationSpec" in message and "digest" in message
-    ), f"the refusal names neither the artifact type nor the digest: {message}"
+    registry = quire_engine.Registry.load_from([str(tmp_path / "diagnosed")])
+    # `Registry.load_from` is tolerant: the mismatch does not raise, it costs
+    # the module its `ApplicationSpec` archetype (the negative control above)
+    # and is recorded as a diagnostic on the registry itself. `failures()` is
+    # the Rust accessor for that record; today it raises `AttributeError` from
+    # Python, which the xfail above names exactly.
+    failures = [dict(f) for f in registry.failures()]
+    matching = [
+        f for f in failures if "semantic.data-schema-digest-mismatch" in f["reason"]
+    ]
+    assert matching, f"no digest-mismatch failure recorded: {failures}"
+    assert any(
+        f["archetype"] == "ApplicationSpec" for f in matching
+    ), f"the failure does not name ApplicationSpec: {matching}"
 
 
 @pytest.mark.trace("TC-016", "FR-003-AC-6")

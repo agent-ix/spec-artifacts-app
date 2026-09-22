@@ -35,8 +35,8 @@ is not a field of any model.
   `@jsonSchema` base
   `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/`.
 - `@agent-ix/semantic-core` 0.3.0, resolved from the registry the developer's npm
-  configuration routes the `@agent-ix` scope to (today the local npm.ix
-  registry), pinned exactly, for `ClauseRef`, `SourceLocus`, and `SemanticId`.
+  configuration routes the `@agent-ix` scope to (today GitHub Packages),
+  pinned exactly, for `ClauseRef`, `SourceLocus`, and `SemanticId`.
 - `@typespec/compiler` 1.15.0 and `@typespec/json-schema` 1.15.0 as
   devDependencies of the repository, with a committed `package-lock.json`.
 - The frontmatter schemas already shipped at

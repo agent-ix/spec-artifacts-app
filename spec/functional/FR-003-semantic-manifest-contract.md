@@ -142,12 +142,13 @@ Evidence, not obligation:
 - Adding the `semantic` block and the `data_schema` references breaks no consumer
   that ignores them: the legacy-manifest fixture and the current manifest both
   load under quire with the same artifact types (TC-034).
-- Naming what a module load refused is not available at this engine: an unknown
-  manifest key empties the model silently (agent-ix/quire-rs#221) and a
-  `data_schema` digest mismatch drops the artifact type with no diagnostic
-  (agent-ix/quire-rs#394). FR-003-AC-8 is carried as an explicit expected failure
-  naming those issues rather than worked around; FR-003-AC-6 claims only the
-  refusal, which is observable at the loader.
+- Naming what a module load refused is not available from Python at this engine:
+  an unknown manifest key empties the model silently (agent-ix/quire-rs#221) and
+  a `data_schema` digest mismatch drops only the bound artifact type, with the
+  `semantic.data-schema-digest-mismatch` diagnostic quire-rs records not exposed
+  through the Python binding (agent-ix/quire-rs#394). FR-003-AC-8 is carried as an
+  explicit expected failure naming those issues rather than worked around;
+  FR-003-AC-6 claims only the refusal, which is observable at the loader.
 - Resolving a reference-form `data_schema` into a stored snapshot at activation
   is filament-core-service#23; until it lands the service stores the reference
   verbatim, which is what [IT-002](../integration/IT-002-module-load-and-extraction-roundtrip.md) asserts.

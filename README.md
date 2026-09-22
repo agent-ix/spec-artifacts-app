@@ -94,9 +94,8 @@ See https://github.com/agent-ix/quire-cli#usage-instructions.
 - **Build/CI:** GitHub Actions; dynamic Git-tag-based versioning; publishes wheel + sdist to Google Artifact Registry via `twine upload -r internal-pypi`.
 
 ```bash
-make install          # install deps in Poetry venv
+make install          # poetry install: deps in the Poetry venv, including quire
 make semantic-install # npm ci for the pinned TypeSpec toolchain
-make dev-quire        # install the Quire wheel the semantic tests need
 make schemas          # emit the JSON Schemas and refresh the derived files
 make schemas-check    # fail when the committed schemas or digests drift
 make test             # run pytest
@@ -113,10 +112,10 @@ Two environment preconditions, both deliberate and both recorded in NFR-001:
   configuration routes the `@agent-ix` scope to. The repository carries no
   `.npmrc`, so the routing is your machine's; `agent-ix/filament-core-data#11`
   tracks the public publish.
-- The Quire wheel exposing `extract_semantic` is on no index this repository may
-  commit against (`agent-ix/quire-rs#392`), so `make dev-quire` provisions it.
-  The semantic tests **fail** rather than skip when it is absent, because a
-  skipped row is not coverage.
+- The Quire wheel exposing `extract_semantic` is a `pyproject.toml` dev
+  dependency pinned to the `internal-pypi` source, provisioned by
+  `poetry install`. The semantic tests **fail** rather than skip when it is
+  absent, because a skipped row is not coverage.
 
 The offline, no-network gate is a manual procedure: see
 [docs/offline-gate.md](docs/offline-gate.md).

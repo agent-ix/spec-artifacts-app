@@ -72,9 +72,12 @@ record instead of as prose.
   produced or faked here.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown manifest
   key empties the model silently) and `agent-ix/quire-rs#394` (a `data_schema`
-  digest mismatch drops the type with no diagnostic). FR-003-AC-8 is carried as an
-  explicit expected failure naming those issues; FR-003-AC-6 claims the refusal
-  itself, which is observable at the loader, and not the diagnostic.
+  digest mismatch drops only the bound artifact type — the rest of the module
+  still loads — and the `semantic.data-schema-digest-mismatch` diagnostic quire-rs
+  itself records is not exposed through the Python binding: `Registry.failures()`
+  has no `#[pymethods]` counterpart). FR-003-AC-8 is carried as an explicit
+  expected failure naming those issues; FR-003-AC-6 claims the refusal itself,
+  which is observable at the loader, and not the diagnostic.
 - Record validation of a legacy-form artifact that declares `object:`:
   `agent-ix/quire-rs#391` (the engine validates an `unavailable` record as `{}`).
   No artifact this Module ships carries `object:`, and the defect is carried

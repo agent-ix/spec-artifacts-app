@@ -60,7 +60,7 @@ test:
 .PHONY: test-integrations test-it
 test-integrations test-it:
 	@echo "No cluster integration suite in this module. The engine-boundary tests"
-	@echo "(IT-002) run under \`make test\`; \`poetry install\` provisions the wheel."
+	@echo "(IT-002) run under \`make test\`; \`make install\` provisions the wheel."
 
 .PHONY: lint
 lint:

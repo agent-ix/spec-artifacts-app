@@ -67,9 +67,10 @@ Each step performs one discrete action and has its own success criterion.
 5. Load the copy whose `data_schema.digest` is altered by one hex digit.
    - IT-002-SC-05: the load is refused and the refusal names the artifact type
      and the path. Recorded as a strict expected failure naming
-     agent-ix/quire-rs#394 (the digest mismatch drops the type with no
-     diagnostic) and agent-ix/quire-rs#221 (an unknown manifest key empties the
-     model silently).
+     agent-ix/quire-rs#394 (the digest mismatch drops only the bound artifact
+     type, and the diagnostic quire-rs records for it is not exposed through
+     the Python binding) and agent-ix/quire-rs#221 (an unknown manifest key
+     empties the model silently).
 6. Run `validate_document` and the FR-004 reference mapping over each negative
    fixture.
    - IT-002-SC-06: each fixture is refused by the check its `expect` frontmatter

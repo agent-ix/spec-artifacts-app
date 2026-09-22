@@ -143,7 +143,15 @@ def test_each_skeleton_maps_to_a_record_that_validates_and_carries_the_typed_row
 
     assert data["fields"][0] == {
         "name": "application_id",
-        "type": {"target": "UUID", "multiplicity": {"lower": 1, "upper": 1}},
+        "type": {
+            "target": "UUID",
+            "multiplicity": {
+                "lower": 1,
+                "upper": 1,
+                "ordered": False,
+                "unique": False,
+            },
+        },
         "identity": True,
     }
     assert data["boundaries"][0]["kind"] == "owned"

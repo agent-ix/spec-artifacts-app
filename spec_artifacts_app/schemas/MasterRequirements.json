@@ -46,7 +46,7 @@
     "fields": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/FieldDecl.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/FieldDecl.json"
       },
       "minItems": 1,
       "description": "The specification's identity attributes, declared as one typed row per\nfield in `## Properties`, or as the alternate `sysml` fence form of the\nsame declarations (quoin FR-071)."
@@ -60,7 +60,7 @@
     "invariants": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/semantic-core/0.1.0/ClauseRef.json"
+        "$ref": "https://schemas.agent-ix.org/semantic-core/0.3.0/ClauseRef.json"
       },
       "minItems": 1
     }

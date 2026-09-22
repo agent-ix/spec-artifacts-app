@@ -31,7 +31,7 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MIN_NODE_MAJOR = 20;
-const SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.1.0/";
+const SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/";
 const NORMALIZATION = {
   name: "absolute-id-and-ref",
   version: "1.0.0",
@@ -212,7 +212,7 @@ function emit() {
         note:
           rewrittenFiles.length === 0
             ? "no-op: the emitter left no relative $id or $ref"
-            : "rewrote relative $id/$ref to the module base or semantic-core 0.1.0",
+            : "rewrote relative $id/$ref to the module base or semantic-core 0.3.0",
       },
       files: [...rendered.keys()],
       digest: `sha256:${overall.digest("hex")}`,

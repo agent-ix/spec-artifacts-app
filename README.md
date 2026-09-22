@@ -40,7 +40,7 @@ Since 0.2.0 this module declares a **semantic data model per artifact type**, so
 consumer can read an application composite as a typed record instead of
 re-parsing its prose:
 
-- `typespec/main.tsp` is the source, importing `@agent-ix/semantic-core` 0.1.0.
+- `typespec/main.tsp` is the source, importing `@agent-ix/semantic-core` 0.3.0.
 - `schemas/<Model>.json` is the emitted JSON Schema 2020-12 bundle (39 files),
   with `schemas/toolchain.json` recording the projection's provenance.
 - `manifest.yaml` carries the quoin FR-070 `semantic` block, and every artifact

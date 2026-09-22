@@ -2,9 +2,15 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the package to pypi as well as running checks"
+        type: boolean
+        default: false
 
 jobs:
   publish-to-pypi:
+    if: inputs.publish
     runs-on: ubuntu-latest
 
     steps:
@@ -20,8 +26,9 @@ jobs:
         registry_url: https://${{ vars.GCP_REGION }}-python.pkg.dev/${{ vars.GCP_PROJECT_NAME }}/${{ vars.GCP_PYPI }}
 
   ci:
-    uses: agent-ix/python-service-actions/.github/workflows/lib-ci.yml@main
+    uses: agent-ix/python-service-actions/.github/workflows/semantic-module-ci.yml@main
     with:
       extra_index_url: https://${{ vars.GCP_REGION }}-python.pkg.dev/${{ vars.GCP_PROJECT_NAME }}/${{ vars.GCP_PYPI }}/simple/
     secrets:
       GCP_KEY: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+      REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}

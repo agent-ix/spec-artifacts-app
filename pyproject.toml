@@ -33,6 +33,7 @@ py-project = "^0.4.4"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-json-report = "^1.5.0"
+quire = { version = "^0.47.1", source = "internal-pypi" }
 ruff = "^0.14.13"
 pytest-results = { version = "^0.2.0", python = ">=3.12" }
 
@@ -72,10 +73,6 @@ shell = """node scripts/generate-schemas.mjs --check \
   && python scripts/build_mappings.py --check \
   && python scripts/build_legacy_manifest.py --check"""
 help = "Fail when the committed schemas, digests, mappings, or legacy fixture differ from the source"
-
-[tool.poe.tasks.dev-quire]
-shell = "pip install --index-url http://pypi.ix/root/dev/+simple/ --trusted-host pypi.ix 'quire>=0.46.0'"
-help = "Install the Quire wheel the semantic tests need (see agent-ix/quire-rs#392)"
 
 [tool.poe.tasks.test-integrations]
 cmd = "pytest tests_integration/ -v -s --no-cov -m integration"
@@ -176,11 +173,6 @@ ban-relative-imports = "all"
 name = "internal-pypi"
 url = "https://us-west1-python.pkg.dev/agent-ix/internal-pypi/simple/"
 priority = "supplemental"
-
-[[tool.poetry.source]]
-name = "local-pypi"
-url = "http://pypi.ix/root/dev/+simple/"
-priority = "explicit"
 
 [tool.poetry-dynamic-versioning]
 enable = true

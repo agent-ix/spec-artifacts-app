@@ -2,12 +2,10 @@
 
 Two policies live here and nowhere else:
 
-* **The engine is a hard dependency of the semantic rows.** ``quire`` is not
-  declared in ``pyproject.toml`` — no index a repository may commit against
-  carries the 0.46.0 wheel exposing ``extract_semantic``, so it is provisioned
-  by ``make dev-quire`` and ``agent-ix/quire-rs#392`` is the blocking issue.
-  When it is absent the semantic tests **fail**; they never skip, because a
-  skipped row is not coverage.
+* **The engine is a hard dependency of the semantic rows.** ``quire`` is a dev
+  dependency resolved from ``internal-pypi`` (``poetry install``). When it is
+  absent the semantic tests **fail**; they never skip, because a skipped row is
+  not coverage.
 * **The emitted schemas are read from the committed tree**, and every ``$ref``
   resolves against the semantic-core package the pinned toolchain installs, so a
   record test validates against the real shipped bytes rather than a copy.
@@ -60,9 +58,9 @@ MODEL_OF = {
 
 QUIRE_MISSING = (
     "the Quire wheel exposing `extract_semantic` is not installed in this "
-    "environment. Run `make dev-quire` (agent-ix/quire-rs#392 tracks publishing "
-    "0.46.0 to an index this repository may depend on). The semantic tests fail "
-    "rather than skip, because a skipped row is not coverage."
+    "environment. Run `poetry install` (quire is a dev dependency from "
+    "internal-pypi). The semantic tests fail rather than skip, because a "
+    "skipped row is not coverage."
 )
 
 
@@ -185,8 +183,9 @@ def schema_registry():
     if not SEMANTIC_CORE_DIR.is_dir():  # pragma: no cover - environment guard
         pytest.fail(
             "@agent-ix/semantic-core is not installed, so `$ref`s to the grammar "
-            "cannot resolve. Run `npm ci` (FR-002-CON-3: the repository carries no "
-            "`.npmrc`, so `@agent-ix` resolves through the user-level npm config)."
+            "cannot resolve. Run `make semantic-install` (FR-002-CON-3: the "
+            "repository carries no `.npmrc`, so `@agent-ix` resolves from GitHub "
+            "Packages through the user-level npm config)."
         )
     resources = []
     for path in sorted(SCHEMAS_DIR.glob("*.json")):

@@ -70,11 +70,6 @@ record instead of as prose.
   published only behind the promotion gate `agent-ix/quoin#290`; the
   semantic-core language packages are `agent-ix/filament-core-data#11`. None is
   produced or faked here.
-- Publishing the quire wheel exposing `extract_semantic` to an index a repository
-  may commit against: `agent-ix/quire-rs#392`. This Module provisions the wheel
-  with a documented `make dev-quire` target, and its semantic tests **fail**
-  rather than skip when the engine is absent (NFR-001). Declaring `quire` as a
-  committed dev dependency waits on that issue.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown manifest
   key empties the model silently) and `agent-ix/quire-rs#394` (a `data_schema`
   digest mismatch drops the type with no diagnostic). FR-003-AC-8 is carried as an

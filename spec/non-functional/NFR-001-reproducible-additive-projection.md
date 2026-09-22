@@ -26,28 +26,25 @@ a way that invalidates a document valid before the change.
 - Applies to: `make schemas`, `make schemas-check`, the `data_schema.digest`
   values in `manifest.yaml`, every `$ref` resolution the test suite performs, and
   every locator the change adds.
-- Operational context: a clean clone with `npm ci` and `poetry install`, and the
-  quire wheel provisioned by `make dev-quire`; the only network access is the
-  package install itself.
+- Operational context: a clean clone with `npm ci` and `poetry install`, which
+  provisions the quire wheel as a dev dependency; the only network access is
+  the package install itself.
 - Toolchain preconditions: Node 20 or later (`@typespec/compiler` 1.15.0
-  requires it) and Python 3.13. `make dev-quire` installs `quire >= 0.46.0`,
-  the first wheel exposing `extract_semantic`, from the local `pypi.ix` index;
-  publishing it to an index a repository may commit against is
-  agent-ix/quire-rs#392, which is why it is a documented target and not a
-  declared dependency.
+  requires it) and Python 3.13. `poetry install` installs `quire` 0.47.1 or
+  later, pinned to the `internal-pypi` source, the wheel exposing
+  `extract_semantic`.
 - Reference machine: the machine that recorded the release notes for the
   version under test, whose Node, Python, and CPU are named there. Metric 4 is a
   bound on that machine, not a portable number.
 - npm-configuration precondition: `@agent-ix/semantic-core` 0.3.0 resolves only
   from the registry the developer's npm configuration routes the `@agent-ix`
-  scope to — today the local npm.ix registry. The repository carries no `.npmrc`
+  scope to — today GitHub Packages. The repository carries no `.npmrc`
   (FR-002-CON-3), so the scope routing is the machine's and not the
   repository's, and a machine whose npm configuration does not route the scope
   cannot reproduce the bundle at all.
 - Engine floor: the semantic rows run against the quire wheel exposing
-  `extract_semantic`. No index a repository may commit against carries it
-  (agent-ix/quire-rs#392), so it is provisioned by `make dev-quire` and the
-  semantic rows fail rather than skip when it is absent.
+  `extract_semantic`, a declared dev dependency resolved from `internal-pypi`;
+  the semantic rows fail rather than skip when it is absent.
 - Line endings: the repository pins LF via `.gitattributes`, so the emitted
   bundle and every `manifest.yaml` digest are checkout-independent — the digests
   are computed over bytes with no line-ending normalization, and a CRLF checkout
@@ -92,7 +89,7 @@ this requirement.
 | ID | Criteria | Verification |
 |----|----------|--------------|
 | NFR-001-AC-1 | Two consecutive `make schemas` runs on one tree leave `spec_artifacts_app/schemas` and `spec_artifacts_app/manifest.yaml` byte-identical — `git status --porcelain` over both reports zero files. | Test (TC-030) |
-| NFR-001-AC-2 | `make schemas-check` and `make test` both exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire`. | Demonstration (TC-031) |
+| NFR-001-AC-2 | `make schemas-check` and `make test` both exit 0 with the network namespace disabled after `npm ci` and `poetry install`. | Demonstration (TC-031) |
 | NFR-001-AC-3 | Every `body_extraction` locator this change adds, diffed against the branch point, carries `required: false`, except `title` and `purpose`, which the pre-change document already carries. | Analysis (TC-032) |
 | NFR-001-AC-4 | `make schemas-check` completes within 30 s on the reference machine. | Test (TC-033) |
 

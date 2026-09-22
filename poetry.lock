@@ -931,6 +931,26 @@ files = [
 ]
 
 [[package]]
+name = "quire"
+version = "0.47.1"
+description = "Python bindings for quire-rs: parse, corpus load, and whole-spec queries (FR-023)."
+optional = false
+python-versions = ">=3.9"
+groups = ["dev"]
+files = [
+    {file = "quire-0.47.1-cp39-abi3-macosx_10_12_x86_64.whl", hash = "sha256:f82602101f6b5518b5cdd409b6f458b5bad4dd95668f864a3801d477efc75beb"},
+    {file = "quire-0.47.1-cp39-abi3-macosx_11_0_arm64.whl", hash = "sha256:579cea32466844b20fdca5e0474a8eec0435b37a3190ca6c1033fe71fd523331"},
+    {file = "quire-0.47.1-cp39-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:09e017ff603f6c88ff8a4eeafc64a0bccca938a3e46e119b8f6fef56544f8d4e"},
+    {file = "quire-0.47.1-cp39-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:79011aa703fb9715c1e4ef306a111da265b77a999597cf67bb2d33a71ab4a48f"},
+    {file = "quire-0.47.1-cp39-abi3-win_amd64.whl", hash = "sha256:d81ec619d76a2e9c9ceb248dde1eb929f5c76bbb923f859c9b8b84ad0f2fce58"},
+]
+
+[package.source]
+type = "legacy"
+url = "https://us-west1-python.pkg.dev/agent-ix/internal-pypi/simple"
+reference = "internal-pypi"
+
+[[package]]
 name = "referencing"
 version = "0.37.0"
 description = "JSON Referencing + Python"
@@ -1137,4 +1157,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13,<3.14"
-content-hash = "136ef0f57e9f67cd7c822c4d9515a4248a2deaab03d8dd1f705a5d463022b9e2"
+content-hash = "9d696f8e0c740da0d2823b16142e3c60b2fe1792b4d6ecd31cf8060c4b7b3d7d"

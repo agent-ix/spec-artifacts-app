@@ -208,7 +208,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-028 | Each artifact type ships a skeleton whose headings and table header rows match its asserts in both directions, and every skeleton passes `validate_document` | Unit | P0 | FR-005-AC-1, StR-001-VC-2 | ✅ |
 | TC-029 | The `sysml`-fence skeleton declares the same `FieldDecl` set in the same order as the typed `## Properties` table of its counterpart, and both fill `fields` identically | Unit | P0 | FR-005-AC-2 | ✅ |
 | TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and manifest digests, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
-| TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci`, `poetry install`, and `make dev-quire` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
+| TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci` and `poetry install` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
 | TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001-AC-3 | ✅ |
 | TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |
 | TC-034 | The module loads with every declared artifact type, every skeleton validates and extracts a record, the reference-form `data_schema` is reported verbatim, and the legacy-manifest fixture registers the same artifact types | Integration | P0 | IT-002-AC-1, StR-001-VC-3 | ✅ |

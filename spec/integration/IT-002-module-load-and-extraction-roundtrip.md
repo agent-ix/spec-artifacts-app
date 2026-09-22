@@ -32,10 +32,10 @@ drive load, validation, and extraction from one declaration.
 ## Preconditions
 
 A quire wheel exposing `extract_semantic` is installed in the test environment
-(`make dev-quire`; agent-ix/quire-rs#392 tracks publishing it to an index this
-repository may commit against), and this Module's `spec_artifacts_app/` source
-tree — manifest, schemas, skeletons, mappings — is present. When the wheel is
-absent the rows **fail**; they never skip, because a skipped row is not coverage.
+(a dev dependency resolved from `internal-pypi` by `poetry install`), and this
+Module's `spec_artifacts_app/` source tree — manifest, schemas, skeletons,
+mappings — is present. When the wheel is absent the rows **fail**; they never
+skip, because a skipped row is not coverage.
 
 ## Inputs
 

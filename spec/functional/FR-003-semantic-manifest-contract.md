@@ -44,10 +44,9 @@ are both detectable from the manifest alone.
   green after the real schema moved. The engines that read this manifest are
   the oracle for every criterion below.
 - The quire engine the suite runs against: the wheel exposing
-  `extract_semantic`, provisioned by `make dev-quire`. No index a repository may
-  commit against carries it, so `quire` is not a declared dependency;
-  agent-ix/quire-rs#392 is the blocking issue and the semantic rows **fail**
-  rather than skip when the wheel is absent.
+  `extract_semantic`, a dev dependency pinned to the `internal-pypi` source
+  and resolved by `poetry install`. The semantic rows **fail** rather than
+  skip when the wheel is absent.
 
 ## Outputs
 

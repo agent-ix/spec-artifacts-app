@@ -61,8 +61,17 @@ def test_table_cells_survive_an_escaped_pipe_and_a_trailing_empty_cell():
 
 @pytest.mark.trace("TC-039", "FR-004-AC-3")
 def test_a_multiplicity_cell_outside_the_admitted_forms_is_not_a_multiplicity():
-    assert parse_multiplicity("1..*") == {"lower": 1}
-    assert parse_multiplicity("3") == {"lower": 3, "upper": 3}
+    assert parse_multiplicity("1..*") == {
+        "lower": 1,
+        "ordered": False,
+        "unique": False,
+    }
+    assert parse_multiplicity("3") == {
+        "lower": 3,
+        "upper": 3,
+        "ordered": False,
+        "unique": False,
+    }
     assert parse_multiplicity("many") is None
     assert parse_multiplicity("") is None
 

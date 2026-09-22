@@ -91,7 +91,7 @@ into the requirements as a constraint rather than restated as a story.
 
 ## Dependencies (Contextual)
 
-Upstream: `@agent-ix/semantic-core` 0.1.0 (agent-ix/filament-core-data#35) and the
+Upstream: `@agent-ix/semantic-core` 0.3.0 (agent-ix/filament-core-data#35) and the
 closed constraint IR vocabulary (agent-ix/filament-core-data#34); the quoin
 semantic module contract (agent-ix/quoin#293); the quire-rs semantic extraction
 surface (agent-ix/quire-rs#388).

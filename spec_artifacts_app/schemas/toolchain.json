@@ -9,7 +9,7 @@
   },
   "semanticCore": {
     "name": "@agent-ix/semantic-core",
-    "version": "0.1.0"
+    "version": "0.3.0"
   },
   "base": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/",
   "normalization": {
@@ -61,5 +61,5 @@
     "UiSurface.json",
     "Verification.json"
   ],
-  "digest": "sha256:c322a0a1a566f4696a184f79a63c26159fa10ed5f8271a11e4407a713020b0cd"
+  "digest": "sha256:06c5422ddf061a3031e0c464083f53e7a8b065abae74d068d9a0be2a74c0cd51"
 }

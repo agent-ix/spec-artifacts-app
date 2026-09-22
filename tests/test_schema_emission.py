@@ -234,7 +234,7 @@ def test_exported_schemas_carry_the_versioned_id_and_every_ref_resolves_offline(
         for ref in _refs(schema):
             assert ref in shipped or ref in semantic_core, (
                 f"{model}: `$ref` {ref} resolves to neither a shipped sibling nor "
-                "the semantic-core 0.1.0 bundle"
+                "the semantic-core 0.3.0 bundle"
             )
 
 
@@ -242,7 +242,7 @@ def test_exported_schemas_carry_the_versioned_id_and_every_ref_resolves_offline(
 def test_the_toolchain_is_pinned_exactly_with_a_committed_lockfile_and_no_npmrc():
     package = json.loads((REPO_ROOT / "package.json").read_text())
     assert package["devDependencies"] == {
-        "@agent-ix/semantic-core": "0.1.0",
+        "@agent-ix/semantic-core": "0.3.0",
         "@typespec/compiler": "1.15.0",
         "@typespec/json-schema": "1.15.0",
     }

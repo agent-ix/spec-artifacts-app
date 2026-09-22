@@ -39,7 +39,7 @@ record instead of as prose.
 - The functional requirement that the manifest activates idempotently against
   `filament-core-service`, and the integration test that verifies it.
 - The semantic-module contract (agent-ix/spec-artifacts-app#3): a TypeSpec source
-  importing `@agent-ix/semantic-core` 0.1.0; the emitted JSON Schema for every
+  importing `@agent-ix/semantic-core` 0.3.0; the emitted JSON Schema for every
   declared artifact type and every support model and scalar it references,
   shipped under `spec_artifacts_app/schemas/`; the manifest `semantic` block with
   reference-form `data_schema` and a declared `imports` set; the Markdown
@@ -190,7 +190,7 @@ the filament-core-data code generators, and the Filament extraction API.
 | AS-001-IFC-2 | Emitted schema bundle | file | outbound | `spec_artifacts_app/schemas/<Model>.json`, JSON Schema 2020-12 |
 | AS-001-IFC-3 | Markdown mapping declaration | file | outbound | `spec_artifacts_app/mappings.yaml` under `mappings.schema.json` |
 | AS-001-IFC-4 | Activation endpoint | http_api | outbound | POST /api/v1/modules/activate |
-| AS-001-IFC-5 | Semantic-core grammar | library | inbound | `@agent-ix/semantic-core` 0.1.0 |
+| AS-001-IFC-5 | Semantic-core grammar | library | inbound | `@agent-ix/semantic-core` 0.3.0 |
 
 ## Data Dependencies
 

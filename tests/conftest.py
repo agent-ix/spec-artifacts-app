@@ -50,7 +50,7 @@ SEMANTIC_CORE_DIR = (
     / "json-schema"
 )
 
-SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.1.0/"
+SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/"
 
 #: Artifact type -> emitted model, the FR-002 export map.
 MODEL_OF = {

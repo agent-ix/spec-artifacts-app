@@ -40,7 +40,7 @@ def test_pack_exposes_manifest_path() -> None:
 def test_the_semantic_block_carries_the_nine_admitted_keys(semantic_block):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
-    assert semantic_block["semantic_core"] == "0.1.0"
+    assert semantic_block["semantic_core"] == "0.3.0"
     assert semantic_block["package"] == "agent-ix/spec-artifacts-app"
     assert semantic_block["exports"] == ["ApplicationSpec", "MasterRequirements"]
     assert semantic_block["imports"] == {"agent-ix/spec-artifacts-iso": "0.2.0"}

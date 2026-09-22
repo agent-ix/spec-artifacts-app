@@ -8,7 +8,7 @@ description: "Filament Module: application/composite spec artifact templates (Ap
 # never by restating the imported type's fields (FR-002-AC-10, FR-003-AC-4).
 semantic:
   contract_version: 1.0.0
-  semantic_core: 0.1.0
+  semantic_core: 0.3.0
   package: agent-ix/spec-artifacts-app
   exports:
   - ApplicationSpec
@@ -48,7 +48,7 @@ artifact_types:
   frontmatter_schema_ref: schemas/applicationspec-frontmatter.schema.json
   data_schema:
     schema: schemas/ApplicationSpec.json
-    digest: sha256:da06d59f4b2b15a00a1c2ff4fc63d4b8ad56604d9a7e1cdbede6edb33060bd19
+    digest: sha256:224936c23367cfa56a3d9554699ad69504ef1c50dcdcf49b36c7295f23ef58e1
   defaults:
     id_pattern: AS-{next:03d}
   allowed_links:
@@ -225,7 +225,7 @@ artifact_types:
   frontmatter_schema_ref: schemas/masterrequirements-frontmatter.schema.json
   data_schema:
     schema: schemas/MasterRequirements.json
-    digest: sha256:91138f6c57477c5fa45532859f5dbc6de9195b9fb7287bd51cee221483fd8410
+    digest: sha256:82c627391b819e7517550c44e1564e0b6360816845f69fa20558d51ed2f38159
   defaults:
     id_pattern: MR-{next:03d}
   allowed_links:

@@ -279,17 +279,33 @@ def parse_verification(cell: str) -> dict[str, Any]:
 
 
 def parse_multiplicity(cell: str) -> dict[str, Any] | None:
-    """`1..1`, `0..1`, `1..*`, `3` -> a semantic-core `Multiplicity`."""
+    """`1..1`, `0..1`, `1..*`, `3` -> a semantic-core `Multiplicity`.
+
+    semantic-core 0.3.0 requires `ordered` and `unique` on every emitted
+    `Multiplicity` (previously optional). This module's Properties/`sysml`
+    cell format carries no flag syntax to opt a field into either, and every
+    field this module has ever declared is singular (`upper` present and
+    <= 1) — verified by grepping every skeleton, fixture and spec example for
+    a Multiplicity cell (2026-09-21): none is a real collection. Both flags
+    are therefore clamped to `false` here. A future collection field (`upper`
+    absent or > 1) must not silently inherit this default: it needs its own
+    `ordered`/`unique` reasoning, and the cell format extended to express it.
+    """
     match = _MULTIPLICITY.match(cell.strip())
     if not match:
         return None
     lower = int(match.group(1))
     upper_token = match.group(2)
     if upper_token is None:
-        return {"lower": lower, "upper": lower}
+        return {"lower": lower, "upper": lower, "ordered": False, "unique": False}
     if upper_token == "*":
-        return {"lower": lower}
-    return {"lower": lower, "upper": int(upper_token)}
+        return {"lower": lower, "ordered": False, "unique": False}
+    return {
+        "lower": lower,
+        "upper": int(upper_token),
+        "ordered": False,
+        "unique": False,
+    }
 
 
 def _split_constraints(cell: str) -> list[str]:

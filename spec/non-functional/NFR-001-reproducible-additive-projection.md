@@ -38,7 +38,7 @@ a way that invalidates a document valid before the change.
 - Reference machine: the machine that recorded the release notes for the
   version under test, whose Node, Python, and CPU are named there. Metric 4 is a
   bound on that machine, not a portable number.
-- npm-configuration precondition: `@agent-ix/semantic-core` 0.1.0 resolves only
+- npm-configuration precondition: `@agent-ix/semantic-core` 0.3.0 resolves only
   from the registry the developer's npm configuration routes the `@agent-ix`
   scope to — today the local npm.ix registry. The repository carries no `.npmrc`
   (FR-002-CON-3), so the scope routing is the machine's and not the

@@ -10,6 +10,7 @@ on:
 
 jobs:
   publish-to-pypi:
+    needs: ci
     if: inputs.publish
     runs-on: ubuntu-latest
 

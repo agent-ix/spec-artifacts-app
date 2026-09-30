@@ -44,7 +44,7 @@ re-parsing its prose:
 - `schemas/<Model>.json` is the emitted JSON Schema 2020-12 bundle (39 files),
   with `schemas/toolchain.json` recording the projection's provenance.
 - `manifest.yaml` carries the quoin FR-070 `semantic` block, and every artifact
-  type references its schema by path and SHA-256 digest.
+  type references its schema by path.
 - `mappings.yaml` declares, per record property, which Markdown form fills it and
   whether that form round-trips byte-for-byte.
 - `skeletons/` are executable fixtures: a typed `## Properties` table, a `sysml`
@@ -97,7 +97,7 @@ See https://github.com/agent-ix/quire-cli#usage-instructions.
 make install          # poetry install: deps in the Poetry venv, including quire
 make semantic-install # npm ci for the pinned TypeSpec toolchain
 make schemas          # emit the JSON Schemas and refresh the derived files
-make schemas-check    # fail when the committed schemas or digests drift
+make schemas-check    # fail when the committed schemas drift
 make test             # run pytest
 make lint             # ruff + black check
 make format           # ruff + black format

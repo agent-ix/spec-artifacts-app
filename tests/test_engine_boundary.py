@@ -76,7 +76,7 @@ def test_the_module_loads_validates_and_extracts_with_the_semantic_block_present
     # that would change this, and until it lands the reference is what a
     # consumer sees.
     for entry in artifact_types():
-        assert set(entry["data_schema"]) == {"schema", "digest"}
+        assert set(entry["data_schema"]) == {"schema"}
 
 
 @pytest.mark.trace("TC-034", "FR-003-AC-7", "FR-003-CON-1", "IT-002-AC-1")
@@ -91,83 +91,6 @@ def test_the_legacy_manifest_registers_the_same_artifact_types(quire_engine, tmp
         f"the manifest without the semantic block lost archetypes: "
         f"{sorted(declared - names)}"
     )
-
-
-@pytest.mark.trace("TC-017", "FR-003-AC-8", "IT-002-AC-2")
-def test_a_digest_mismatch_drops_the_bound_archetype(quire_engine, tmp_path):
-    """The binding is real: altering one hex digit costs the archetype.
-
-    This is the negative control for the expected failure below. Without it a
-    red gate could mean the digest binding does nothing at all, rather than that
-    its refusal is undiagnosed.
-    """
-    _module_copy(tmp_path / "control")
-    intact = set(
-        quire_engine.Registry.load_from([str(tmp_path / "control")]).archetype_names()
-    )
-    assert (
-        "ApplicationSpec" in intact
-    ), "the unmutated copy does not load; the control is broken"
-
-    module = _module_copy(tmp_path / "mutant")
-    text = (module / "manifest.yaml").read_text()
-    recorded = yaml.safe_load(text)["artifact_types"][0]["data_schema"]["digest"]
-    altered = recorded[:-1] + ("0" if recorded[-1] != "0" else "1")
-    (module / "manifest.yaml").write_text(text.replace(recorded, altered))
-
-    mutated = set(
-        quire_engine.Registry.load_from([str(tmp_path / "mutant")]).archetype_names()
-    )
-    assert (
-        "ApplicationSpec" not in mutated
-    ), "a one-hex-digit digest edit changed nothing; the binding is a no-op"
-    assert intact - mutated == {
-        "ApplicationSpec"
-    }, f"the mismatch cost more than the bound archetype: {sorted(intact - mutated)}"
-
-
-@pytest.mark.xfail(
-    strict=True,
-    raises=AttributeError,
-    reason=(
-        "agent-ix/quire-rs#394: a `data_schema` digest mismatch drops the bound "
-        "archetype, and quire-rs's own loader records the refusal as a "
-        "`semantic.data-schema-digest-mismatch` failure (src/semantic/resolver.rs, "
-        "pushed to `Registry::failures()` at src/loader/mod.rs) — but that "
-        "diagnostic is not exposed through the Python binding: `Registry.load_from` "
-        "is tolerant by contract (it never raises for this; see "
-        "src/registry.rs's `finish_tolerant`) and the Rust `failures()` accessor "
-        "has no `#[pymethods]` counterpart, so `registry.failures()` is an "
-        "`AttributeError` from Python today. Under 0.47.1 only the bound artifact "
-        "type is dropped, not the whole module — the negative control above "
-        "proves the binding itself is real. Recorded as a strict expected failure "
-        "naming the issue — never a skip, never a silent pass — and it will XPASS "
-        "(failing the suite) the moment `failures()` is exposed to Python. The "
-        "sibling silent-failure defect is agent-ix/quire-rs#221."
-    ),
-)
-@pytest.mark.trace("TC-017", "FR-003-AC-8", "IT-002-AC-2")
-def test_a_digest_mismatch_is_refused_with_a_diagnostic(quire_engine, tmp_path):
-    module = _module_copy(tmp_path / "diagnosed")
-    text = (module / "manifest.yaml").read_text()
-    recorded = yaml.safe_load(text)["artifact_types"][0]["data_schema"]["digest"]
-    altered = recorded[:-1] + ("0" if recorded[-1] != "0" else "1")
-    (module / "manifest.yaml").write_text(text.replace(recorded, altered))
-
-    registry = quire_engine.Registry.load_from([str(tmp_path / "diagnosed")])
-    # `Registry.load_from` is tolerant: the mismatch does not raise, it costs
-    # the module its `ApplicationSpec` archetype (the negative control above)
-    # and is recorded as a diagnostic on the registry itself. `failures()` is
-    # the Rust accessor for that record; today it raises `AttributeError` from
-    # Python, which the xfail above names exactly.
-    failures = [dict(f) for f in registry.failures()]
-    matching = [
-        f for f in failures if "semantic.data-schema-digest-mismatch" in f["reason"]
-    ]
-    assert matching, f"no digest-mismatch failure recorded: {failures}"
-    assert any(
-        f["archetype"] == "ApplicationSpec" for f in matching
-    ), f"the failure does not name ApplicationSpec: {matching}"
 
 
 @pytest.mark.trace("TC-016", "FR-003-AC-6")

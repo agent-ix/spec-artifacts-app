@@ -23,8 +23,7 @@ a way that invalidates a document valid before the change.
 
 ## Scope
 
-- Applies to: `make schemas`, `make schemas-check`, the `data_schema.digest`
-  values in `manifest.yaml`, every `$ref` resolution the test suite performs, and
+- Applies to: `make schemas`, `make schemas-check`, every `$ref` resolution the test suite performs, and
   every locator the change adds.
 - Operational context: a clean clone with `npm ci` and `poetry install`, which
   provisions the quire wheel as a dev dependency; the only network access is
@@ -46,15 +45,12 @@ a way that invalidates a document valid before the change.
   `extract_semantic`, a declared dev dependency resolved from `internal-pypi`;
   the semantic rows fail rather than skip when it is absent.
 - Line endings: the repository pins LF via `.gitattributes`, so the emitted
-  bundle and every `manifest.yaml` digest are checkout-independent — the digests
-  are computed over bytes with no line-ending normalization, and a CRLF checkout
-  would change every one of them.
+  bundle is checkout-independent.
 
 ## Rationale
 
-The manifest binds each artifact type to a digest. If the projection drifted with
-the machine that produced it, every consumer would see a different digest for the
-same source and the binding would mean nothing. Offline resolution is the
+If the projection drifted with the machine that produced it, every consumer would
+see a different bundle for the same source. Offline resolution is the
 FR-073-CON-1 boundary quoin and quire both enforce. Additive compatibility is
 what lets a module that already has documents in the corpus adopt the contract at
 all: the acceptance criterion "existing valid application specs remain readable"
@@ -72,8 +68,7 @@ is this requirement's, measured rather than asserted.
 ## Verification
 
 A test regenerates the bundle into a scratch directory and compares every file to
-the committed one; a second test recomputes the `toolchain.json` digest and each
-manifest `data_schema.digest`; a third diffs the locator set against the branch
+the committed one; a second test recomputes the `toolchain.json` digest; a third diffs the locator set against the branch
 point and asserts every added locator is optional. The offline run is a manual
 gate of this repository, recorded in the release notes; no CI job is claimed by
 this requirement.

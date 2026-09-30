@@ -18,7 +18,6 @@ Two policies live here and nowhere else:
 
 from __future__ import annotations
 
-import hashlib
 import json
 import pathlib
 from typing import Any
@@ -112,10 +111,6 @@ def emitted_schema_names() -> list[str]:
         if p.name != "toolchain.json"
         and not p.name.endswith("-frontmatter.schema.json")
     )
-
-
-def sha256_of(path: pathlib.Path) -> str:
-    return f"sha256:{hashlib.sha256(path.read_bytes()).hexdigest()}"
 
 
 def require_quire():

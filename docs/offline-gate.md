@@ -8,7 +8,7 @@ Run it once per release and record the result in the release notes.
 
 ## Why it exists
 
-The manifest binds each artifact type to a schema by digest, and every `$ref` in
+The manifest binds each artifact type to a schema by path, and every `$ref` in
 the emitted bundle is supposed to resolve from bytes the module or its pinned
 toolchain already ships. If any of that quietly reached the network, a consumer
 without network access would see a different module from the one this repository

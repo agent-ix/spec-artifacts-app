@@ -71,12 +71,7 @@ record instead of as prose.
   semantic-core language packages are `agent-ix/filament-core-data#11`. None is
   produced or faked here.
 - Naming what a module load refused: `agent-ix/quire-rs#221` (an unknown manifest
-  key empties the model silently) and `agent-ix/quire-rs#394` (a `data_schema`
-  digest mismatch drops only the bound artifact type — the rest of the module
-  still loads — and the `semantic.data-schema-digest-mismatch` diagnostic quire-rs
-  itself records is not exposed through the Python binding: `Registry.failures()`
-  has no `#[pymethods]` counterpart). FR-003-AC-8 is carried as an explicit
-  expected failure naming those issues; FR-003-AC-6 claims the refusal itself,
+  key empties the model silently)). FR-003-AC-6 claims the refusal itself,
   which is observable at the loader, and not the diagnostic.
 - Record validation of a legacy-form artifact that declares `object:`:
   `agent-ix/quire-rs#391` (the engine validates an `unavailable` record as `{}`).
@@ -167,7 +162,7 @@ the filament-core-data code generators, and the Filament extraction API.
 | ID | Name | Description | Actors |
 |---|---|---|---|
 | AS-001-CAP-1 | Declare the application artifact types | Contribute the `application-spec` archetype, the `app-spec` grammar, and the two artifact types with their frontmatter schemas and locators. | AS-001-ACT-1, AS-001-ACT-2 |
-| AS-001-CAP-2 | Publish a typed record contract | Ship one emitted JSON Schema per artifact type, bound to the manifest by path and SHA-256 digest. | AS-001-ACT-3 |
+| AS-001-CAP-2 | Publish a typed record contract | Ship one emitted JSON Schema per artifact type, bound to the manifest by path. | AS-001-ACT-3 |
 | AS-001-CAP-3 | Declare the Markdown mapping | Say, per record property, which authored form fills it and whether that form round-trips. | AS-001-ACT-3 |
 | AS-001-CAP-4 | Ship executable authoring fixtures | Skeletons that validate, extract, and map, with negative counterparts that must be refused. | AS-001-ACT-2 |
 
@@ -247,7 +242,7 @@ The requirement classes trace from the stakeholder need for application composit
 specs (`stakeholder/`) through the consumer's story of reading those composites
 as typed records (`usecase/`) to the functional requirements (`functional/`):
 FR-001 activates the manifest against filament-core; FR-002 emits the semantic
-data schemas; FR-003 declares the semantic block, the digest-bound
+data schemas; FR-003 declares the semantic block, the
 `data_schema` references, and the imports; FR-004 declares the Markdown mappings
 and the imported-type reference form; FR-005 makes the skeletons executable
 fixtures with negative counterparts. NFR-001 bounds all of it to a reproducible,
@@ -264,6 +259,6 @@ criterion's test case.
   grammar, scalars, JSON Schema projection, and TypeSpec as the structural
   source.
 - `agent-ix/quoin` FR-070..FR-075 — the semantic-module contract, mappings,
-  `data_schema` by digest, legacy forms, and package manifests.
+  `data_schema`, legacy forms, and package manifests.
 - `agent-ix/quire-rs` FR-069..FR-072 — the contract at load, typed `Properties`,
   clauses and operations, and the extraction surface.

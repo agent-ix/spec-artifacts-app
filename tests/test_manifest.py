@@ -1,4 +1,4 @@
-"""The manifest, the semantic block, and the digest binding.
+"""The manifest and the semantic block.
 
 Requirement ids live on the `trace` markers below, not here: a trace id on a
 module docstring binds to nothing (quire-rs CR-061).
@@ -13,7 +13,6 @@ from tests.conftest import (
     MODEL_OF,
     SCHEMAS_DIR,
     artifact_types,
-    sha256_of,
 )
 
 ADMITTED_SEMANTIC_KEYS = {
@@ -54,11 +53,11 @@ def test_the_semantic_block_carries_the_nine_admitted_keys(semantic_block):
 
 
 @pytest.mark.trace("TC-012", "FR-003-AC-2", "FR-003-CON-2")
-def test_every_export_carries_the_reference_form_and_a_matching_digest(semantic_block):
+def test_every_export_carries_the_reference_form(semantic_block):
     referencing = []
     for entry in artifact_types():
         data_schema = entry["data_schema"]
-        assert set(data_schema) == {"schema", "digest"}, (
+        assert set(data_schema) == {"schema"}, (
             f"{entry['name']} carries an inline `data_schema`; the reference form "
             "is the only form (FR-003-CON-2)"
         )
@@ -66,28 +65,5 @@ def test_every_export_carries_the_reference_form_and_a_matching_digest(semantic_
         assert data_schema["schema"] == expected
         shipped = SCHEMAS_DIR / f"{MODEL_OF[entry['name']]}.json"
         assert shipped.is_file()
-        assert data_schema["digest"] == sha256_of(shipped), (
-            f"{entry['name']}: recorded {data_schema['digest']}, "
-            f"computed {sha256_of(shipped)}"
-        )
         referencing.append(entry["name"])
     assert sorted(semantic_block["exports"]) == sorted(referencing)
-
-
-@pytest.mark.trace("TC-012", "FR-003-AC-2")
-def test_a_one_byte_schema_edit_breaks_the_digest_naming_both_values(tmp_path):
-    """The digest binding is real: it moves when the bytes move."""
-    victim = SCHEMAS_DIR / "ApplicationSpec.json"
-    mutated = tmp_path / "ApplicationSpec.json"
-    mutated.write_text(
-        victim.read_text().replace("ApplicationSpec", "ApplicationSpeC", 1)
-    )
-    recorded = next(
-        e["data_schema"]["digest"]
-        for e in artifact_types()
-        if e["name"] == "ApplicationSpec"
-    )
-    computed = sha256_of(mutated)
-    assert (
-        recorded != computed
-    ), "a one-byte edit produced the same digest; the binding is a no-op"

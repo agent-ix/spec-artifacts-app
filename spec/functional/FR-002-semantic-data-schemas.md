@@ -258,4 +258,4 @@ Free text and scope:
 ## Dependencies
 
 - **Upstream**: [US-001](../usecase/US-001-consume-application-artifacts-as-records.md), [FR-005](./FR-005-executable-skeletons.md) (the locators and skeletons the models type), filament-core-data FR-031..FR-033 (`@agent-ix/semantic-core` 0.3.0, agent-ix/filament-core-data#35), filament-core-data ADR-0005 (TypeSpec as the structural source)
-- **Downstream**: [FR-003](./FR-003-semantic-manifest-contract.md) (references the emitted files by digest), [FR-004](./FR-004-markdown-mappings-and-imports.md) (maps Markdown onto these models), [NFR-001](../non-functional/NFR-001-reproducible-additive-projection.md)
+- **Downstream**: [FR-003](./FR-003-semantic-manifest-contract.md) (references the emitted files), [FR-004](./FR-004-markdown-mappings-and-imports.md) (maps Markdown onto these models), [NFR-001](../non-functional/NFR-001-reproducible-additive-projection.md)

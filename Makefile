@@ -15,7 +15,7 @@ help:
 	@echo "  make test           - Run tests"
 	@echo "  make lint           - Run linters (ruff + black)"
 	@echo "  make schemas        - Emit the JSON Schemas from TypeSpec and refresh the derived files"
-	@echo "  make schemas-check  - Fail when the committed schemas, digests or mappings drift"
+	@echo "  make schemas-check  - Fail when the committed schemas or mappings drift"
 	@echo "  make semantic-install - npm ci for the pinned TypeSpec toolchain"
 	@echo "  make format         - Format code (black + ruff --fix)"
 	@echo "  make build          - Build distribution"
@@ -70,9 +70,8 @@ lint:
 # Semantic data schemas (FR-002): TypeSpec -> JSON Schema projection
 # =============================================================================
 # The TypeSpec source lives in typespec/ (npm, lockfile committed). `make
-# schemas` regenerates spec_artifacts_app/schemas/, rewrites the manifest
-# data_schema digests, and rebuilds the derived mappings.yaml and legacy-manifest
-# fixture. `make schemas-check` fails on any byte drift and writes nothing.
+# schemas` regenerates spec_artifacts_app/schemas/ and rebuilds the derived
+# mappings.yaml and legacy-manifest fixture. `make schemas-check` fails on any byte drift and writes nothing.
 #
 # `@agent-ix/semantic-core` resolves only from the registry the machine's npm
 # configuration routes the `@agent-ix` scope to; the repository carries no

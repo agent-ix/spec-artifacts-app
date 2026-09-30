@@ -15,10 +15,8 @@ relationships:
 Verify the integration boundary between this Module and the Quire engine: with
 the `semantic` block and the reference-form `data_schema` values present, the
 engine loads the Module with every declared artifact type, validates each shipped
-skeleton, and extracts a semantic record from it — and the two known engine
-defects that would otherwise hide a refusal are recorded as expected failures
-rather than passed over. This exercises
-[FR-003](../functional/FR-003-semantic-manifest-contract.md) AC-3 and AC-8 and
+skeleton, and extracts a semantic record from it. This exercises
+[FR-003](../functional/FR-003-semantic-manifest-contract.md) AC-3 and
 [FR-005](../functional/FR-005-executable-skeletons.md) AC-1.
 
 ## Target Integration
@@ -41,8 +39,7 @@ skip, because a skipped row is not coverage.
 
 The Module source tree; each shipped skeleton under
 `spec_artifacts_app/skeletons/`; the negative fixtures under
-`tests/fixtures/negative/`; a copy of the Module whose `ApplicationSpec`
-`data_schema.digest` is altered by one hex digit; and the legacy-manifest fixture
+`tests/fixtures/negative/`; and the legacy-manifest fixture
 carrying neither the `semantic` block nor any `data_schema`.
 
 ## Test Procedure
@@ -64,13 +61,6 @@ Each step performs one discrete action and has its own success criterion.
    nor any `data_schema`.
    - IT-002-SC-04: the same artifact types are registered, so adding the block
      breaks no consumer that ignores it.
-5. Load the copy whose `data_schema.digest` is altered by one hex digit.
-   - IT-002-SC-05: the load is refused and the refusal names the artifact type
-     and the path. Recorded as a strict expected failure naming
-     agent-ix/quire-rs#394 (the digest mismatch drops only the bound artifact
-     type, and the diagnostic quire-rs records for it is not exposed through
-     the Python binding) and agent-ix/quire-rs#221 (an unknown manifest key
-     empties the model silently).
 6. Run `validate_document` and the FR-004 reference mapping over each negative
    fixture.
    - IT-002-SC-06: each fixture is refused by the check its `expect` frontmatter
@@ -80,25 +70,20 @@ Each step performs one discrete action and has its own success criterion.
 
 The Module loads with every declared artifact type; every skeleton validates and
 extracts; the legacy-manifest fixture registers the same artifact types; every
-negative fixture is refused by the check it names; and the digest-mismatch
-refusal of step 5 is reported as a strict expected failure naming its blocking
-issues, so the arrival of an engine that diagnoses it is announced by the gate
-itself rather than discovered later.
+negative fixture is refused by the check it names.
 
 ## Metadata
 
 - Priority: High
 - Target Integration: Quire engine module loader, validator, and semantic
   extraction surface
-- Automation: Automated, except step 5 which is a strict expected failure until
-  agent-ix/quire-rs#394 lands
+- Automation: Automated
 
 ## Acceptance Criteria
 
 | ID | Criteria |
 |----|----------|
 | IT-002-AC-1 | Steps 1-4 pass with the `semantic` block and the `data_schema` references present |
-| IT-002-AC-2 | Step 5 is recorded as a strict expected failure naming agent-ix/quire-rs#394 — never a skip and never a silent pass |
 | IT-002-AC-3 | Step 6 refuses every negative fixture by the check its `expect` frontmatter names |
 
 ## Dependencies

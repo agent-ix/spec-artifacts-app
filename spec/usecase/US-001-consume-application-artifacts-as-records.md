@@ -38,8 +38,8 @@ data schema for either. A consumer that receives an application spec receives
 Markdown; everything the document says about which services it composes, which
 requirements it aggregates, and which UI surfaces it demands is prose to be
 re-parsed. Wave 4 of the semantic program (agent-ix/quoin#286) introduced a module
-contract in which an artifact type references its emitted JSON Schema by path and
-digest (quoin FR-073), Markdown forms map to semantic-core declarations (quoin
+contract in which an artifact type references its emitted JSON Schema by path
+(quoin FR-073), Markdown forms map to semantic-core declarations (quoin
 FR-071, FR-072), and a module declares what it imports from other modules
 (quoin FR-070).
 

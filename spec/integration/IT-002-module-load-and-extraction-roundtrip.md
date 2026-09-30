@@ -15,7 +15,7 @@ relationships:
 Verify the integration boundary between this Module and the Quire engine: with
 the `semantic` block and the reference-form `data_schema` values present, the
 engine loads the Module with every declared artifact type, validates each shipped
-skeleton, and extracts a semantic record from it . This exercises
+skeleton, and extracts a semantic record from it. This exercises
 [FR-003](../functional/FR-003-semantic-manifest-contract.md) AC-3 and
 [FR-005](../functional/FR-005-executable-skeletons.md) AC-1.
 

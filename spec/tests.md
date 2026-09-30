@@ -73,12 +73,6 @@ no marker naming a test case the matrix does not declare, and no untagged test.
   the FR-035 schema itself — no copy of that schema lives here (PLAT-902).
   An ambiguous `data_schema` on an artifact type is admitted upstream
   (agent-ix/quoin#341) and is FR-003 Behavior's record, not a criterion here.
-- `FR-003-AC-8` / `IT-002-AC-2` (TC-017) is a **strict expected failure**, never
-  a skip and never a silent pass: it asserts that a one-hex-digit `data_schema`
-  digest edit is refused at load, which no published engine diagnoses
-  (agent-ix/quire-rs#394, and agent-ix/quire-rs#221 for the sibling
-  silent-empty-model defect). A strict expected failure that starts passing fails
-  the suite, so the arrival of a fixed engine is announced by the gate itself.
 
 NFR-001 is measurable, so its `Metric | Target | Threshold | Method` rows carry
 the obligations; it also declares `NFR-001-AC-1..4`, one per metric, purely so
@@ -118,7 +112,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-003 | FR-003-AC-5 | TC-015 | ✅ Complete |
 | FR-003 | FR-003-AC-6 | TC-016 | ✅ Complete |
 | FR-003 | FR-003-AC-7 | TC-034, TC-043 | ✅ Complete |
-| FR-003 | FR-003-AC-8 | TC-017 | 🚧 Strict expected failure (agent-ix/quire-rs#394) |
 | FR-003 | FR-003-CON-1 | TC-034 | ✅ Complete |
 | FR-003 | FR-003-CON-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-CON-3 | TC-014 | ✅ Complete |
@@ -163,7 +156,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | IT-001 | IT-001-AC-1 | — | 🚧 Needs a running filament-core-service |
 | IT-001 | IT-001-AC-2 | — | 🚧 Needs a running filament-core-service |
 | IT-002 | IT-002-AC-1 | TC-034 | ✅ Complete |
-| IT-002 | IT-002-AC-2 | TC-017 | 🚧 Strict expected failure (agent-ix/quire-rs#394) |
 | IT-002 | IT-002-AC-3 | TC-035 | ✅ Complete |
 
 ## Integration Test Matrix
@@ -172,7 +164,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 |---------|--------|------|------------|
 | Activate the manifest and read back every contribution | filament-core-service HTTP module API | service | — (🚧 needs a running service) |
 | Load the module, validate and extract every skeleton | Quire engine (`Registry.load_from`, `validate_document`, `extract_semantic`) | service | TC-013, TC-034, TC-035 |
-| Refuse a module whose `data_schema` digest is altered | Quire engine loader | service | TC-017 |
 
 ## Test Case Summary
 
@@ -189,12 +180,11 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-009 | Every emitted object schema declares its properties inline, and the Python `jsonschema` validator accepts every skeleton record and rejects every negative fixture that produces a record | Unit | P0 | FR-002-AC-8 | ✅ |
 | TC-010 | No emitted property duplicates a property of an imported type and no `$ref` names a base other than this module's or semantic-core 0.3.0 | Unit | P0 | FR-002-AC-10 | ✅ |
 | TC-011 | The `semantic` block's key set is exactly the nine declared keys with the declared values, and declares no `sweep_report` under `legacy_forms: warning` | Unit | P0 | FR-003-AC-1 | ✅ |
-| TC-012 | Every exported artifact type carries a `{schema, digest}` reference to an existing file whose SHA-256 equals the digest, `exports` equals the referencing set, no inline `data_schema` remains, and a one-byte schema edit fails naming the type and both digests | Unit | P0 | FR-003-AC-2, FR-003-CON-2 | ✅ |
+| TC-012 | Every exported artifact type carries a `{schema}` reference to an existing file, `exports` equals the referencing set, and no inline `data_schema` remains | Unit | P0 | FR-003-AC-2, FR-003-CON-2 | ✅ |
 | TC-013 | `Registry.load_from` lists every declared artifact type with the `semantic` block and the `data_schema` references present, and `validate_document` passes every shipped skeleton | Integration | P0 | FR-003-AC-3 | ✅ |
 | TC-014 | `semantic.imports` names the imported modules and types, every `ImportedTypeRef` in a skeleton, fixture, or mapping names a declared module and type, an undeclared module and an undeclared type each fail naming both values, and a self-import fails | Unit | P0 | FR-003-AC-4, FR-003-CON-3 | ✅ |
 | TC-015 | A two-module and a three-module import cycle each fail naming every module on the cycle in traversal order, distinctly from the missing-import diagnostic | Unit | P0 | FR-003-AC-5 | ✅ |
 | TC-016 | A module copy whose `semantic` block carries an unknown key, a non-`<org>/<repo>` `package`, or an unregistered `targets` value registers no archetype under `quire.Registry.load_from`, while the unmutated control registers them | Unit | P0 | FR-003-AC-6 | ✅ |
-| TC-017 | A one-hex-digit `data_schema.digest` edit costs the bound archetype (the negative control: the unmutated copy keeps it), and the refusal is diagnosed — the second half is a strict expected failure until an engine diagnosing it is published (agent-ix/quire-rs#394) | Integration | P0 | FR-003-AC-8, IT-002-AC-2 | 🚧 Strict expected failure |
 | TC-018 | Every locator added by this change is optional except `title` and `purpose`; the pre-change `spec/spec.md` validates unchanged and maps to a record that validates against the new schema | Snapshot | P0 | FR-004-AC-8, FR-004-CON-1, FR-005-AC-5, FR-005-CON-1 | ✅ |
 | TC-019 | The `## Invariants` clause maps to a `ClauseRef` with `sourceSpan` only when a `sourceIdentity` is supplied, the `invariantsText` entry equals the fence bytes, five malformed clause forms each fail naming the line, a prose `## Invariants` leaves `invariants` absent, and no module code parses the clause | Unit | P0 | FR-004-AC-5, FR-004-CON-2, FR-005-AC-3 | ✅ |
 | TC-020 | No file in the module or its test support writes a Markdown document, and the reference mapping opens every document read-only — enumerated over the tree, not sampled | Static | P2 | FR-004-CON-3 | ✅ |
@@ -207,7 +197,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-027 | The module ships no `*.md.j2` file and no `template_ref` key anywhere in `manifest.yaml` | Static | P1 | FR-005-AC-6, FR-005-CON-3 | ✅ |
 | TC-028 | Each artifact type ships a skeleton whose headings and table header rows match its asserts in both directions, and every skeleton passes `validate_document` | Unit | P0 | FR-005-AC-1, StR-001-VC-2 | ✅ |
 | TC-029 | The `sysml`-fence skeleton declares the same `FieldDecl` set in the same order as the typed `## Properties` table of its counterpart, and both fill `fields` identically | Unit | P0 | FR-005-AC-2 | ✅ |
-| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and manifest digests, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
+| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
 | TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci` and `poetry install` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
 | TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001-AC-3 | ✅ |
 | TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |

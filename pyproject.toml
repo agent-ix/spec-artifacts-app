@@ -66,13 +66,13 @@ help = "Run tests with coverage"
 shell = """node scripts/generate-schemas.mjs \
   && python scripts/build_mappings.py \
   && python scripts/build_legacy_manifest.py"""
-help = "Emit the JSON Schemas, refresh the manifest digests, and rebuild the derived data files"
+help = "Emit the JSON Schemas and rebuild the derived data files"
 
 [tool.poe.tasks.schemas-check]
 shell = """node scripts/generate-schemas.mjs --check \
   && python scripts/build_mappings.py --check \
   && python scripts/build_legacy_manifest.py --check"""
-help = "Fail when the committed schemas, digests, mappings, or legacy fixture differ from the source"
+help = "Fail when the committed schemas, mappings, or legacy fixture differ from the source"
 
 [tool.poe.tasks.test-integrations]
 cmd = "pytest tests_integration/ -v -s --no-cov -m integration"

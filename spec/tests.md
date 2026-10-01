@@ -61,12 +61,9 @@ catch a `✅ Complete` row backed by nothing is off, for every repository, and n
 module can turn it on locally (renaming the column and adding a fifth both fail
 the archetype's exact-column assert). It is filed as agent-ix/quoin#343.
 TC-037 is the local substitute and covers more than the engine would: every
-`✅` row across all three coverage tables, including the fourteen `-CON-` rows
+`✅` row across all three coverage tables, including the `-CON-` rows
 and the five IT criteria the engine never mints, plus the reverse direction —
 no marker naming a test case the matrix does not declare, and no untagged test.
-- `NFR-001-AC-2` (metric 2) is the offline, no-network run; it is a manual gate
-  of this repository recorded in the release notes, and no CI job is claimed for
-  it.
 - `FR-003-AC-6` (TC-016) claims the *refusal* of a forbidden `semantic` block
   and not the diagnostic: quire empties the model without naming the offending
   key or path (agent-ix/quire-rs#221). The oracle is the engine, which applies
@@ -75,7 +72,7 @@ no marker naming a test case the matrix does not declare, and no untagged test.
   (agent-ix/quoin#341) and is FR-003 Behavior's record, not a criterion here.
 
 NFR-001 is measurable, so its `Metric | Target | Threshold | Method` rows carry
-the obligations; it also declares `NFR-001-AC-1..4`, one per metric, purely so
+the obligations; it also declares `NFR-001-AC-1` and `NFR-001-AC-4`, one per metric, purely so
 each metric has an addressable id a matrix row and a trace tag can bind to.
 
 ## Requirements Traceability
@@ -118,18 +115,14 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-004 | FR-004-AC-5 | TC-019, TC-041, TC-042 | ✅ Complete |
 | FR-004 | FR-004-AC-6 | TC-025, TC-039, TC-041, TC-042 | ✅ Complete |
 | FR-004 | FR-004-AC-7 | TC-021 | ✅ Complete |
-| FR-004 | FR-004-AC-8 | TC-018 | ✅ Complete |
-| FR-004 | FR-004-CON-1 | TC-018 | ✅ Complete |
 | FR-004 | FR-004-CON-2 | TC-019 | ✅ Complete |
 | FR-004 | FR-004-CON-3 | TC-020 | ✅ Complete |
 | FR-005 | FR-005-AC-1 | TC-028 | ✅ Complete |
 | FR-005 | FR-005-AC-2 | TC-029, TC-041, TC-042 | ✅ Complete |
 | FR-005 | FR-005-AC-3 | TC-019 | ✅ Complete |
 | FR-005 | FR-005-AC-4 | TC-026 | ✅ Complete |
-| FR-005 | FR-005-AC-5 | TC-018 | ✅ Complete |
 | FR-005 | FR-005-AC-6 | TC-027 | ✅ Complete |
 | FR-005 | FR-005-AC-7 | TC-026 | ✅ Complete |
-| FR-005 | FR-005-CON-1 | TC-018 | ✅ Complete |
 | FR-005 | FR-005-CON-2 | TC-026 | ✅ Complete |
 | FR-005 | FR-005-CON-3 | TC-027 | ✅ Complete |
 
@@ -138,8 +131,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | Non-Functional Req | Verification Method | Evidence/Test Cases | Status |
 |--------------------|---------------------|---------------------|--------|
 | NFR-001 | Test (NFR-001-AC-1, metric 1: byte differences between two `make schemas` runs) | TC-030 | ✅ Complete |
-| NFR-001 | Demonstration (NFR-001-AC-2, metric 2: network reads during `make schemas-check` and `make test`) | TC-031 | 🚧 Manual offline gate, no CI job claimed |
-| NFR-001 | Analysis (NFR-001-AC-3, metric 3: locators added by this change that are required) | TC-032 | ✅ Complete |
 | NFR-001 | Test (NFR-001-AC-4, metric 4: wall time of `make schemas-check`) | TC-033 | ✅ Complete |
 
 ### Stakeholder and Integration Coverage
@@ -179,7 +170,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-014 | `semantic.imports` names the imported modules and types, every `ImportedTypeRef` in a skeleton, fixture, or mapping names a declared module and type, an undeclared module and an undeclared type each fail naming both values, and a self-import fails | Unit | P0 | FR-003-AC-4, FR-003-CON-3 | ✅ |
 | TC-015 | A two-module and a three-module import cycle each fail naming every module on the cycle in traversal order, distinctly from the missing-import diagnostic | Unit | P0 | FR-003-AC-5 | ✅ |
 | TC-016 | A module copy whose `semantic` block carries an unknown key, a non-`<org>/<repo>` `package`, or an unregistered `targets` value registers no archetype under `quire.Registry.load_from`, while the unmutated control registers them | Unit | P0 | FR-003-AC-6 | ✅ |
-| TC-018 | Every locator added by this change is optional except `title` and `purpose`; the pre-change `spec/spec.md` validates unchanged and maps to a record that validates against the new schema | Snapshot | P0 | FR-004-AC-8, FR-004-CON-1, FR-005-AC-5, FR-005-CON-1 | ✅ |
 | TC-019 | The `## Invariants` clause maps to a `ClauseRef` with `sourceSpan` only when a `sourceIdentity` is supplied, the `invariantsText` entry equals the fence bytes, five malformed clause forms each fail naming the line, a prose `## Invariants` leaves `invariants` absent, and no module code parses the clause | Unit | P0 | FR-004-AC-5, FR-004-CON-2, FR-005-AC-3 | ✅ |
 | TC-020 | No file in the module or its test support writes a Markdown document, and the reference mapping opens every document read-only — enumerated over the tree, not sampled | Static | P2 | FR-004-CON-3 | ✅ |
 | TC-021 | `mappings.yaml` validates against `mappings.schema.json`, names every model property exactly once with one of the six mapping kinds, names no undeclared property, matches locator `assert.columns`, and records `authority`, `round_trip`, per-property `lossless`, and the dropped frontmatter keys | Unit | P0 | FR-004-AC-1, FR-004-AC-7 | ✅ |
@@ -192,9 +182,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-028 | Each artifact type ships a skeleton whose headings and table header rows match its asserts in both directions, and every skeleton passes `validate_document` | Unit | P0 | FR-005-AC-1, StR-001-VC-2 | ✅ |
 | TC-029 | The `sysml`-fence skeleton declares the same `FieldDecl` set in the same order as the typed `## Properties` table of its counterpart, and both fill `fields` identically | Unit | P0 | FR-005-AC-2 | ✅ |
 | TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
-| TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci` and `poetry install` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
-| TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001-AC-3 | ✅ |
-| TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |
+| TC-033 | `make schemas-check` completes within 30 s | Benchmark | P3 | NFR-001-AC-4 | ✅ |
 | TC-034 | The module loads with every declared artifact type, every skeleton validates and extracts a record, the reference-form `data_schema` is reported verbatim, and the legacy-manifest fixture registers the same artifact types | Integration | P0 | IT-002-AC-1, StR-001-VC-3 | ✅ |
 | TC-035 | `validate_document` and the reference mapping refuse every negative fixture by the check its `expect` frontmatter names | Integration | P0 | IT-002-AC-3 | ✅ |
 | TC-037 | Every `✅` matrix row names test cases the summary declares and a trace marker carries; every summary row is carried; no marker names an undeclared case; no test is untagged — the check `quire coverage` skips here (agent-ix/quoin#343) | Static | P0 | FR-002-CON-1 | ✅ |

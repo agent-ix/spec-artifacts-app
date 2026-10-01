@@ -45,10 +45,9 @@ record instead of as prose.
   reference-form `data_schema` and a declared `imports` set; the Markdown
   mappings in `spec_artifacts_app/mappings.yaml`; and the skeletons rewritten as
   executable typed fixtures with negative counterparts.
-- The three fixture families the ticket names, minus the one it defers.
-  *Compatibility* fixtures: the legacy-manifest fixture (this manifest with the
-  `semantic` block and every `data_schema` removed) and the pre-change
-  `spec/spec.md` baseline, which together prove the change is additive.
+- The fixture families the ticket names, minus the one it defers. *Compatibility* fixture:
+  the legacy-manifest fixture (this manifest with the `semantic` block and every
+  `data_schema` removed).
   *Dynamic-module* fixtures: minimal module manifests synthesized in a temporary
   directory at test time, carrying only a `semantic` block, used to exercise the
   missing-import and cross-module-cycle diagnostics of FR-003 without installing
@@ -102,8 +101,6 @@ record instead of as prose.
   suite is the record oracle.
 - Closing the `status` frontmatter vocabulary. Closing it is a sweep-and-report,
   not a side effect of this schema set.
-- Making the offline, no-network run a CI job. NFR-001 records it as a manual
-  gate; no CI job is claimed here.
 - Any UI implementation change. This Module declares UI *rendering requirements*
   as data; it renders nothing.
 
@@ -246,7 +243,7 @@ data schemas; FR-003 declares the semantic block, the
 `data_schema` references, and the imports; FR-004 declares the Markdown mappings
 and the imported-type reference form; FR-005 makes the skeletons executable
 fixtures with negative counterparts. NFR-001 bounds all of it to a reproducible,
-offline, additively-compatible projection. IT-001 verifies the activation
+offline projection. IT-001 verifies the activation
 boundary and IT-002 the Quire engine boundary. `tests.md` records every
 criterion's test case.
 

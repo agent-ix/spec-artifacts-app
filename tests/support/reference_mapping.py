@@ -281,7 +281,7 @@ def parse_verification(cell: str) -> dict[str, Any]:
 def parse_multiplicity(cell: str) -> dict[str, Any] | None:
     """`1..1`, `0..1`, `1..*`, `3` -> a semantic-core `Multiplicity`.
 
-    semantic-core 0.3.0 requires `ordered` and `unique` on every emitted
+    semantic-core requires `ordered` and `unique` on every emitted
     `Multiplicity` (previously optional). This module's Properties/`sysml`
     cell format carries no flag syntax to opt a field into either, and every
     field this module has ever declared is singular (`upper` present and

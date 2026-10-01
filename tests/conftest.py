@@ -35,7 +35,6 @@ SKELETONS_DIR = PACKAGE_ROOT / "skeletons"
 TYPESPEC_DIR = REPO_ROOT / "typespec"
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 NEGATIVE_DIR = FIXTURES / "negative"
-BASELINE_DIR = FIXTURES / "baseline"
 LEGACY_MANIFEST_PATH = FIXTURES / "manifest-legacy.yaml"
 SEMANTIC_CORE_DIR = (
     REPO_ROOT

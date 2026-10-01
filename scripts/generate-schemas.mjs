@@ -28,7 +28,20 @@ import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const MIN_NODE_MAJOR = 20;
-const SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/";
+// The base is derived from the installed `@agent-ix/semantic-core` (the one
+// declared dependency pin), never typed here.
+const SEMANTIC_CORE_BASE = `https://schemas.agent-ix.org/semantic-core/${
+  JSON.parse(
+    readFileSync(
+      resolve(
+        dirname(fileURLToPath(import.meta.url)),
+        "..",
+        "node_modules/@agent-ix/semantic-core/package.json",
+      ),
+      "utf8",
+    ),
+  ).version
+}/`;
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDir = resolve(repoRoot, "typespec");
@@ -59,7 +72,7 @@ function requireNode() {
   const major = Number(process.versions.node.split(".")[0]);
   if (!Number.isFinite(major) || major < MIN_NODE_MAJOR) {
     fail(
-      `Node ${MIN_NODE_MAJOR} or later is required by @typespec/compiler 1.15.0; this is Node ${process.versions.node}.`,
+      `Node ${MIN_NODE_MAJOR} or later is required; this is Node ${process.versions.node}.`,
     );
   }
 }

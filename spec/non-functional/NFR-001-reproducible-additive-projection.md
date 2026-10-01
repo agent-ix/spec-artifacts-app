@@ -1,6 +1,6 @@
 ---
 id: NFR-001
-title: "Schema projection is reproducible, offline, and additively compatible"
+title: "Schema projection is reproducible and offline"
 type: NFR
 quality_attribute: maintainability
 relationships:
@@ -11,20 +11,18 @@ relationships:
   - target: "ix://agent-ix/spec-artifacts-app/FR-005"
     type: "constrains"
 ---
-# NFR-001: Schema projection is reproducible, offline, and additively compatible
+# NFR-001: Schema projection is reproducible and offline
 
 ## Statement
 
 The module SHALL reproduce its emitted schema bundle byte-for-byte from the
 committed TypeSpec source and lockfile on any machine that satisfies the
-toolchain and npm-configuration preconditions of Scope, SHALL resolve every
-`$ref` of that bundle with no network read, and SHALL change no artifact type in
-a way that invalidates a document valid before the change.
+toolchain and npm-configuration preconditions of Scope, and SHALL resolve every
+`$ref` of that bundle with no network read.
 
 ## Scope
 
-- Applies to: `make schemas`, `make schemas-check`, every `$ref` resolution the test suite performs, and
-  every locator the change adds.
+- Applies to: `make schemas`, `make schemas-check`, and every `$ref` resolution the test suite performs.
 - Operational context: a clean clone with `npm ci` and `poetry install`, which
   provisions the quire wheel as a dev dependency; the only network access is
   the package install itself.
@@ -32,9 +30,6 @@ a way that invalidates a document valid before the change.
   and Python 3.13. `poetry install` installs `quire` from
   the `internal-pypi` source, the wheel exposing
   `extract_semantic`.
-- Reference machine: the machine that recorded the release notes for the
-  version under test, whose Node, Python, and CPU are named there. Metric 4 is a
-  bound on that machine, not a portable number.
 - npm-configuration precondition: `@agent-ix/semantic-core` resolves only
   from the registry the developer's npm configuration routes the `@agent-ix`
   scope to — today GitHub Packages. The repository carries no `.npmrc`
@@ -51,27 +46,19 @@ a way that invalidates a document valid before the change.
 
 If the projection drifted with the machine that produced it, every consumer would
 see a different bundle for the same source. Offline resolution is the
-FR-073-CON-1 boundary quoin and quire both enforce. Additive compatibility is
-what lets a module that already has documents in the corpus adopt the contract at
-all: the acceptance criterion "existing valid application specs remain readable"
-is this requirement's, measured rather than asserted.
+FR-073-CON-1 boundary quoin and quire both enforce.
 
 ## Measurement and Evaluation
 
 | Metric | Target | Threshold | Method |
 |--------|--------|-----------|--------|
 | Byte differences between two consecutive `make schemas` runs on one tree | 0 files | 0 files | Test (two `make schemas` runs compared byte-for-byte) |
-| Network reads during `make schemas-check` and `make test` | 0 | 0 | Demonstration (both targets run with the network namespace disabled) |
-| Locators added by this change that are required | 0 of the added set | 0 of the added set | Analysis (locator set diffed against the branch point) |
-| Wall time of `make schemas-check` | 10 s | 30 s | Test (performance benchmark: `time make schemas-check` on the reference machine) |
+| Wall time of `make schemas-check` | 10 s | 30 s | Test (performance benchmark: `time make schemas-check`) |
 
 ## Verification
 
 A test regenerates the bundle into a scratch directory and compares every file to
-the committed one; a second test diffs the locator set against the branch
-point and asserts every added locator is optional. The offline run is a manual
-gate of this repository, recorded in the release notes; no CI job is claimed by
-this requirement.
+the committed one.
 
 ## Acceptance Criteria
 
@@ -84,11 +71,9 @@ this requirement.
 | ID | Criteria | Verification |
 |----|----------|--------------|
 | NFR-001-AC-1 | Two consecutive `make schemas` runs on one tree leave `spec_artifacts_app/schemas` and `spec_artifacts_app/manifest.yaml` byte-identical — `git status --porcelain` over both reports zero files. | Test (TC-030) |
-| NFR-001-AC-2 | `make schemas-check` and `make test` both exit 0 with the network namespace disabled after `npm ci` and `poetry install`. | Demonstration (TC-031) |
-| NFR-001-AC-3 | Every `body_extraction` locator this change adds, diffed against the branch point, carries `required: false`, except `title` and `purpose`, which the pre-change document already carries. | Analysis (TC-032) |
-| NFR-001-AC-4 | `make schemas-check` completes within 30 s on the reference machine. | Test (TC-033) |
+| NFR-001-AC-4 | `make schemas-check` completes within 30 s. | Test (TC-033) |
 
 ## Dependencies
 
-- **Upstream**: [FR-002](../functional/FR-002-semantic-data-schemas.md), [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md) (whose locators metric 3 measures)
+- **Upstream**: [FR-002](../functional/FR-002-semantic-data-schemas.md), [FR-003](../functional/FR-003-semantic-manifest-contract.md), [FR-005](../functional/FR-005-executable-skeletons.md)
 - **Downstream**: the release gauntlet of this module

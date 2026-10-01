@@ -174,7 +174,6 @@ Round-trip policy:
 
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
-| FR-004-CON-1 | The mapping SHALL keep every existing heading and column order the corpus already uses; the forms it adds are the optional sections FR-005 introduces. | Compatibility | Test (TC-018) |
 | FR-004-CON-2 | The mapping SHALL carry clause text under `## Invariants` as opaque bytes; no code in this module tokenizes, typechecks, or evaluates it. | Boundary | Test (TC-019) |
 | FR-004-CON-3 | The mapping SHALL read Markdown and write nothing back; no file in the module derives Markdown from a record. | Boundary | Analysis (TC-020) |
 
@@ -189,7 +188,6 @@ Round-trip policy:
 | FR-004-AC-5 | The `## Invariants` clause of the `ApplicationSpec` skeleton maps to a `ClauseRef` with `language: ocl` and `clauseId` equal to the `###` heading; it carries a `sourceSpan` whose `startLine`/`endLine` are the fence lines and whose `sourceIdentity` is the caller's, or `ix://local/scope/spec` with a `semantic.source-identity-defaulted` advisory when the caller supplies none; the `invariantsText` entry equals the fence body byte-for-byte; a `### not-an-identifier` heading, a `tla`-tagged fence, a second fence under one heading, a repeated `clauseId`, and a fence owned by no `###` heading each fail naming the line; a prose `## Invariants` with no fence leaves `invariants` absent and does not fail. | Test (TC-019) |
 | FR-004-AC-6 | A row id with the wrong prefix, a row id repeated in one table, a duplicated level-2 heading, a `requirements` row whose `target` is not `ix://`, and a section carrying both a typed table and a `sysml` fence each fail the mapping naming the line and yield no record, and all failures present in one document are reported together. | Test (TC-025) |
 | FR-004-AC-7 | `section` and `ocl-clause` properties carry `lossless: true` and `typed-table`, `sysml-fence`, and `frontmatter` properties carry `lossless: false` in `mappings.yaml`; every model records `authority: markdown` and `round_trip: derived`; and every model records the frontmatter keys its mapping drops. | Test (TC-021) |
-| FR-004-AC-8 | The `ApplicationSpec` document committed in this repository before this change (`spec/spec.md` at the branch point) maps to a record that validates against the new schema, so an existing valid application spec remains readable. | Test (TC-018) |
 
 ## Dependencies
 

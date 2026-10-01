@@ -122,7 +122,12 @@ def test_a_constraint_value_is_read_as_a_number_where_it_is_one():
 
 
 @pytest.mark.trace("TC-040", "FR-004-AC-4")
-def test_a_malformed_imported_type_cell_is_refused_before_the_declaration_check():
+def test_a_malformed_imported_type_cell_is_refused_before_the_declaration_check(
+    manifest,
+):
+    declared_iso_version = manifest["semantic"]["imports"][
+        "agent-ix/spec-artifacts-iso"
+    ]
     value, errors = parse_imported_type_ref("not a reference", 3, {}, {})
     assert value is None
     assert [e.code for e in errors] == ["imported-type-malformed"]
@@ -131,7 +136,7 @@ def test_a_malformed_imported_type_cell_is_refused_before_the_declaration_check(
         "agent-ix/spec-artifacts-iso#Glossary",
         4,
         {"agent-ix/spec-artifacts-iso": ["FR"]},
-        {"agent-ix/spec-artifacts-iso": "0.2.0"},
+        {"agent-ix/spec-artifacts-iso": declared_iso_version},
     )
     assert value is None
     assert [e.code for e in errors] == ["undeclared-import-type"]

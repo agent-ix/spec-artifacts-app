@@ -36,7 +36,7 @@ quire validate spec/**/*.md --module node_modules/@agent-ix/spec-artifacts-app
 
 ## The semantic contract
 
-Since 0.2.0 this module declares a **semantic data model per artifact type**, so a
+This module declares a **semantic data model per artifact type**, so a
 consumer can read an application composite as a typed record instead of
 re-parsing its prose:
 
@@ -61,7 +61,6 @@ This module gives you the top-level document kinds for specifying a whole applic
 |:-----|:-----|:--------------|
 | `ApplicationSpec` | Application Spec | The top-level document for an application — describes the system as a whole and gathers together the requirements and specs that make it up. |
 | `MasterRequirements` | Master Requirements | The front page of a specification — its purpose, scope, and the set of requirements it rolls up. |
-
 
 ## How this module is used
 
@@ -115,8 +114,5 @@ Two environment preconditions, both deliberate and both recorded in NFR-001:
   dependency pinned to the `internal-pypi` source, provisioned by
   `poetry install`. The semantic tests **fail** rather than skip when it is
   absent, because a skipped row is not coverage.
-
-The offline, no-network gate is a manual procedure: see
-[docs/offline-gate.md](docs/offline-gate.md).
 
 CI requires the `GCP_SERVICE_ACCOUNT_KEY` secret plus `GCP_REGION`, `GCP_PROJECT_NAME`, and `GCP_PYPI` variables for Artifact Registry publishing.

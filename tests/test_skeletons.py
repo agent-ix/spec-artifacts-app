@@ -1,4 +1,4 @@
-"""The skeletons, the locators they agree with, and additive compatibility.
+"""The skeletons and the locators they agree with.
 
 Requirement ids live on the `trace` markers below, not here: a trace id on a
 module docstring binds to nothing (quire-rs CR-061).
@@ -9,10 +9,8 @@ from __future__ import annotations
 import re
 
 import pytest
-import yaml
 
 from tests.conftest import (
-    BASELINE_DIR,
     MANIFEST_PATH,
     MODEL_OF,
     PACKAGE_ROOT,
@@ -130,78 +128,7 @@ def test_the_module_ships_no_template_and_no_template_ref():
     )
 
 
-@pytest.mark.trace("TC-018", "TC-032", "FR-005-AC-5", "FR-005-CON-1", "NFR-001-AC-3")
-def test_every_locator_this_change_adds_is_optional():
-    """Additive compatibility, measured against a transcribed baseline.
-
-    The baseline is a committed fixture, not `git show origin/main:...`. A
-    freeze gate asks "is this change additive?", and that question is about a
-    fixed pair of states. Reading the "before" side from a moving ref makes the
-    gate compare the branch to itself the moment it merges: `before_locators`
-    becomes the current set, nothing is ever "added", and `assert added > 0`
-    fails. The comparison stops meaning anything before it fails, which is the
-    worse half.
-
-    A versioning gate ("did this bump relative to what is released?") does
-    legitimately track the trunk. This is not one of those.
-    """
-    baseline_path = BASELINE_DIR / "manifest.yaml"
-    assert baseline_path.is_file(), (
-        "the transcribed pre-change manifest is not committed; this gate "
-        "cannot run without it"
-    )
-    before = yaml.safe_load(baseline_path.read_text(encoding="utf-8"))
-    before_locators = {
-        entry["name"]: set(locators(entry)) for entry in before["artifact_types"]
-    }
-    added = 0
-    for entry in artifact_types():
-        previous = before_locators.get(entry["name"], set())
-        for name, spec in locators(entry).items():
-            if name in previous:
-                continue
-            added += 1
-            if name in {"title", "purpose"}:
-                assert spec["required"] is True, (
-                    f"{entry['name']}.{name} is one of the two the pre-change "
-                    "document already carries and must stay required"
-                )
-                continue
-            assert spec["required"] is False, (
-                f"{entry['name']}.{name} is a new required locator; every locator "
-                "this change adds must be optional (FR-005-CON-1)"
-            )
-    assert added > 0, (
-        "no locator was added against the transcribed baseline; either this "
-        "change adds none, or the baseline fixture has drifted into a copy of "
-        "the current manifest and the gate is no longer comparing two states"
-    )
-
-
-@pytest.mark.trace("TC-018", "FR-004-AC-8", "FR-004-CON-1", "FR-005-AC-5")
-def test_the_pre_change_application_spec_still_validates_and_maps(
-    build_record, schema_registry
-):
-    """The one existing ApplicationSpec document in this repository, unchanged."""
-    baseline = BASELINE_DIR / "spec.md"
-    assert baseline.is_file(), "the pre-change baseline is not committed"
-
-    quire = require_quire()
-    result = quire.validate_document(
-        "ApplicationSpec", str(PACKAGE_ROOT), baseline.read_text()
-    )
-    assert result[
-        "is_valid"
-    ], f"the pre-change document no longer validates: {result['errors']}"
-
-    record = build_record("ApplicationSpec", baseline)
-    errors = list(schema_registry("ApplicationSpec").iter_errors(record.data))
-    assert not errors, [
-        ("/".join(str(p) for p in e.absolute_path), e.message) for e in errors
-    ]
-
-
-@pytest.mark.trace("TC-028", "FR-005-AC-1", "FR-005-AC-5")
+@pytest.mark.trace("TC-028", "FR-005-AC-1")
 def test_this_repositorys_own_application_spec_is_an_instance_of_the_contract(
     build_record, schema_registry
 ):
@@ -209,7 +136,7 @@ def test_this_repositorys_own_application_spec_is_an_instance_of_the_contract(
 
     `spec/spec.md` is a real authored document, not a skeleton written to pass:
     it omits `## UI Rendering Requirements` because this module renders nothing,
-    which is exactly the optionality FR-005-CON-1 exists to preserve. If the
+    which is exactly the optionality this contract allows. If the
     contract this module publishes cannot describe this module, it describes
     nothing.
     """

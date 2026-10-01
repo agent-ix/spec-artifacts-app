@@ -87,7 +87,8 @@ Projection:
   https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<Model>.json`.
 - The generator SHALL keep every `$ref` of the shipped bundle inside two bases:
   the module base above and
-  `https://schemas.agent-ix.org/semantic-core/0.3.0/`.
+  `https://schemas.agent-ix.org/semantic-core/<version>/`, where `<version>` is the
+  installed `@agent-ix/semantic-core` version.
 - The generator SHALL exclude from the shipped bundle every schema whose `$id`
   falls outside the module base, which the emitter produces for the imported
   semantic-core models; those ship in the semantic-core bundle quoin and quire
@@ -239,5 +240,5 @@ Free text and scope:
 
 ## Dependencies
 
-- **Upstream**: [US-001](../usecase/US-001-consume-application-artifacts-as-records.md), [FR-005](./FR-005-executable-skeletons.md) (the locators and skeletons the models type), filament-core-data FR-031..FR-033 (`@agent-ix/semantic-core` 0.3.0, agent-ix/filament-core-data#35), filament-core-data ADR-0005 (TypeSpec as the structural source)
+- **Upstream**: [US-001](../usecase/US-001-consume-application-artifacts-as-records.md), [FR-005](./FR-005-executable-skeletons.md) (the locators and skeletons the models type), filament-core-data FR-031..FR-033 (`@agent-ix/semantic-core`, agent-ix/filament-core-data#35), filament-core-data ADR-0005 (TypeSpec as the structural source)
 - **Downstream**: [FR-003](./FR-003-semantic-manifest-contract.md) (references the emitted files), [FR-004](./FR-004-markdown-mappings-and-imports.md) (maps Markdown onto these models), [NFR-001](../non-functional/NFR-001-reproducible-additive-projection.md)

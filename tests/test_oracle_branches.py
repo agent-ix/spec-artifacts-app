@@ -343,3 +343,34 @@ def test_a_clause_heading_owning_no_fence_is_skipped_rather_than_refused(
         "EveryCapabilityNamesAnActor",
         "DeferredBoundaryCarriesNoInterface",
     ]
+
+
+@pytest.mark.trace("TC-042", "FR-004-AC-3")
+def test_a_document_without_the_properties_or_invariants_heading_maps_neither(
+    mappings, manifest
+):
+    """An absent section is an unwritten one: it maps to an absent field, not a failure.
+
+    Distinct from a present-but-prose section; here the heading does not exist at
+    all, so the oracle must neither invent `fields`/`invariants` nor refuse the
+    document that omits them.
+    """
+    text = _skeleton()
+    complete = _build(mappings, manifest, text)
+    assert complete.data["fields"] and complete.data["invariants"]
+
+    no_properties = (
+        text[: text.index("\n## Properties\n")]
+        + text[text.index("\n## Boundaries\n") :]
+    )
+    record = _build(mappings, manifest, no_properties)
+    assert "fields" not in record.data
+    assert [c["clauseId"] for c in record.data["invariants"]] == [
+        c["clauseId"] for c in complete.data["invariants"]
+    ]
+
+    no_invariants = text[: text.index("\n## Invariants\n")] + "\n"
+    record = _build(mappings, manifest, no_invariants)
+    assert "invariants" not in record.data
+    assert record.data["fields"] == complete.data["fields"]
+    assert record.invariants_text == []

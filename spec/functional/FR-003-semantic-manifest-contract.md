@@ -57,8 +57,6 @@ are both detectable from the manifest alone.
   `legacy_forms: warning`.
 - One `data_schema` reference per exported artifact type, beside its
   `frontmatter_schema_ref`, using the FR-002 map.
-- `version: 0.2.0`, bumped as the first step of the change so `make schemas` is run
-  once against one version.
 - A legacy-manifest fixture at `tests/fixtures/manifest-legacy.yaml`: this
   manifest with the `semantic` block and every `data_schema` removed, which
   CON-1 uses to prove the module still validates and loads for a consumer that
@@ -154,7 +152,7 @@ Evidence, not obligation:
 | FR-003-AC-1 | The `semantic` block's key set equals exactly `{contract_version, semantic_core, package, exports, imports, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs, and the manifest carrying it loads under quire with every declared artifact type registered. | Test (TC-011, TC-034) |
 | FR-003-AC-2 | For each exported artifact type, `data_schema.schema` names an existing file under `spec_artifacts_app/schemas/` per the FR-002 map, and `exports` equals the set of artifact types carrying a reference. | Test (TC-012) |
 | FR-003-AC-3 | With the block and the references present, `quire.Registry.load_from` over the module's parent directory lists every archetype the manifest declares and `validate_document` passes every shipped skeleton — the block breaks no consumer. | Test (TC-013) |
-| FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` at an exact version and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
+| FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
 | FR-003-AC-5 | An import graph built from this module plus synthesized dynamic-module fixtures fails on a cycle naming every module on it in deterministic traversal order, distinctly from the missing-import failure of AC-4; the fixtures exercise a two-module cycle, a three-module cycle, and an acyclic graph that must pass. No fixture is read from the machine's installed module root. | Test (TC-015) |
 | FR-003-AC-6 | A copy of the module whose `semantic` block carries an unknown key, a `package` that is not `<org>/<repo>`, or an unregistered `targets` value is refused at load: `quire.Registry.load_from` registers none of its archetypes, while the unmutated copy registers them. The refusal is claimed; naming the refused key or path is not (agent-ix/quire-rs#221). | Test (TC-016) |
 | FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) loads under quire with the same artifact types as the current manifest. | Test (TC-034, TC-043) |

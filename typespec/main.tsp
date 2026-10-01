@@ -24,12 +24,8 @@ using AgentIx.Semantic.Core;
  *
  * Every field carries a constraint. Where a field is free text the doc comment
  * says `free text:` and why (FR-002-AC-4).
- *
- * The `$id` base embeds the manifest `version` by intent (FR-002-CON-5): one
- * schema URL names exactly one immutable byte sequence. A bump edits this base
- * and `manifest.yaml`'s `version` in one commit and re-runs `make schemas`.
  */
-@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/")
+@jsonSchema("https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/")
 namespace AgentIx.SpecArtifactsApp;
 
 // ---------------------------------------------------------------------------

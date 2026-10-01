@@ -34,7 +34,6 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const sourceDir = resolve(repoRoot, "typespec");
 const packageDir = resolve(repoRoot, "spec_artifacts_app");
 const outputDir = resolve(packageDir, "schemas");
-const manifestPath = resolve(packageDir, "manifest.yaml");
 
 /**
  * Files under `schemas/` this generator owns. The hand-authored
@@ -65,28 +64,11 @@ function requireNode() {
   }
 }
 
-/** The manifest `version`, read without a YAML parser so the file is never reserialized. */
-function manifestVersion() {
-  const match = readFileSync(manifestPath, "utf8").match(/^version:\s*(\S+)\s*$/m);
-  if (!match) fail(`${relative(repoRoot, manifestPath)} declares no top-level version`);
-  return match[1];
-}
-
-/** The `@jsonSchema` base declared by the source, checked against the manifest version. */
+/** The `@jsonSchema` base declared by the source. */
 function moduleBase() {
   const source = readFileSync(resolve(sourceDir, "main.tsp"), "utf8");
   const declared = source.match(/@jsonSchema\("([^"]+)"\)/)?.[1];
   if (!declared) fail("typespec/main.tsp declares no @jsonSchema base");
-  const version = manifestVersion();
-  const expected = `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/${version}/`;
-  if (declared !== expected) {
-    fail(
-      `@jsonSchema base version and manifest version disagree:\n` +
-        `  typespec/main.tsp: ${declared}\n` +
-        `  manifest.yaml version: ${version} (expected base ${expected})\n` +
-        `A version bump edits both in one commit (FR-002-CON-5).`,
-    );
-  }
   return declared;
 }
 

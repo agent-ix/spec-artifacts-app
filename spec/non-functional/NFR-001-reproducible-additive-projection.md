@@ -29,13 +29,13 @@ a way that invalidates a document valid before the change.
   provisions the quire wheel as a dev dependency; the only network access is
   the package install itself.
 - Toolchain preconditions: Node 20 or later
-  and Python 3.13. `poetry install` installs `quire` 0.47.1 or
-  later, pinned to the `internal-pypi` source, the wheel exposing
+  and Python 3.13. `poetry install` installs `quire` from
+  the `internal-pypi` source, the wheel exposing
   `extract_semantic`.
 - Reference machine: the machine that recorded the release notes for the
   version under test, whose Node, Python, and CPU are named there. Metric 4 is a
   bound on that machine, not a portable number.
-- npm-configuration precondition: `@agent-ix/semantic-core` 0.3.0 resolves only
+- npm-configuration precondition: `@agent-ix/semantic-core` resolves only
   from the registry the developer's npm configuration routes the `@agent-ix`
   scope to — today GitHub Packages. The repository carries no `.npmrc`
   (FR-002-CON-3), so the scope routing is the machine's and not the

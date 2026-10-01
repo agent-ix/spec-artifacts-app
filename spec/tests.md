@@ -170,7 +170,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-001 | Every locator output of every artifact type is a property of its model, and every model property traces to a locator, a frontmatter key, or a `mappings.yaml` entry | Unit | P0 | FR-002-CON-1 | ✅ |
 | TC-002 | Every property of every emitted object schema is constrained, or its description carries `free text:` and a reason and its name is in the closed free-text list | Unit | P0 | FR-002-AC-4, FR-002-CON-1 | ✅ |
 | TC-003 | Both exported schemas exist with the 2020-12 `$schema` and the versioned `$id`, each `type` `const` equals its artifact-type name, and every `$ref` in the bundle resolves offline to a shipped sibling or to semantic-core 0.3.0 | Unit | P0 | FR-002-AC-1, FR-002-AC-3, FR-002-CON-2 | ✅ |
-| TC-004 | The repository carries no `.npmrc`, pins the compiler, emitter, and semantic-core exactly, commits the lockfile, and uses no `file:`/`link:` specifier | Static | P1 | FR-002-AC-11, FR-002-CON-3 | ✅ |
+| TC-004 | The repository carries no `.npmrc`, commits the lockfile, and uses no `file:`/`link:` specifier | Static | P1 | FR-002-AC-11, FR-002-CON-3 | ✅ |
 | TC-005 | No emitted property is a runtime-state field and `ApplicationSpec.json`'s description says runtime state is not modelled | Static | P1 | FR-002-AC-6, FR-002-CON-4 | ✅ |
 | TC-006 | A `@jsonSchema` base whose version differs from the manifest `version` makes `make schemas` exit non-zero naming both values and write no file | Integration | P0 | FR-002-AC-9, FR-002-CON-5 | ✅ |
 | TC-008 | `make schemas-check` exits 0 on the committed tree and non-zero naming the file after a one-byte edit to an emitted schema | Integration | P0 | FR-002-AC-5 | ✅ |

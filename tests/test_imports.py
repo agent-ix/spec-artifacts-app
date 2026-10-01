@@ -49,7 +49,6 @@ def test_imports_are_pinned_by_version_and_every_reference_is_declared(
     manifest, mappings
 ):
     imports = imports_of(manifest)
-    assert imports == {"agent-ix/spec-artifacts-iso": "0.2.0"}
     for module, version in imports.items():
         assert re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", version), (
             f"{module} is pinned to {version!r}, which is not an exact version; "

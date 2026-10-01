@@ -28,8 +28,8 @@ a way that invalidates a document valid before the change.
 - Operational context: a clean clone with `npm ci` and `poetry install`, which
   provisions the quire wheel as a dev dependency; the only network access is
   the package install itself.
-- Toolchain preconditions: Node 20 or later (`@typespec/compiler` 1.15.0
-  requires it) and Python 3.13. `poetry install` installs `quire` 0.47.1 or
+- Toolchain preconditions: Node 20 or later
+  and Python 3.13. `poetry install` installs `quire` 0.47.1 or
   later, pinned to the `internal-pypi` source, the wheel exposing
   `extract_semantic`.
 - Reference machine: the machine that recorded the release notes for the

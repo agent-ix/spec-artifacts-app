@@ -37,7 +37,7 @@ is not a field of any model.
 - `@agent-ix/semantic-core` 0.3.0, resolved from the registry the developer's npm
   configuration routes the `@agent-ix` scope to (today GitHub Packages),
   pinned exactly, for `ClauseRef`, `SourceLocus`, and `SemanticId`.
-- `@typespec/compiler` 1.15.0 and `@typespec/json-schema` 1.15.0 as
+- `@typespec/compiler` and `@typespec/json-schema` as
   devDependencies of the repository, with a committed `package-lock.json`.
 - The frontmatter schemas already shipped at
   `spec_artifacts_app/schemas/applicationspec-frontmatter.schema.json` and
@@ -225,7 +225,7 @@ Free text and scope:
 |----|------------|------|------------|
 | FR-002-CON-1 | The models SHALL declare exactly the fields the locators, the frontmatter schemas, and the FR-004 mappings produce: no field without a Markdown source, no locator output without a field. | Integrity | Test (TC-001, TC-002) |
 | FR-002-CON-2 | The emitted bundle SHALL carry no `$ref` outside the module base and the semantic-core 0.3.0 base, so that a consumer resolves every reference without a network read. | Boundary | Test (TC-003) |
-| FR-002-CON-3 | The repository SHALL pin `@typespec/compiler` and `@typespec/json-schema` at 1.15.0 and `@agent-ix/semantic-core` at 0.3.0 with a committed lockfile, no `file:` or `link:` reference, and no `.npmrc` in the repository. | Reproducibility | Analysis (TC-004) |
+| FR-002-CON-3 | The repository SHALL carry a committed lockfile, no `file:` or `link:` reference, and no `.npmrc` in the repository. | Reproducibility | Analysis (TC-004) |
 | FR-002-CON-4 | No model SHALL carry a property named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`: declaration and runtime state stay distinct. | Scope | Analysis (TC-005) |
 | FR-002-CON-5 | The `@jsonSchema` base SHALL embed the manifest `version`; a version bump edits both in one commit. | Integrity | Test (TC-006) |
 
@@ -242,7 +242,7 @@ Free text and scope:
 | FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
 | FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.3.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
 | FR-002-AC-12 | A built wheel, a built sdist and the staged npm payload carry the same entry set — `manifest.yaml`, `mappings.yaml`, `mappings.schema.json`, every file under `schemas/` and every file under `skeletons/` — none of them carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root. | Test (TC-044) |
-| FR-002-AC-11 | The repository carries no `.npmrc`, `package.json` pins `@typespec/compiler` 1.15.0, `@typespec/json-schema` 1.15.0, and `@agent-ix/semantic-core` 0.3.0 exactly, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Analysis (TC-004) |
+| FR-002-AC-11 | The repository carries no `.npmrc`, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Analysis (TC-004) |
 
 ## Dependencies
 

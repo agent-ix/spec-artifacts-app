@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/InterfaceId.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/InterfaceId.json",
   "type": "string",
   "pattern": "^[A-Z]{2,4}-[0-9]+-IFC-[0-9]+$",
   "description": "Interface row id, `<document id>-IFC-N`."

@@ -1,23 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RenderingRequirement.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RenderingRequirement.json",
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RenderingRequirementId.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RenderingRequirementId.json"
     },
     "surface": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/UiSurface.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/UiSurface.json"
     },
     "requirement": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json",
       "description": "free text: the authored rendering obligation; its EARS grammar is an advisory lint, not a schema."
     },
     "verification": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Verification.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Verification.json"
     },
     "line": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/LineNumber.json"
     }
   },
   "required": [

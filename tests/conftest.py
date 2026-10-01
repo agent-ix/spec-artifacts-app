@@ -46,7 +46,7 @@ SEMANTIC_CORE_DIR = (
     / "json-schema"
 )
 
-SEMANTIC_CORE_BASE = "https://schemas.agent-ix.org/semantic-core/0.3.0/"
+MODULE_BASE = "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/"
 
 #: Artifact type -> emitted model, the FR-002 export map.
 MODEL_OF = {
@@ -70,19 +70,10 @@ def load_mappings() -> dict[str, Any]:
     return yaml.safe_load(MAPPINGS_PATH.read_text())
 
 
-def manifest_version() -> str:
-    return load_manifest()["version"]
-
-
-def module_base() -> str:
-    """The `$id` base, read from the manifest version.
-
-    Never hard-coded: a version bump must not need a test edit (FR-002-CON-5).
-    """
-    return (
-        "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/"
-        f"{manifest_version()}/"
-    )
+SEMANTIC_CORE_BASE = (
+    "https://schemas.agent-ix.org/semantic-core/"
+    f"{load_manifest()['semantic']['semantic_core']}/"
+)
 
 
 def artifact_types() -> list[dict[str, Any]]:

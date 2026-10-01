@@ -1,16 +1,16 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Relationship.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Relationship.json",
   "type": "object",
   "properties": {
     "target": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/IxTarget.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IxTarget.json"
     },
     "type": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/EdgeVerb.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/EdgeVerb.json"
     },
     "cardinality": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Cardinality.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Cardinality.json"
     }
   },
   "required": [

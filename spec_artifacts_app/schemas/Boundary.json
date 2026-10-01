@@ -1,23 +1,23 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Boundary.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Boundary.json",
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/BoundaryId.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/BoundaryId.json"
     },
     "name": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json"
     },
     "kind": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/BoundaryKind.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/BoundaryKind.json"
     },
     "description": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json",
       "description": "free text: authored prose describing the area; no closed vocabulary describes an application's areas."
     },
     "line": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/LineNumber.json"
     }
   },
   "required": [

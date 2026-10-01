@@ -1,22 +1,22 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRef.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementRef.json",
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRefId.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementRefId.json"
     },
     "kind": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementKind.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementKind.json"
     },
     "source": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ImportedTypeRef.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ImportedTypeRef.json"
     },
     "target": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/IxTarget.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IxTarget.json"
     },
     "line": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/LineNumber.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/LineNumber.json"
     }
   },
   "required": [

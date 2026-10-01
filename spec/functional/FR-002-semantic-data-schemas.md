@@ -16,7 +16,7 @@ relationships:
 
 The module SHALL declare one semantic data model per declared artifact type —
 `ApplicationSpec` and `MasterRequirements` — as TypeSpec source importing
-`@agent-ix/semantic-core` 0.3.0.
+`@agent-ix/semantic-core`.
 
 The module SHALL ship the JSON Schema 2020-12 projection of every declared model
 at `spec_artifacts_app/schemas/<Model>.json`, covering both artifact-type models
@@ -33,10 +33,9 @@ is not a field of any model.
 
 - `typespec/main.tsp`: the TypeSpec source, namespace `AgentIx.SpecArtifactsApp`,
   `@jsonSchema` base
-  `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/`.
-- `@agent-ix/semantic-core` 0.3.0, resolved from the registry the developer's npm
-  configuration routes the `@agent-ix` scope to (today GitHub Packages),
-  pinned exactly, for `ClauseRef`, `SourceLocus`, and `SemanticId`.
+  `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/`.
+- `@agent-ix/semantic-core`, resolved from the registry the developer's npm
+  configuration routes the `@agent-ix` scope to (today GitHub Packages), for `ClauseRef`, `SourceLocus`, and `SemanticId`.
 - `@typespec/compiler` and `@typespec/json-schema` as
   devDependencies of the repository, with a committed `package-lock.json`.
 - The frontmatter schemas already shipped at
@@ -85,11 +84,7 @@ Projection:
 
 - The generator SHALL write every emitted schema with `$schema:
   https://json-schema.org/draft/2020-12/schema` and `$id:
-  https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/<Model>.json`,
-  where `<manifest version>` equals `version` in `manifest.yaml`.
-- If the `@jsonSchema` base of `typespec/main.tsp` does not embed the manifest
-  `version`, then `make schemas` SHALL fail naming both values before writing any
-  file.
+  https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<Model>.json`.
 - The generator SHALL keep every `$ref` of the shipped bundle inside two bases:
   the module base above and
   `https://schemas.agent-ix.org/semantic-core/0.3.0/`.
@@ -224,23 +219,21 @@ Free text and scope:
 | ID | Constraint | Type | Validation |
 |----|------------|------|------------|
 | FR-002-CON-1 | The models SHALL declare exactly the fields the locators, the frontmatter schemas, and the FR-004 mappings produce: no field without a Markdown source, no locator output without a field. | Integrity | Test (TC-001, TC-002) |
-| FR-002-CON-2 | The emitted bundle SHALL carry no `$ref` outside the module base and the semantic-core 0.3.0 base, so that a consumer resolves every reference without a network read. | Boundary | Test (TC-003) |
+| FR-002-CON-2 | The emitted bundle SHALL carry no `$ref` outside the module base and the semantic-core base, so that a consumer resolves every reference without a network read. | Boundary | Test (TC-003) |
 | FR-002-CON-3 | The repository SHALL carry a committed lockfile, no `file:` or `link:` reference, and no `.npmrc` in the repository. | Reproducibility | Analysis (TC-004) |
 | FR-002-CON-4 | No model SHALL carry a property named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`: declaration and runtime state stay distinct. | Scope | Analysis (TC-005) |
-| FR-002-CON-5 | The `@jsonSchema` base SHALL embed the manifest `version`; a version bump edits both in one commit. | Integrity | Test (TC-006) |
 
 ## Acceptance Criteria
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json` and `MasterRequirements.json`, each a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/<Model>.json`, and each `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
-| FR-002-AC-3 | Every `$ref` across the emitted bundle resolves to a shipped sibling or to a file name of the semantic-core 0.3.0 bundle, with no network read; no `$ref` names another module's base, another semantic-core version, or an unshipped file. | Test (TC-003) |
+| FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json` and `MasterRequirements.json`, each a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<Model>.json`, and each `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
+| FR-002-AC-3 | Every `$ref` across the emitted bundle resolves to a shipped sibling or to a file name of the semantic-core bundle, with no network read; no `$ref` names another module's base, another semantic-core version, or an unshipped file. | Test (TC-003) |
 | FR-002-AC-4 | Every property of every emitted object schema is constrained by `pattern`, `minLength`, `minimum`, `enum`, `const`, or `format` (after following `$ref`), or is an object or array of such, or is `boolean`/`null`; and the set of properties whose description begins `free text:` is exactly the nine the Behavior section names — a tenth fails the check. | Test (TC-002) |
 | FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008, TC-030) |
 | FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Analysis (TC-005) |
 | FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`; the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects a record carrying a property no model declares. No negative fixture reaches the schema — every one is refused by the archetype or by the mapping first — so the sealing case is exercised by mutating a good record rather than by a fixture that does not exist. | Test (TC-009) |
-| FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
-| FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.3.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
+| FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |
 | FR-002-AC-12 | A built wheel, a built sdist and the staged npm payload carry the same entry set — `manifest.yaml`, `mappings.yaml`, `mappings.schema.json`, every file under `schemas/` and every file under `skeletons/` — none of them carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root. | Test (TC-044) |
 | FR-002-AC-11 | The repository carries no `.npmrc`, `package-lock.json` is committed, and no dependency uses a `file:` or `link:` specifier. | Analysis (TC-004) |
 

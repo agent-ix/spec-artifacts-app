@@ -1,47 +1,47 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/MasterRequirements.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/MasterRequirements.json",
   "type": "object",
   "properties": {
     "id": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ArtifactId.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ArtifactId.json"
     },
     "title": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json"
     },
     "type": {
       "type": "string",
       "const": "MasterRequirements"
     },
     "status": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/ArtifactStatus.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ArtifactStatus.json"
     },
     "relationships": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Relationship.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Relationship.json"
       }
     },
     "provenance": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Provenance.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Provenance.json"
     },
     "purpose": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "scope": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "systemOverview": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "structure": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "requirementsArchitecture": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "references": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Section.json"
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Section.json"
     },
     "fields": {
       "type": "array",
@@ -54,7 +54,7 @@
     "requirements": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/RequirementRef.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementRef.json"
       }
     },
     "invariants": {

@@ -1,20 +1,20 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/Verification.json",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/Verification.json",
   "type": "object",
   "properties": {
     "method": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json",
       "description": "free text: an ISO 29148 method name whose vocabulary is an advisory lint rule, not a schema."
     },
     "testRefs": {
       "type": "array",
       "items": {
-        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/TestCaseRef.json"
+        "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/TestCaseRef.json"
       }
     },
     "annotation": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/0.2.0/NonEmptyText.json",
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/NonEmptyText.json",
       "description": "free text: the parenthesized remainder of the cell, carried verbatim so no byte is lost."
     }
   },

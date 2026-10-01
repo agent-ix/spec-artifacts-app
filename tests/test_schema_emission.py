@@ -18,6 +18,7 @@ import pytest
 
 from tests.conftest import (
     MODEL_OF,
+    MODULE_BASE,
     REPO_ROOT,
     SCHEMAS_DIR,
     SEMANTIC_CORE_BASE,
@@ -26,8 +27,6 @@ from tests.conftest import (
     emitted_schema_names,
     load_mappings,
     locators,
-    manifest_version,
-    module_base,
 )
 
 GENERATOR = REPO_ROOT / "scripts" / "generate-schemas.mjs"
@@ -212,8 +211,8 @@ def test_every_property_is_constrained_and_free_text_is_declared_not_defaulted()
 
 
 @pytest.mark.trace("TC-003", "FR-002-AC-1", "FR-002-AC-3", "FR-002-CON-2")
-def test_exported_schemas_carry_the_versioned_id_and_every_ref_resolves_offline():
-    base = module_base()
+def test_exported_schemas_carry_the_stable_id_and_every_ref_resolves_offline():
+    base = MODULE_BASE
     schemas = _schemas()
     for entry in artifact_types():
         model = MODEL_OF[entry["name"]]
@@ -233,7 +232,7 @@ def test_exported_schemas_carry_the_versioned_id_and_every_ref_resolves_offline(
         for ref in _refs(schema):
             assert ref in shipped or ref in semantic_core, (
                 f"{model}: `$ref` {ref} resolves to neither a shipped sibling nor "
-                "the semantic-core 0.3.0 bundle"
+                "the semantic-core bundle"
             )
 
 
@@ -260,43 +259,6 @@ def test_no_property_models_runtime_state():
         ), f"{model} declares runtime-state properties {sorted(offending)}"
     description = _schemas()["ApplicationSpec"]["description"]
     assert "runtime state (deployment, health, uptime) is not modelled" in description
-
-
-@pytest.mark.trace("TC-006", "FR-002-AC-9", "FR-002-CON-5")
-def test_a_base_version_mismatch_fails_the_generator_and_writes_nothing(tmp_path):
-    """The `$id` base embeds the manifest version; a disagreement is a hard stop."""
-    work = tmp_path / "repo"
-    shutil.copytree(
-        REPO_ROOT,
-        work,
-        ignore=shutil.ignore_patterns(
-            ".git",
-            ".worktrees",
-            "node_modules",
-            "__pycache__",
-            ".pytest_cache",
-            ".ruff_cache",
-        ),
-    )
-    os.symlink(REPO_ROOT / "node_modules", work / "node_modules")
-    source = work / "typespec" / "main.tsp"
-    source.write_text(source.read_text().replace(f"/{manifest_version()}/", "/9.9.9/"))
-    before = {
-        p.name: p.read_bytes()
-        for p in (work / "spec_artifacts_app" / "schemas").glob("*.json")
-    }
-
-    result = _run_generator(cwd=work)
-
-    assert result.returncode != 0, "a base/manifest version mismatch was accepted"
-    assert (
-        "9.9.9" in result.stderr and manifest_version() in result.stderr
-    ), f"the failure names neither value: {result.stderr}"
-    after = {
-        p.name: p.read_bytes()
-        for p in (work / "spec_artifacts_app" / "schemas").glob("*.json")
-    }
-    assert after == before, "the generator wrote output on a failing run"
 
 
 @pytest.mark.trace("TC-008", "FR-002-AC-5")
@@ -365,7 +327,7 @@ def test_object_schemas_are_inline_and_sealed_and_the_validator_agrees(
 @pytest.mark.trace("TC-010", "FR-002-AC-10")
 def test_no_cross_module_ref_and_no_imported_field_is_duplicated():
     schemas = _schemas()
-    base = module_base()
+    base = MODULE_BASE
     for model, schema in schemas.items():
         for ref in _refs(schema):
             assert ref.startswith(base) or ref.startswith(

@@ -33,7 +33,7 @@ py-project = "^0.4.4"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-json-report = "^1.5.0"
-quire = { version = "^0.47.1", source = "internal-pypi" }
+quire = { version = "^0.49.0", source = "internal-pypi" }
 ruff = "^0.14.13"
 pytest-results = { version = "^0.2.0", python = ">=3.12" }
 

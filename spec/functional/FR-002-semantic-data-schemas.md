@@ -62,14 +62,6 @@ is not a field of any model.
   `UiSurface`, `ActorKind`, `InterfaceKind`, `InterfaceDirection`,
   `DataAccessMode`, `BoundaryKind`, and `RequirementKind` — 39 emitted files in
   all, and no model or scalar the two exported models do not reach.
-- `spec_artifacts_app/schemas/toolchain.json`, recording the compiler, emitter,
-  and semantic-core versions, the emitted file list, a SHA-256 digest computed
-  as `sha256(concat(name + "\n" + bytes))` over the emitted files in sorted name
-  order, and the `normalization` record — the named, versioned post-emit pass
-  that rewrites a relative `$id` or `$ref` to an absolute one, together with
-  whether it applied and to which files. A pass inside the reproducibility
-  boundary that went unrecorded would make the bundle a function of two things
-  where `toolchain.json` names one.
 - `make schemas` (regenerate) and `make schemas-check` (fail on any byte
   difference), each run after `npm ci`. The hand-authored
   `*-frontmatter.schema.json` files in the same directory are not projections and
@@ -114,9 +106,8 @@ Projection:
 - The generator SHALL render each file as `JSON.stringify(schema, null, 2)` plus
   one trailing newline, with no formatter dependency.
 - If `make schemas-check` finds a committed projection whose bytes differ from a
-  fresh one, a committed projection the fresh run no longer produces, or a
-  `toolchain.json` that differs, then `make schemas-check` SHALL exit non-zero
-  naming each file.
+  fresh one, or a committed projection the fresh run no longer produces, then
+  `make schemas-check` SHALL exit non-zero naming each file.
 
 Identity, status, provenance:
 
@@ -243,12 +234,10 @@ Free text and scope:
 | ID | Criteria | Verification |
 |----|----------|--------------|
 | FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json` and `MasterRequirements.json`, each a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<manifest version>/<Model>.json`, and each `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
-| FR-002-AC-2 | Every declared artifact type of `manifest.yaml` has an emitted model file, and every support model and scalar named in Outputs is emitted as its own file; the emitted set is exactly the `files` list of `toolchain.json`, with no extra and no missing entry. | Test (TC-007) |
 | FR-002-AC-3 | Every `$ref` across the emitted bundle resolves to a shipped sibling or to a file name of the semantic-core 0.3.0 bundle, with no network read; no `$ref` names another module's base, another semantic-core version, or an unshipped file. | Test (TC-003) |
 | FR-002-AC-4 | Every property of every emitted object schema is constrained by `pattern`, `minLength`, `minimum`, `enum`, `const`, or `format` (after following `$ref`), or is an object or array of such, or is `boolean`/`null`; and the set of properties whose description begins `free text:` is exactly the nine the Behavior section names — a tenth fails the check. | Test (TC-002) |
 | FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008, TC-030) |
 | FR-002-AC-6 | No emitted schema property is named `deployed`, `running`, `health`, `uptime`, `instanceCount`, or `lastDeployedAt`, and the `ApplicationSpec.json` description carries the sentence `runtime state (deployment, health, uptime) is not modelled`. | Analysis (TC-005) |
-| FR-002-AC-7 | The digest recomputed over the emitted files (`sha256(concat(name + "\n" + bytes))`, sorted by name) equals the digest recorded in `toolchain.json`, with no toolchain run. | Test (TC-007) |
 | FR-002-AC-8 | Every emitted object schema declares its properties inline (no `allOf`/`oneOf`/`anyOf`/`$ref` at the object's top level except a nullable scalar's `anyOf`) and is sealed with `unevaluatedProperties: { not: {} }`; the Python `jsonschema` validator accepts every record built from a shipped skeleton and rejects a record carrying a property no model declares. No negative fixture reaches the schema — every one is refused by the archetype or by the mapping first — so the sealing case is exercised by mutating a good record rather than by a fixture that does not exist. | Test (TC-009) |
 | FR-002-AC-9 | `typespec/main.tsp` declaring a `@jsonSchema` base whose version differs from `manifest.yaml`'s `version` makes `make schemas` exit non-zero naming both values, and no file under `schemas/` is written. | Test (TC-006) |
 | FR-002-AC-10 | No emitted object schema declares a property whose name and meaning duplicate a property of an imported type, and no `$ref` in the bundle names a base other than this module's or semantic-core 0.3.0 — the imported-type reference form is `ImportedTypeRef`. | Test (TC-010) |

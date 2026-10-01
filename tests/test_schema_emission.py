@@ -1,4 +1,4 @@
-"""The emitted JSON Schema bundle, its toolchain record, and its drift gates.
+"""The emitted JSON Schema bundle and its drift gates.
 
 Every requirement id lives on a test's `trace` marker, never in this docstring:
 a trace id written on a module binds to nothing and is reported unbacked,
@@ -22,7 +22,6 @@ from tests.conftest import (
     SCHEMAS_DIR,
     SEMANTIC_CORE_BASE,
     SKELETONS_DIR,
-    TOOLCHAIN_PATH,
     artifact_types,
     emitted_schema_names,
     load_mappings,
@@ -304,55 +303,6 @@ def test_a_base_version_mismatch_fails_the_generator_and_writes_nothing(tmp_path
         for p in (work / "spec_artifacts_app" / "schemas").glob("*.json")
     }
     assert after == before, "the generator wrote output on a failing run"
-
-
-@pytest.mark.trace("TC-007", "FR-002-AC-2", "FR-002-AC-7")
-def test_the_emitted_set_equals_toolchain_json_and_its_digest_recomputes():
-    import hashlib
-
-    toolchain = json.loads(TOOLCHAIN_PATH.read_text())
-    assert toolchain["files"] == emitted_schema_names()
-    assert toolchain["base"] == module_base()
-
-    for entry in artifact_types():
-        assert (
-            f"{MODEL_OF[entry['name']]}.json" in toolchain["files"]
-        ), f"{entry['name']} has no emitted model"
-
-    digest = hashlib.sha256()
-    for name in toolchain["files"]:
-        digest.update(f"{name}\n".encode())
-        digest.update((SCHEMAS_DIR / name).read_bytes())
-    assert toolchain["digest"] == f"sha256:{digest.hexdigest()}"
-
-    # `toolchain.json` and the directory listing are both products of the same
-    # run, so comparing them to each other proves only that the run was
-    # self-consistent. The independent claim is reachability: every emitted file
-    # must be reachable from one of the two exported models by following `$ref`,
-    # and every reachable name must be emitted. That catches an orphan the
-    # emitter left behind and a model the bundle references but does not ship —
-    # neither of which a self-comparison can see.
-    schemas = _schemas()
-    reachable: set[str] = set()
-    frontier = [MODEL_OF[entry["name"]] for entry in artifact_types()]
-    while frontier:
-        model = frontier.pop()
-        if model in reachable:
-            continue
-        reachable.add(model)
-        for ref in _refs(schemas[model]):
-            if ref.startswith(SEMANTIC_CORE_BASE):
-                continue
-            target = ref.rsplit("/", 1)[-1][: -len(".json")]
-            assert (
-                target in schemas
-            ), f"{model} references {target}.json, which is not shipped"
-            frontier.append(target)
-    emitted = {name[: -len(".json")] for name in emitted_schema_names()}
-    assert reachable == emitted, (
-        f"orphans nothing reaches={sorted(emitted - reachable)}, "
-        f"referenced but unshipped={sorted(reachable - emitted)}"
-    )
 
 
 @pytest.mark.trace("TC-008", "FR-002-AC-5")

@@ -32,7 +32,6 @@ MAPPINGS_PATH = PACKAGE_ROOT / "mappings.yaml"
 MAPPINGS_SCHEMA_PATH = PACKAGE_ROOT / "mappings.schema.json"
 SCHEMAS_DIR = PACKAGE_ROOT / "schemas"
 SKELETONS_DIR = PACKAGE_ROOT / "skeletons"
-TOOLCHAIN_PATH = SCHEMAS_DIR / "toolchain.json"
 TYPESPEC_DIR = REPO_ROOT / "typespec"
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
 NEGATIVE_DIR = FIXTURES / "negative"
@@ -102,14 +101,13 @@ def locators(entry: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def emitted_schema_names() -> list[str]:
     """The projections under `schemas/`.
 
-    Neither `toolchain.json` nor the hand-authored frontmatter schemas, which
-    live in the same directory and are not emitted from TypeSpec.
+    Not the hand-authored frontmatter schemas, which live in the same directory
+    and are not emitted from TypeSpec.
     """
     return sorted(
         p.name
         for p in SCHEMAS_DIR.glob("*.json")
-        if p.name != "toolchain.json"
-        and not p.name.endswith("-frontmatter.schema.json")
+        if not p.name.endswith("-frontmatter.schema.json")
     )
 
 
@@ -184,8 +182,6 @@ def schema_registry():
         )
     resources = []
     for path in sorted(SCHEMAS_DIR.glob("*.json")):
-        if path.name == "toolchain.json":
-            continue
         schema = json.loads(path.read_text())
         if "$id" not in schema:
             continue

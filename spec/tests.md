@@ -89,12 +89,10 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-001 | FR-001-AC-3 | — | 🚧 Needs a running filament-core-service |
 | FR-001 | FR-001-AC-4 | — | 🚧 Needs a running filament-core-service |
 | FR-002 | FR-002-AC-1 | TC-003 | ✅ Complete |
-| FR-002 | FR-002-AC-2 | TC-007 | ✅ Complete |
 | FR-002 | FR-002-AC-3 | TC-003 | ✅ Complete |
 | FR-002 | FR-002-AC-4 | TC-002 | ✅ Complete |
 | FR-002 | FR-002-AC-5 | TC-008, TC-030 | ✅ Complete |
 | FR-002 | FR-002-AC-6 | TC-005 | ✅ Complete |
-| FR-002 | FR-002-AC-7 | TC-007 | ✅ Complete |
 | FR-002 | FR-002-AC-8 | TC-009 | ✅ Complete |
 | FR-002 | FR-002-AC-9 | TC-006 | ✅ Complete |
 | FR-002 | FR-002-AC-10 | TC-010 | ✅ Complete |
@@ -175,7 +173,6 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-004 | The repository carries no `.npmrc`, pins the compiler, emitter, and semantic-core exactly, commits the lockfile, and uses no `file:`/`link:` specifier | Static | P1 | FR-002-AC-11, FR-002-CON-3 | ✅ |
 | TC-005 | No emitted property is a runtime-state field and `ApplicationSpec.json`'s description says runtime state is not modelled | Static | P1 | FR-002-AC-6, FR-002-CON-4 | ✅ |
 | TC-006 | A `@jsonSchema` base whose version differs from the manifest `version` makes `make schemas` exit non-zero naming both values and write no file | Integration | P0 | FR-002-AC-9, FR-002-CON-5 | ✅ |
-| TC-007 | The emitted schema file set equals `toolchain.json`'s `files`, covers every declared artifact type and every named support model and scalar, and the recomputed digest equals the recorded one with no toolchain run | Unit | P0 | FR-002-AC-2, FR-002-AC-7 | ✅ |
 | TC-008 | `make schemas-check` exits 0 on the committed tree and non-zero naming the file after a one-byte edit to an emitted schema | Integration | P0 | FR-002-AC-5 | ✅ |
 | TC-009 | Every emitted object schema declares its properties inline, and the Python `jsonschema` validator accepts every skeleton record and rejects every negative fixture that produces a record | Unit | P0 | FR-002-AC-8 | ✅ |
 | TC-010 | No emitted property duplicates a property of an imported type and no `$ref` names a base other than this module's or semantic-core 0.3.0 | Unit | P0 | FR-002-AC-10 | ✅ |
@@ -197,7 +194,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-027 | The module ships no `*.md.j2` file and no `template_ref` key anywhere in `manifest.yaml` | Static | P1 | FR-005-AC-6, FR-005-CON-3 | ✅ |
 | TC-028 | Each artifact type ships a skeleton whose headings and table header rows match its asserts in both directions, and every skeleton passes `validate_document` | Unit | P0 | FR-005-AC-1, StR-001-VC-2 | ✅ |
 | TC-029 | The `sysml`-fence skeleton declares the same `FieldDecl` set in the same order as the typed `## Properties` table of its counterpart, and both fill `fields` identically | Unit | P0 | FR-005-AC-2 | ✅ |
-| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, `toolchain.json`, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
+| TC-030 | Two consecutive `make schemas` runs on one tree produce byte-identical schemas, and the committed bytes are what a fresh run produces | Snapshot | P1 | NFR-001-AC-1, FR-002-AC-5 | ✅ |
 | TC-031 | `make schemas-check` and `make test` exit 0 with the network namespace disabled after `npm ci` and `poetry install` | Manual | P2 | NFR-001-AC-2 | 🚧 Manual offline gate |
 | TC-032 | Every locator the change adds carries `required: false`, diffed against the branch point | Static | P1 | NFR-001-AC-3 | ✅ |
 | TC-033 | `make schemas-check` completes within 30 s on the reference machine | Benchmark | P3 | NFR-001-AC-4 | ✅ |

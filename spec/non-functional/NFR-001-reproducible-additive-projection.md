@@ -68,7 +68,7 @@ is this requirement's, measured rather than asserted.
 ## Verification
 
 A test regenerates the bundle into a scratch directory and compares every file to
-the committed one; a second test recomputes the `toolchain.json` digest; a third diffs the locator set against the branch
+the committed one; a second test diffs the locator set against the branch
 point and asserts every added locator is optional. The offline run is a manual
 gate of this repository, recorded in the release notes; no CI job is claimed by
 this requirement.

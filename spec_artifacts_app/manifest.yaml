@@ -8,7 +8,7 @@ description: "Filament Module: application/composite spec artifact templates (Ap
 # never by restating the imported type's fields (FR-002-AC-10, FR-003-AC-4).
 semantic:
   contract_version: 1.0.0
-  semantic_core: 0.3.0
+  semantic_core: 0.3.2
   package: agent-ix/spec-artifacts-app
   exports:
   - ApplicationSpec

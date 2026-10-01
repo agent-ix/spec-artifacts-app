@@ -135,13 +135,17 @@ def _non_semantic_module(path: pathlib.Path) -> pathlib.Path:
 
 
 @pytest.mark.trace("TC-015", "FR-003-AC-5")
-def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_path):
+def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(
+    tmp_path, manifest
+):
     """Dynamic-module fixtures, written to a temporary directory by this test.
 
     They are synthesized rather than committed so a cycle fixture cannot be
     installed by accident, and read from here rather than from the machine's
     module root so the graph is the same on every machine.
     """
+
+    declared_core = manifest["semantic"]["semantic_core"]
 
     def module(group: str, name: str, imports: dict[str, str]) -> pathlib.Path:
         manifest = {
@@ -150,7 +154,7 @@ def test_cycles_are_found_over_synthesized_fixtures_in_deterministic_order(tmp_p
             "version": "0.1.0",
             "semantic": {
                 "contract_version": "1.0.0",
-                "semantic_core": "0.1.0",
+                "semantic_core": declared_core,
                 "package": name,
                 "imports": imports,
             },

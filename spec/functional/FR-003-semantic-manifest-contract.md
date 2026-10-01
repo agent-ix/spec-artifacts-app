@@ -48,7 +48,7 @@ are both detectable from the manifest alone.
 
 ## Outputs
 
-- The `semantic` block: `contract_version: 1.0.0`, `semantic_core: 0.1.0`,
+- The `semantic` block: `contract_version: 1.0.0`, `semantic_core` (the declared semantic-core pin),
   `package: agent-ix/spec-artifacts-app`, `exports: [ApplicationSpec,
   MasterRequirements]`, `imports` naming `agent-ix/spec-artifacts-iso` and the
   types this module's artifacts reference from it, `targets: [json-schema,

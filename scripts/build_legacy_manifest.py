@@ -24,8 +24,8 @@ REPO_ROOT = pathlib.Path(__file__).resolve().parent.parent
 MANIFEST_PATH = REPO_ROOT / "spec_artifacts_app" / "manifest.yaml"
 FIXTURE_PATH = REPO_ROOT / "tests" / "fixtures" / "manifest-legacy.yaml"
 
-HEADER = """# The shipped manifest with the `semantic` block and every `data_schema`
-# removed — the manifest a consumer that predates the semantic contract sees.
+HEADER = """# The shipped manifest with the `semantic` block, every `data_schema` and
+# the `version` removed: what a consumer that predates the semantic contract sees.
 #
 # FR-003-CON-1: adding the block adds no required key anywhere, so this fixture
 # must load under quire and register the same artifact types (TC-034). No copy
@@ -39,6 +39,7 @@ def build() -> str:
     manifest = yaml.safe_load(MANIFEST_PATH.read_text())
     legacy = copy.deepcopy(manifest)
     legacy.pop("semantic", None)
+    legacy.pop("version", None)
     for entry in legacy["artifact_types"]:
         entry.pop("data_schema", None)
     return HEADER + yaml.safe_dump(legacy, sort_keys=False, width=100)

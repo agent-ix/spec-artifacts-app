@@ -1,5 +1,5 @@
-# The shipped manifest with the `semantic` block and every `data_schema`
-# removed — the manifest a consumer that predates the semantic contract sees.
+# The shipped manifest with the `semantic` block, every `data_schema` and
+# the `version` removed: what a consumer that predates the semantic contract sees.
 #
 # FR-003-CON-1: adding the block adds no required key anywhere, so this fixture
 # must load under quire and register the same artifact types (TC-034). No copy
@@ -8,7 +8,6 @@
 # this file.
 manifest_version: 1.0.0
 name: spec-artifacts-app
-version: 0.2.0
 description: "Filament Module: application/composite spec artifact templates (ApplicationSpec, MasterRequirements)\
   \ \u2014 absorbed spec-master-requirements"
 archetypes:

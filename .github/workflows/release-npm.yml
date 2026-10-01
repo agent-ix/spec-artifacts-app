@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version to publish (e.g. 0.5.0); defaults to the triggering vX.Y.Z tag"
+        description: "Version to publish (e.g. X.Y.Z); defaults to the triggering vX.Y.Z tag"
         required: false
 
 permissions:

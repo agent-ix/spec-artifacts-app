@@ -41,7 +41,7 @@ consumer can read an application composite as a typed record instead of
 re-parsing its prose:
 
 - `typespec/main.tsp` is the source, importing `@agent-ix/semantic-core`.
-- `schemas/<Model>.json` is the emitted JSON Schema 2020-12 bundle (39 files).
+- `schemas/<Model>.json` is the emitted JSON Schema 2020-12 bundle.
 - `manifest.yaml` carries the quoin FR-070 `semantic` block, and every artifact
   type references its schema by path.
 - `mappings.yaml` declares, per record property, which Markdown form fills it and

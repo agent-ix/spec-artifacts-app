@@ -7,4 +7,4 @@ description: "Index of artifacts in this directory."
 
 ## Contents
 
-* [NFR-001: Schema projection is reproducible and offline](./NFR-001-reproducible-additive-projection.md)
+* [NFR-001: Schema projection is reproducible and offline](./NFR-001-reproducible-offline-projection.md)

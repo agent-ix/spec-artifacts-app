@@ -19,4 +19,3 @@ okf_version: "0.1"
 * [Task-008](./tasks/Task-008-engine-boundary-and-provisioning.md) - Quire provisioning, the no-vacuous-skip policy, and IT-002.
 * [Task-009](./tasks/Task-009-trace-tags-and-coverage.md) - FR-001 re-verification, trace tags, and coverage reconciliation.
 * [Task-010](./tasks/Task-010-gate-both-types-end-to-end.md) - Gate: both artifact types end to end.
-* [Update Log](./log.md) - Chronological log of changes to this bundle.

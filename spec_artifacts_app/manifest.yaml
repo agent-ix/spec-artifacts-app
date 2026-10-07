@@ -19,7 +19,7 @@ semantic:
   # for them yet (agent-ix/quoin#339). The suite checks every `ImportedTypeRef`
   # against both: the package here, the type there.
   imports:
-    agent-ix/spec-artifacts-iso: 0.2.0
+    agent-ix/spec-artifacts-iso: 0.3.0
   targets: [json-schema, markdown]
   mappings: [frontmatter, section, typed-table, sysml-fence, ocl-clause, provenance]
   compatibility_posture: additive

@@ -116,3 +116,5 @@ Two environment preconditions, both deliberate and both recorded in NFR-001:
   absent, because a skipped row is not coverage.
 
 CI requires the `GCP_SERVICE_ACCOUNT_KEY` secret plus `GCP_REGION`, `GCP_PROJECT_NAME`, and `GCP_PYPI` variables for Artifact Registry publishing.
+
+<!-- STD-30 language-boundary canary: inert README change. -->

@@ -105,7 +105,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-003 | FR-003-AC-5 | TC-015 | ✅ Complete |
 | FR-003 | FR-003-AC-6 | TC-016 | ✅ Complete |
 | FR-003 | FR-003-AC-7 | TC-034, TC-043 | ✅ Complete |
-| FR-003 | FR-003-AC-8 | TC-045 | ✅ Complete |
+| FR-003 | FR-003-AC-9 | TC-045 | ✅ Complete |
 | FR-003 | FR-003-CON-1 | TC-034 | ✅ Complete |
 | FR-003 | FR-003-CON-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-CON-3 | TC-014 | ✅ Complete |
@@ -194,5 +194,5 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-041 | Six malformed table and fence forms are each refused naming the line: a wrong cell count, a renamed Properties header, a short Properties row, an unparseable multiplicity, a `sysml` line that is not a declaration, and an unterminated clause fence | Unit | P1 | FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |
 | TC-043 | Each derived data file matches the manifest it is generated from; `--check` fails on drift naming the file and writes nothing; and regenerating a clobbered file restores the committed bytes | Unit | P1 | FR-003-AC-7, FR-004-AC-1 | ✅ |
 | TC-044 | The wheel, the sdist and the staged npm payload carry the same entry set, none carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root | Integration | P1 | FR-002-AC-12 | ✅ |
-| TC-045 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements`; `composition.expected_artifacts` names it and `imported_types` lists it under the pinned `agent-ix/spec-artifacts-iso` | Unit | P0 | FR-003-AC-8, FR-003-CON-4 | ✅ |
+| TC-045 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements`; `composition.expected_artifacts` names it and `imported_types` lists it under the pinned `agent-ix/spec-artifacts-iso` | Unit | P0 | FR-003-AC-9, FR-003-CON-4 | ✅ |
 | TC-042 | Absent optional forms leave their fields absent rather than empty — no `status`, no `relationships`, a prose `## Boundaries`, a prose `## Properties`, a clause heading with no fence — the `prose_only` designation validates and is refused without its reason, and no failure yields a partial record | Unit | P1 | FR-004-AC-1, FR-004-AC-2, FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |

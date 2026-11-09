@@ -71,7 +71,7 @@ def _spelling(name: str) -> str:
     return name.replace("-", "").lower()
 
 
-@pytest.mark.trace("TC-045", "FR-003-AC-8")
+@pytest.mark.trace("TC-045", "FR-003-AC-9", "FR-003-CON-4")
 def test_master_requirements_is_imported_from_iso_and_never_declared_here(
     manifest, semantic_block, mappings
 ):
@@ -84,7 +84,7 @@ def test_master_requirements_is_imported_from_iso_and_never_declared_here(
     declared_kinds = set(manifest["doc_kinds"]) | {
         kind for grammar in manifest["grammars"] for kind in grammar["doc_kinds"]
     }
-    assert "master-requirements" not in declared_kinds
+    assert not any(_spelling(kind) == "masterrequirements" for kind in declared_kinds)
 
     expected = {
         name

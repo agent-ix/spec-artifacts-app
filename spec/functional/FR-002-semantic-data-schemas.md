@@ -131,7 +131,7 @@ Identity, status, provenance:
 
 Application structure:
 
-- The model SHALL carry `purpose: Section` as their one required section, and
+- The model SHALL carry `purpose: Section` as its one required section, and
   the optional sections `scope`, `systemOverview`, `structure`,
   `requirementsArchitecture`, and `references` as `Section`.
 - The model SHALL carry `fields?: FieldDecl[]` (semantic-core, `minItems: 1`),

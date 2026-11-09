@@ -17,7 +17,6 @@ from tests.conftest import (
 
 ADMITTED_SEMANTIC_KEYS = {
     "contract_version",
-    "semantic_core",
     "package",
     "exports",
     "imports",
@@ -36,7 +35,7 @@ def test_pack_exposes_manifest_path() -> None:
 
 
 @pytest.mark.trace("TC-011", "FR-003-AC-1")
-def test_the_semantic_block_carries_the_nine_admitted_keys(semantic_block):
+def test_the_semantic_block_carries_the_eight_admitted_keys(semantic_block):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
     assert semantic_block["package"] == "agent-ix/spec-artifacts-app"

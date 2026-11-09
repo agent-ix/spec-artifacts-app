@@ -43,3 +43,9 @@ the AC-to-test chain for the change is intact.
 | ID | Severity | Summary | Refs |
 |----|----------|---------|------|
 | FND-001 | medium | FR-003-CON-4 is untagged. The TC-045 test is marked `trace("TC-045", "FR-003-AC-8")` only, so `quoin matrix` reports FR-003-CON-4 `untagged` while `spec/tests.md` marks it Complete via TC-045. | tests/test_manifest.py:74, spec/tests.md:112 |
+
+## Dispositions
+
+| FND | outcome | reason |
+|-----|---------|--------|
+| FND-001 | fixed | 6f067c1: marker is `trace("TC-045", "FR-003-AC-9", "FR-003-CON-4")`; `quoin matrix` reports FR-003-CON-4 and FR-003-AC-9 tagged by the TC-045 test. |

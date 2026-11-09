@@ -54,3 +54,11 @@ document, not a requirement row. `MasterRequirements` was never a
 | FND-001 | medium | TC-045 does not test the `MasterRequirements` spelling for doc kinds. FR-003-CON-4 and FR-003-AC-8 forbid both spellings; the test normalises spelling for artifact types and exports but checks doc kinds with an exact `"master-requirements" not in declared_kinds`, so a `MasterRequirements` doc kind passes. | tests/test_manifest.py:84-87 |
 | FND-002 | low | FR-003-AC-8 reuses a retired id. Committed reviews in this repo (`reviews/26-09-04-gap-analysis-3.md:175`, `spec/reviews/3-semantic-module-contract/*.md`) bind FR-003-AC-8 to the former digest-refusal expected-failure criterion (TC-017), so anyone mining by id conflates the two. The next unused id is FR-003-AC-9. | spec/functional/FR-003-semantic-manifest-contract.md:165 |
 | FND-003 | low | Leftover plural wording after the de-duplication: "The model SHALL carry `purpose: Section` as their one required section". | spec/functional/FR-002-semantic-data-schemas.md:134 |
+
+## Dispositions
+
+| FND | outcome | reason |
+|-----|---------|--------|
+| FND-001 | fixed | 6f067c1: doc kinds now go through `_spelling` (`assert not any(_spelling(kind) == "masterrequirements" for kind in declared_kinds)`); reviewer mutation adding a `MasterRequirements` doc kind makes the test fail. |
+| FND-002 | fixed | 6f067c1: renumbered to FR-003-AC-9 in FR-003, spec/tests.md and the trace marker; FR-003-AC-9 unused on origin/main; no FR-003-AC-8 reference remains outside historical reviews. |
+| FND-003 | fixed | 6f067c1: "as its one required section". |

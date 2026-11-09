@@ -49,8 +49,7 @@ are both detectable from the manifest alone.
 ## Outputs
 
 - The `semantic` block: `contract_version: 1.0.0`, `semantic_core` (the declared semantic-core pin),
-  `package: agent-ix/spec-artifacts-app`, `exports: [ApplicationSpec,
-  MasterRequirements]`, `imports` naming `agent-ix/spec-artifacts-iso` and the
+  `package: agent-ix/spec-artifacts-app`, `exports: [ApplicationSpec]`, `imports` naming `agent-ix/spec-artifacts-iso` and the
   types this module's artifacts reference from it, `targets: [json-schema,
   markdown]`, `mappings: [frontmatter, section, typed-table, sysml-fence,
   ocl-clause, provenance]`, `compatibility_posture: additive`, and
@@ -76,6 +75,13 @@ are both detectable from the manifest alone.
   `sweep_report`.
 - The manifest SHALL carry no inline `data_schema` object on any artifact type;
   the reference form is the only form.
+- The manifest SHALL NOT declare an artifact type, an export, or a doc kind for
+  `master-requirements`. `spec-artifacts-iso` owns that type (it is the root
+  document of the ISO spec); this module references it only through
+  `composition.expected_artifacts` and `imported_types`, spelled
+  `master-requirements`. A type name has one owning module, so a reference to it
+  resolves to one emitted schema whatever order modules load in
+  (agent-ix/quoin#338, PLAT-214).
 - The manifest SHALL add no new required key at the manifest root or on any
   artifact-type entry.
 - If the manifest declares a `semantic` key outside the admitted set, a
@@ -144,6 +150,7 @@ Evidence, not obligation:
 | FR-003-CON-1 | The manifest SHALL add no new required key at the manifest root or on any artifact-type entry, so that a consumer that ignores the `semantic` block loads the module as before; the legacy-manifest fixture loads under quire and registers the same artifact types. | Compatibility | Test (TC-034) |
 | FR-003-CON-2 | The manifest SHALL carry no inline `data_schema` object on any artifact type; the reference form is the only form. | Integrity | Test (TC-012) |
 | FR-003-CON-3 | `semantic.imports` SHALL NOT name this module's own `package`. | Integrity | Test (TC-014) |
+| FR-003-CON-4 | The manifest SHALL declare no artifact type, export, or doc kind named `master-requirements` or `MasterRequirements`; the type is owned by `spec-artifacts-iso`. | Integrity | Test (TC-045) |
 
 ## Acceptance Criteria
 
@@ -155,6 +162,7 @@ Evidence, not obligation:
 | FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
 | FR-003-AC-5 | An import graph built from this module plus synthesized dynamic-module fixtures fails on a cycle naming every module on it in deterministic traversal order, distinctly from the missing-import failure of AC-4; the fixtures exercise a two-module cycle, a three-module cycle, and an acyclic graph that must pass. No fixture is read from the machine's installed module root. | Test (TC-015) |
 | FR-003-AC-6 | A copy of the module whose `semantic` block carries an unknown key, a `package` that is not `<org>/<repo>`, or an unregistered `targets` value is refused at load: `quire.Registry.load_from` registers none of its archetypes, while the unmutated copy registers them. The refusal is claimed; naming the refused key or path is not (agent-ix/quire-rs#221). | Test (TC-016) |
+| FR-003-AC-9 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements` or `MasterRequirements`; `composition.expected_artifacts` names `master-requirements`, and `imported_types` lists it under `agent-ix/spec-artifacts-iso`, which `semantic.imports` pins. | Test (TC-045) |
 | FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) loads under quire with the same artifact types as the current manifest. | Test (TC-034, TC-043) |
 
 ## Dependencies

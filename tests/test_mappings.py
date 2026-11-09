@@ -107,11 +107,7 @@ def test_every_level_two_section_of_every_skeleton_is_typed_or_declared_prose_on
         prose_only = {
             spec["heading"] for spec in properties.values() if spec.get("prose_only")
         }
-        names = (
-            ["application-spec.md", "application-spec.sysml.md"]
-            if entry["name"] == "ApplicationSpec"
-            else ["master-requirements.md"]
-        )
+        names = ["application-spec.md", "application-spec.sysml.md"]
         for name in names:
             text = re.sub(
                 r"<!--.*?-->", "", (SKELETONS_DIR / name).read_text(), flags=re.DOTALL
@@ -173,9 +169,6 @@ def test_each_skeleton_maps_to_a_record_that_validates_and_carries_the_typed_row
     }
     assert data["requirements"][0]["kind"] == "StR"
     assert data["requirements"][0]["target"].startswith("ix://")
-
-    other = build_record("MasterRequirements", SKELETONS_DIR / "master-requirements.md")
-    assert not list(schema_registry("MasterRequirements").iter_errors(other.data))
 
 
 @pytest.mark.trace("TC-019", "FR-004-AC-5", "FR-004-CON-2", "FR-005-AC-3")

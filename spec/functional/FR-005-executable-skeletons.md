@@ -34,26 +34,21 @@ frontmatter what it expects to be refused and why.
 ## Inputs
 
 - The artifact types declared by `spec_artifacts_app/manifest.yaml`
-  (`ApplicationSpec`, `MasterRequirements`).
+  (`ApplicationSpec`).
 - The semantic-core `FieldDecl` and `ClauseRef` grammar the `## Properties` and
   `## Invariants` forms lower to.
 - The quoin `Properties` / `Invariants` conventions (quoin FR-071, FR-072).
 
 ## Outputs
 
-- `spec_artifacts_app/skeletons/application-spec.md` and
-  `spec_artifacts_app/skeletons/master-requirements.md`, the typed-table form.
+- `spec_artifacts_app/skeletons/application-spec.md`, the typed-table form.
 - `spec_artifacts_app/skeletons/application-spec.sysml.md`, the alternate
   `sysml`-fence form of the same declarations.
-- `body_extraction` locators on both artifact types, added to a manifest that
-  today declares none. On both types: `title` (H1) and `purpose` (`## Purpose`)
-  required, and `scope`, `system_overview`, `structure`, `properties_table`,
-  `properties_fence`, `requirements_table`, and `invariants` optional. On
-  `ApplicationSpec` only, and all optional: `boundaries_table`,
-  `capabilities_table`, `actors_table`, `interfaces_table`,
-  `data_dependencies_table`, and `rendering_requirements_table` — a
-  `MasterRequirements` document describes no running system, so it declares
-  none of them.
+- `body_extraction` locators on the artifact type: `title` (H1) and `purpose`
+  (`## Purpose`) required, and `scope`, `system_overview`, `structure`,
+  `properties_table`, `properties_fence`, `requirements_table`, `invariants`,
+  `boundaries_table`, `capabilities_table`, `actors_table`, `interfaces_table`,
+  `data_dependencies_table`, and `rendering_requirements_table` optional.
 - Negative fixtures under `tests/fixtures/negative/`, one per demonstrated rule.
 - `spec/spec.md` extended to author the sections that apply to it — every one
   the skeleton demonstrates except `## UI Rendering Requirements`, which this

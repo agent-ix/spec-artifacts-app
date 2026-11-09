@@ -2,7 +2,7 @@
 
 [![Discord](https://img.shields.io/badge/Discord-Join%20us-5865F2?logo=discord&logoColor=white)](https://discord.gg/k8DVhuYBR2)
 
-> Filament Module: application/composite spec artifact templates (ApplicationSpec, MasterRequirements) — absorbed spec-master-requirements
+> Filament Module: application/composite spec artifact templates (ApplicationSpec); `master-requirements` is imported from `spec-artifacts-iso`
 
 Agent-IX Filament module loaded by [`quire-cli`](https://github.com/agent-ix/quire-cli) and [`quoin`](https://github.com/agent-ix/quoin).
 
@@ -60,7 +60,6 @@ This module gives you the top-level document kinds for specifying a whole applic
 | Kind | Type | What it's for |
 |:-----|:-----|:--------------|
 | `ApplicationSpec` | Application Spec | The top-level document for an application — describes the system as a whole and gathers together the requirements and specs that make it up. |
-| `MasterRequirements` | Master Requirements | The front page of a specification — its purpose, scope, and the set of requirements it rolls up. |
 
 ## How this module is used
 

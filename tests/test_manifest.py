@@ -40,7 +40,7 @@ def test_the_semantic_block_carries_the_nine_admitted_keys(semantic_block):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
     assert semantic_block["package"] == "agent-ix/spec-artifacts-app"
-    assert semantic_block["exports"] == ["ApplicationSpec", "MasterRequirements"]
+    assert semantic_block["exports"] == ["ApplicationSpec"]
     assert semantic_block["targets"] == ["json-schema", "markdown"]
     assert semantic_block["compatibility_posture"] == "additive"
     assert semantic_block["legacy_forms"] == "warning"
@@ -65,3 +65,34 @@ def test_every_export_carries_the_reference_form(semantic_block):
         assert shipped.is_file()
         referencing.append(entry["name"])
     assert sorted(semantic_block["exports"]) == sorted(referencing)
+
+
+def _spelling(name: str) -> str:
+    return name.replace("-", "").lower()
+
+
+@pytest.mark.trace("TC-045", "FR-003-AC-9", "FR-003-CON-4")
+def test_master_requirements_is_imported_from_iso_and_never_declared_here(
+    manifest, semantic_block, mappings
+):
+    """PLAT-214: `master-requirements` has exactly one owner, the iso module."""
+    own = {entry["name"] for entry in artifact_types()}
+    assert not any(_spelling(name) == "masterrequirements" for name in own)
+    assert not any(
+        _spelling(name) == "masterrequirements" for name in semantic_block["exports"]
+    )
+    declared_kinds = set(manifest["doc_kinds"]) | {
+        kind for grammar in manifest["grammars"] for kind in grammar["doc_kinds"]
+    }
+    assert not any(_spelling(kind) == "masterrequirements" for kind in declared_kinds)
+
+    expected = {
+        name
+        for archetype in manifest["archetypes"]
+        for name in archetype["composition"]["expected_artifacts"]
+    }
+    assert "master-requirements" in expected
+    assert "agent-ix/spec-artifacts-iso" in semantic_block["imports"]
+    assert "master-requirements" in (
+        mappings["imported_types"]["agent-ix/spec-artifacts-iso"]
+    )

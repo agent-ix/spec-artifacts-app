@@ -48,10 +48,7 @@ SEMANTIC_CORE_DIR = (
 MODULE_BASE = "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/"
 
 #: Artifact type -> emitted model, the FR-002 export map.
-MODEL_OF = {
-    "ApplicationSpec": "ApplicationSpec",
-    "MasterRequirements": "MasterRequirements",
-}
+MODEL_OF = {"ApplicationSpec": "ApplicationSpec"}
 
 QUIRE_MISSING = (
     "the Quire wheel exposing `extract_semantic` is not installed in this "

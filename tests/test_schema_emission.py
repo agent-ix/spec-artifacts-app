@@ -308,9 +308,8 @@ def test_object_schemas_are_inline_and_sealed_and_the_validator_agrees(
         }, f"{model} is not sealed"
 
     for path in sorted(SKELETONS_DIR.glob("*.md")):
-        model = "MasterRequirements" if "master" in path.name else "ApplicationSpec"
-        record = build_record(model, path)
-        errors = list(schema_registry(model).iter_errors(record.data))
+        record = build_record("ApplicationSpec", path)
+        errors = list(schema_registry("ApplicationSpec").iter_errors(record.data))
         assert not errors, [
             ("/".join(str(p) for p in e.absolute_path), e.message) for e in errors
         ]

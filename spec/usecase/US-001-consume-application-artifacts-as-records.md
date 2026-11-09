@@ -32,9 +32,8 @@ type.
 
 ## Context
 
-The module contributes two artifact types, `ApplicationSpec` and
-`MasterRequirements`, and today declares neither `body_extraction` locators nor a
-data schema for either. A consumer that receives an application spec receives
+The module contributes one artifact type, `ApplicationSpec`, and today declares
+neither `body_extraction` locators nor a data schema for it. A consumer that receives an application spec receives
 Markdown; everything the document says about which services it composes, which
 requirements it aggregates, and which UI surfaces it demands is prose to be
 re-parsed. Wave 4 of the semantic program (agent-ix/quoin#286) introduced a module

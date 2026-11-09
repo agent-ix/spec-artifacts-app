@@ -8,8 +8,9 @@ using AgentIx.Semantic.Core;
  * Semantic data models of the spec-artifacts-app module
  * (agent-ix/spec-artifacts-app#3, FR-002).
  *
- * One model per declared artifact type — `ApplicationSpec` and
- * `MasterRequirements` — plus every support model and scalar they reference.
+ * One model for the declared artifact type — `ApplicationSpec` — plus every
+ * support model and scalar it references. `master-requirements` is owned by
+ * `spec-artifacts-iso` and imported, never modelled here (PLAT-214).
  * Each model is the typed form of the record the artifact type's
  * `body_extraction` locators extract, together with the frontmatter identity,
  * the relationships, and the document's provenance. Markdown is the authority
@@ -361,43 +362,6 @@ model ApplicationSpec {
   interfaces?: Interface[];
   dataDependencies?: DataDependency[];
   renderingRequirements?: RenderingRequirement[];
-  requirements?: RequirementRef[];
-
-  @minItems(1)
-  invariants?: ClauseRef[];
-}
-
-/**
- * The record of a `MasterRequirements` document: the front page of a
- * specification — its purpose, scope, and the set of requirements it rolls up.
- *
- * Like `ApplicationSpec`, it references the requirements it aggregates rather
- * than restating them, so the module that owns a requirement type stays the one
- * definition of it.
- */
-model MasterRequirements {
-  id: ArtifactId;
-  title: NonEmptyText;
-  type: "MasterRequirements";
-  status?: ArtifactStatus;
-  relationships: Relationship[];
-  provenance: Provenance;
-
-  purpose: Section;
-  scope?: Section;
-  systemOverview?: Section;
-  structure?: Section;
-  requirementsArchitecture?: Section;
-  references?: Section;
-
-  /**
-   * The specification's identity attributes, declared as one typed row per
-   * field in `## Properties`, or as the alternate `sysml` fence form of the
-   * same declarations (quoin FR-071).
-   */
-  @minItems(1)
-  fields?: FieldDecl[];
-
   requirements?: RequirementRef[];
 
   @minItems(1)

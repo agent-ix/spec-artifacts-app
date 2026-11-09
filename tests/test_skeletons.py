@@ -24,7 +24,6 @@ from tests.conftest import (
 
 SKELETON_OF = {
     "ApplicationSpec": ["application-spec.md", "application-spec.sysml.md"],
-    "MasterRequirements": ["master-requirements.md"],
 }
 
 
@@ -161,44 +160,3 @@ def test_this_repositorys_own_application_spec_is_an_instance_of_the_contract(
     assert {row["source"]["module"] for row in record.data["requirements"]} == {
         "agent-ix/spec-artifacts-iso"
     }
-
-
-@pytest.mark.trace("TC-029", "FR-005-AC-2")
-def test_the_sysml_alternate_form_works_for_master_requirements_too(
-    mappings, manifest, build_record, tmp_path
-):
-    """`MasterRequirements` declares the alternate form; the module ships no
-    `sysml` skeleton for it, because one skeleton per artifact type is the
-    contract and the alternate is shown once. That leaves the declaration
-    untested unless a test authors the document — so this one does, from the
-    typed skeleton, rather than letting a declared form go unexercised.
-    """
-    from tests.support.reference_mapping import ReferenceMapping
-
-    typed = (SKELETONS_DIR / "master-requirements.md").read_text()
-    head = typed.index("\n## Properties\n")
-    tail = typed.index("\n## Requirements\n")
-    fence = (
-        "\n## Properties\n\n```sysml\n"
-        "attribute specification_id : UUID[1..1] { identity }\n"
-        "attribute slug : String[1..1] { pattern: /^[a-z][a-z0-9-]*$/ }\n"
-        "attribute revision : Integer[1..1] { min: 1 }\n"
-        "attribute approved_at : Timestamp[0..1]\n"
-        "```\n"
-    )
-    document = tmp_path / "master-requirements.sysml.md"
-    document.write_text(typed[:head] + fence + typed[tail:])
-
-    from_table = ReferenceMapping(mappings, manifest, "MasterRequirements").build(
-        typed, "master-requirements.md"
-    )
-    from_fence = ReferenceMapping(mappings, manifest, "MasterRequirements").build(
-        document.read_text(), "master-requirements.sysml.md"
-    )
-    assert from_table.data["fields"] == from_fence.data["fields"]
-
-    quire = require_quire()
-    result = quire.validate_document(
-        "MasterRequirements", str(PACKAGE_ROOT), document.read_text()
-    )
-    assert result["is_valid"], result["errors"]

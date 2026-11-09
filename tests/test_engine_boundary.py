@@ -23,7 +23,6 @@ from tests.conftest import (
 ARCHETYPE_OF = {
     "application-spec.md": "ApplicationSpec",
     "application-spec.sysml.md": "ApplicationSpec",
-    "master-requirements.md": "MasterRequirements",
 }
 
 

@@ -68,7 +68,7 @@ def load_mappings() -> dict[str, Any]:
 
 SEMANTIC_CORE_BASE = (
     "https://schemas.agent-ix.org/semantic-core/"
-    f"{load_manifest()['semantic']['semantic_core']}/"
+    f"{json.loads((REPO_ROOT / 'package.json').read_text())['devDependencies']['@agent-ix/semantic-core']}/"
 )
 
 
@@ -136,7 +136,6 @@ def semantic_module(semantic_block: dict[str, Any]) -> dict[str, Any]:
     """The `module` block `extract_semantic` takes, derived from the manifest."""
     return {
         "contractVersion": semantic_block["contract_version"],
-        "semanticCore": semantic_block["semantic_core"],
         "package": semantic_block["package"],
         "exports": semantic_block["exports"],
         "imports": semantic_block["imports"],

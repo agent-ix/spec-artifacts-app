@@ -141,7 +141,6 @@ the filament-core-data code generators, and the Filament extraction API.
 | module_name | String | 1..1 | identity, pattern: /^[a-z][a-z0-9-]*$/ |
 | manifest_version | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
 | contract_version | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
-| semantic_core | String | 1..1 | pattern: /^[0-9]+\.[0-9]+\.[0-9]+$/ |
 | implementation_language | String | 1..1 | nonEmpty |
 
 ## Boundaries

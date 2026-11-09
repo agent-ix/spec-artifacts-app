@@ -23,8 +23,8 @@ relationships:
 
 Multi-service applications need composite specs that aggregate per-service
 requirements with a master-requirements rollup. This module contributes the
-`application-spec` archetype, the `app-spec` grammar, and the two artifact types
-that carry those composites — `ApplicationSpec` and `MasterRequirements` — and,
+`application-spec` archetype, the `app-spec` grammar, and the artifact type
+that carries those composites — `ApplicationSpec` — and,
 under the semantic-module contract, the typed data schemas, Markdown mappings,
 and executable skeletons that let a consumer read an application composite as a
 record instead of as prose.
@@ -34,8 +34,8 @@ record instead of as prose.
 ### In Scope
 
 - The Module manifest (`spec_artifacts_app/manifest.yaml`), the
-  `application-spec` archetype, the `app-spec` grammar, and the two artifact
-  types it contributes.
+  `application-spec` archetype, the `app-spec` grammar, and the artifact
+  type it contributes.
 - The functional requirement that the manifest activates idempotently against
   `filament-core-service`, and the integration test that verifies it.
 - The semantic-module contract (agent-ix/spec-artifacts-app#3): a TypeSpec source
@@ -79,10 +79,10 @@ record instead of as prose.
 - Resolving a reference-form `data_schema` into a stored snapshot at activation:
   `agent-ix/filament-core-service#23`. Until it lands the service stores the
   reference verbatim, which is what IT-002-SC-03 asserts.
-- Deciding which module owns the `MasterRequirements` artifact type. Both this
-  Module and `spec-artifacts-iso` declare one; the overlap predates this ticket
-  and resolving it is a cross-module vocabulary decision filed as
-  `agent-ix/quoin#338`, not a side effect of this schema set.
+- Declaring the `master-requirements` artifact type. `spec-artifacts-iso` owns
+  it (the root document of the ISO spec) and this Module imports it, per the
+  `agent-ix/quoin#338` decision (PLAT-214). Refusing two modules that export one
+  type name is the engine's, not this Module's.
 - Installing this Module under a quoin carrying the FR-070 reader. quoin
   resolves `semantic.exports` and `data_schema` against `object_types` only, so
   a Module whose semantic types are artifact types is refused at install
@@ -96,7 +96,7 @@ record instead of as prose.
 - Validating an artifact-type record against its `data_schema` at load time.
   quire's `validate_document` validates a *declaration* record
   (`{fields, clauses, operations}`) and never reaches an artifact-type record,
-  so no engine validates this Module's `ApplicationSpec` or `MasterRequirements`
+  so no engine validates this Module's `ApplicationSpec`
   record today (`agent-ix/quire-rs#393`). Until it lands, this Module's own test
   suite is the record oracle.
 - Closing the `status` frontmatter vocabulary. Closing it is a sweep-and-report,
@@ -111,8 +111,7 @@ record instead of as prose.
 `spec-artifacts-app` is a config-only Filament Module, published as both a Python
 package and an npm package, whose payload is a manifest, a set of JSON Schemas,
 a set of authoring skeletons, and a Markdown mapping declaration. It contributes
-the `application-spec` archetype and the `ApplicationSpec` and
-`MasterRequirements` artifact types, and it declares one semantic data model per
+the `application-spec` archetype and the `ApplicationSpec` artifact type, and it declares one semantic data model per
 artifact type as TypeSpec under `typespec/`, projected to JSON Schema 2020-12
 under `spec_artifacts_app/schemas/`. Each artifact type is bound to the exact
 shipped schema bytes through the manifest `semantic` block and a reference-form
@@ -149,8 +148,8 @@ the filament-core-data code generators, and the Filament extraction API.
 
 | ID | Name | Kind | Description |
 |---|---|---|---|
-| AS-001-BND-1 | Application artifact types | owned | `ApplicationSpec` and `MasterRequirements` — their schemas, mappings, skeletons and locators are specified here. |
-| AS-001-BND-2 | ISO artifact types | consumed | `StR`, `US`, `FR`, `NFR`, `IT`, `TC` are owned by `spec-artifacts-iso` and referenced, never restated. |
+| AS-001-BND-1 | Application artifact types | owned | `ApplicationSpec` — its schema, mappings, skeleton and locators are specified here. |
+| AS-001-BND-2 | ISO artifact types | consumed | `StR`, `US`, `FR`, `NFR`, `IT`, `TC` and `master-requirements` are owned by `spec-artifacts-iso` and referenced, never restated. |
 | AS-001-BND-3 | Validation and extraction engine | external | `quire-rs` enforces what this Module declares; its behaviour is not specified here. |
 | AS-001-BND-4 | Corpus promotion | deferred | Named so its absence is deliberate: no corpus repository is edited by this Module, and promotion is `agent-ix/quoin#291`. |
 
@@ -158,7 +157,7 @@ the filament-core-data code generators, and the Filament extraction API.
 
 | ID | Name | Description | Actors |
 |---|---|---|---|
-| AS-001-CAP-1 | Declare the application artifact types | Contribute the `application-spec` archetype, the `app-spec` grammar, and the two artifact types with their frontmatter schemas and locators. | AS-001-ACT-1, AS-001-ACT-2 |
+| AS-001-CAP-1 | Declare the application artifact types | Contribute the `application-spec` archetype, the `app-spec` grammar, and the artifact type with its frontmatter schemas and locators. | AS-001-ACT-1, AS-001-ACT-2 |
 | AS-001-CAP-2 | Publish a typed record contract | Ship one emitted JSON Schema per artifact type, bound to the manifest by path. | AS-001-ACT-3 |
 | AS-001-CAP-3 | Declare the Markdown mapping | Say, per record property, which authored form fills it and whether that form round-trips. | AS-001-ACT-3 |
 | AS-001-CAP-4 | Ship executable authoring fixtures | Skeletons that validate, extract, and map, with negative counterparts that must be refused. | AS-001-ACT-2 |

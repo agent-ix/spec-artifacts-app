@@ -6,7 +6,7 @@ license = "AGPL-3.0-or-later"
 [tool.poetry]
 name = "spec_artifacts_app"
 version = "0.1.0"  # Placeholder, dynamically replaced
-description = "Filament Module: application/composite spec artifacts (ApplicationSpec, MasterRequirements) with semantic data schemas, Markdown mappings and authoring skeletons"
+description = "Filament Module: application/composite spec artifacts (ApplicationSpec) with semantic data schemas, Markdown mappings and authoring skeletons"
 authors = ["Agent IX <agents@agent-ix.dev>"]
 packages = [{ include = "spec_artifacts_app" }]
 include = [

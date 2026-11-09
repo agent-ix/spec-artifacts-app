@@ -48,7 +48,15 @@ def _referenced_pairs() -> set[tuple[str, str]]:
 def test_every_import_reference_is_declared(manifest, mappings):
     imports = imports_of(manifest)
     assert mappings["imported_types"] == {
-        "agent-ix/spec-artifacts-iso": ["StR", "US", "FR", "NFR", "IT", "TC"]
+        "agent-ix/spec-artifacts-iso": [
+            "StR",
+            "US",
+            "FR",
+            "NFR",
+            "IT",
+            "TC",
+            "master-requirements",
+        ]
     }
 
     for module, type_name in sorted(_referenced_pairs()):

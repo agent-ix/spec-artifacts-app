@@ -105,9 +105,11 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | FR-003 | FR-003-AC-5 | TC-015 | ✅ Complete |
 | FR-003 | FR-003-AC-6 | TC-016 | ✅ Complete |
 | FR-003 | FR-003-AC-7 | TC-034, TC-043 | ✅ Complete |
+| FR-003 | FR-003-AC-8 | TC-045 | ✅ Complete |
 | FR-003 | FR-003-CON-1 | TC-034 | ✅ Complete |
 | FR-003 | FR-003-CON-2 | TC-012 | ✅ Complete |
 | FR-003 | FR-003-CON-3 | TC-014 | ✅ Complete |
+| FR-003 | FR-003-CON-4 | TC-045 | ✅ Complete |
 | FR-004 | FR-004-AC-1 | TC-021, TC-042, TC-043 | ✅ Complete |
 | FR-004 | FR-004-AC-2 | TC-022, TC-042 | ✅ Complete |
 | FR-004 | FR-004-AC-3 | TC-023, TC-039, TC-041, TC-042 | ✅ Complete |
@@ -158,7 +160,7 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 |---------|-------|------|----------|-----------|--------|
 | TC-001 | Every locator output of every artifact type is a property of its model, and every model property traces to a locator, a frontmatter key, or a `mappings.yaml` entry | Unit | P0 | FR-002-CON-1 | ✅ |
 | TC-002 | Every property of every emitted object schema is constrained, or its description carries `free text:` and a reason and its name is in the closed free-text list | Unit | P0 | FR-002-AC-4, FR-002-CON-1 | ✅ |
-| TC-003 | Both exported schemas exist with the 2020-12 `$schema` and the `$id`, each `type` `const` equals its artifact-type name, and every `$ref` in the bundle resolves offline to a shipped sibling or to semantic-core | Unit | P0 | FR-002-AC-1, FR-002-AC-3, FR-002-CON-2 | ✅ |
+| TC-003 | The exported schema exists with the 2020-12 `$schema` and the `$id`, each `type` `const` equals its artifact-type name, and every `$ref` in the bundle resolves offline to a shipped sibling or to semantic-core | Unit | P0 | FR-002-AC-1, FR-002-AC-3, FR-002-CON-2 | ✅ |
 | TC-004 | The repository carries no `.npmrc`, commits the lockfile, and uses no `file:`/`link:` specifier | Static | P1 | FR-002-AC-11, FR-002-CON-3 | ✅ |
 | TC-005 | No emitted property is a runtime-state field and `ApplicationSpec.json`'s description says runtime state is not modelled | Static | P1 | FR-002-AC-6, FR-002-CON-4 | ✅ |
 | TC-008 | `make schemas-check` exits 0 on the committed tree and non-zero naming the file after a one-byte edit to an emitted schema | Integration | P0 | FR-002-AC-5 | ✅ |
@@ -192,4 +194,5 @@ each metric has an addressable id a matrix row and a trace tag can bind to.
 | TC-041 | Six malformed table and fence forms are each refused naming the line: a wrong cell count, a renamed Properties header, a short Properties row, an unparseable multiplicity, a `sysml` line that is not a declaration, and an unterminated clause fence | Unit | P1 | FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |
 | TC-043 | Each derived data file matches the manifest it is generated from; `--check` fails on drift naming the file and writes nothing; and regenerating a clobbered file restores the committed bytes | Unit | P1 | FR-003-AC-7, FR-004-AC-1 | ✅ |
 | TC-044 | The wheel, the sdist and the staged npm payload carry the same entry set, none carries a TypeSpec toolchain file, and `stage-npm.mjs --clean` leaves no staged copy at the repository root | Integration | P1 | FR-002-AC-12 | ✅ |
+| TC-045 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements`; `composition.expected_artifacts` names it and `imported_types` lists it under the pinned `agent-ix/spec-artifacts-iso` | Unit | P0 | FR-003-AC-8, FR-003-CON-4 | ✅ |
 | TC-042 | Absent optional forms leave their fields absent rather than empty — no `status`, no `relationships`, a prose `## Boundaries`, a prose `## Properties`, a clause heading with no fence — the `prose_only` designation validates and is refused without its reason, and no failure yields a partial record | Unit | P1 | FR-004-AC-1, FR-004-AC-2, FR-004-AC-3, FR-004-AC-5, FR-004-AC-6, FR-005-AC-2 | ✅ |

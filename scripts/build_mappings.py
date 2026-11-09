@@ -43,7 +43,17 @@ KINDS = [
 #: The FR-035 contract has no place for a per-package type list
 #: (agent-ix/quoin#339), so it lives here and the suite checks an
 #: ``ImportedTypeRef`` against both: the package in the manifest, the type here.
-IMPORTED_TYPES = {"agent-ix/spec-artifacts-iso": ["StR", "US", "FR", "NFR", "IT", "TC"]}
+IMPORTED_TYPES = {
+    "agent-ix/spec-artifacts-iso": [
+        "StR",
+        "US",
+        "FR",
+        "NFR",
+        "IT",
+        "TC",
+        "master-requirements",
+    ]
+}
 
 #: Frontmatter keys the mapping drops. The frontmatter schemas allow additional
 #: keys and the emitted models are sealed, so an undeclared key cannot reach the
@@ -132,10 +142,7 @@ TABLES = {
     ),
 }
 
-MODEL_OF = {
-    "ApplicationSpec": "ApplicationSpec",
-    "MasterRequirements": "MasterRequirements",
-}
+MODEL_OF = {"ApplicationSpec": "ApplicationSpec"}
 
 
 class NoAliasDumper(yaml.SafeDumper):

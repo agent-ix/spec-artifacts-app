@@ -15,12 +15,12 @@ relationships:
 ## Description
 
 The module SHALL declare one semantic data model per declared artifact type —
-`ApplicationSpec` and `MasterRequirements` — as TypeSpec source importing
+`ApplicationSpec` — as TypeSpec source importing
 `@agent-ix/semantic-core`.
 
 The module SHALL ship the JSON Schema 2020-12 projection of every declared model
-at `spec_artifacts_app/schemas/<Model>.json`, covering both artifact-type models
-and every support model and scalar they reference.
+at `spec_artifacts_app/schemas/<Model>.json`, covering the artifact-type model
+and every support model and scalar it references.
 
 Each model is the typed form of the record the artifact type's `body_extraction`
 locators extract: the frontmatter identity, the application's boundaries,
@@ -39,17 +39,15 @@ is not a field of any model.
 - `@typespec/compiler` and `@typespec/json-schema` as
   devDependencies of the repository, with a committed `package-lock.json`.
 - The frontmatter schemas already shipped at
-  `spec_artifacts_app/schemas/applicationspec-frontmatter.schema.json` and
-  `spec_artifacts_app/schemas/masterrequirements-frontmatter.schema.json`, which
-  fix the identity keys and the `^[A-Z]{2,4}-[0-9]+$` id form.
+  `spec_artifacts_app/schemas/applicationspec-frontmatter.schema.json`, which
+  fixes the identity keys and the `^[A-Z]{2,4}-[0-9]+$` id form.
 - The `body_extraction` locators [FR-005](./FR-005-executable-skeletons.md) adds
-  to the two artifact types, which fix the section and table set the models type.
+  to the artifact type, which fix the section and table set the model types.
 
 ## Outputs
 
-- `spec_artifacts_app/schemas/ApplicationSpec.json` and
-  `spec_artifacts_app/schemas/MasterRequirements.json`, the two exported models.
-- One emitted schema file for every support model the two reference:
+- `spec_artifacts_app/schemas/ApplicationSpec.json`, the exported model.
+- One emitted schema file for every support model it references:
   `Section`, `Provenance`, `Relationship`, `Verification`, `ImportedTypeRef`,
   `Boundary`, `Capability`, `Actor`, `Interface`, `DataDependency`,
   `RenderingRequirement`, and `RequirementRef`.
@@ -60,7 +58,7 @@ is not a field of any model.
   `Sha256Digest`, `LineNumber`, `ArtifactStatus`, `ModuleRef`, `TypeName`,
   `UiSurface`, `ActorKind`, `InterfaceKind`, `InterfaceDirection`,
   `DataAccessMode`, `BoundaryKind`, and `RequirementKind`; there is
-  no model or scalar the two exported models do not reach.
+  no model or scalar the exported model does not reach.
 - `make schemas` (regenerate) and `make schemas-check` (fail on any byte
   difference), each run after `npm ci`. The hand-authored
   `*-frontmatter.schema.json` files in the same directory are not projections and
@@ -74,8 +72,9 @@ is not a field of any model.
   ship in any of the three.
 - The export-name to model map, fixed by this requirement and restated in
   [FR-003](./FR-003-semantic-manifest-contract.md): `ApplicationSpec` →
-  `ApplicationSpec.json`, `MasterRequirements` → `MasterRequirements.json`. The
-  `type` `const` of each model is the artifact-type name as the frontmatter
+  `ApplicationSpec.json`. `master-requirements` is owned by
+  `spec-artifacts-iso` and has no entry here (FR-003-CON-4). The
+  `type` `const` of the model is the artifact-type name as the frontmatter
   schema beside it declares it.
 
 ## Behavior
@@ -107,17 +106,17 @@ Projection:
 
 Identity, status, provenance:
 
-- Both models SHALL carry `id` (`^[A-Z]{2,4}-[0-9]+$`, the form the frontmatter
+- The model SHALL carry `id` (`^[A-Z]{2,4}-[0-9]+$`, the form the frontmatter
   schemas already pin), `title`, and `type` (a `const` equal to the artifact-type
   name).
-- Both models SHALL carry `provenance: Provenance` — the document's
+- The model SHALL carry `provenance: Provenance` — the document's
   corpus-relative `path`, its optional `sourceIdentity` (a semantic-core
   `SemanticId`), and a `sha256:<64 hex>` digest over the document bytes as read,
   with no line-ending normalization.
-- Both models SHALL carry `relationships: Relationship[]` with `target`
+- The model SHALL carry `relationships: Relationship[]` with `target`
   (`^ix://`), `type` (an edge verb, `^[a-z][a-z0-9_]*$`), and an optional
   `cardinality`; `Relationship` SHALL declare exactly those three properties.
-- Both models SHALL carry an optional `status: ArtifactStatus`
+- The model SHALL carry an optional `status: ArtifactStatus`
   (`^[A-Za-z][A-Za-z_-]*$`). The value set stays open: closing it is a vocabulary
   sweep-and-report, not a side effect of this schema set (see `spec.md` Out of
   Scope).
@@ -132,14 +131,14 @@ Identity, status, provenance:
 
 Application structure:
 
-- Both models SHALL carry `purpose: Section` as their one required section, and
+- The model SHALL carry `purpose: Section` as their one required section, and
   the optional sections `scope`, `systemOverview`, `structure`,
   `requirementsArchitecture`, and `references` as `Section`.
-- Both models SHALL carry `fields?: FieldDecl[]` (semantic-core, `minItems: 1`),
+- The model SHALL carry `fields?: FieldDecl[]` (semantic-core, `minItems: 1`),
   one entry per row of the typed `## Properties` table
   (`Field | Type | Multiplicity | Constraints`) or, as the alternate form of the
   same declarations, one entry per declaration of a single `sysml` fence under
-  the same heading. The models SHALL NOT redeclare any property of `FieldDecl`.
+  the same heading. The model SHALL NOT redeclare any property of `FieldDecl`.
 - The `ApplicationSpec` model SHALL carry `boundaries: Boundary[]`, one per data
   row of the optional `## Boundaries` table, where `Boundary` is `{ id:
   ^[A-Z]{2,4}-[0-9]+-BND-[0-9]+$, name, kind: BoundaryKind, description, line }`
@@ -167,18 +166,13 @@ Application structure:
   ^[A-Z]{2,4}-[0-9]+-UI-[0-9]+$, surface: UiSurface, requirement, verification:
   Verification, line }`. `UiSurface` is `^[a-z][a-z0-9-]*$` and is deliberately
   open: the surface vocabulary belongs to the applications, not to this module.
-- The `ApplicationSpec` and `MasterRequirements` models SHALL carry `requirements:
+- The `ApplicationSpec` model SHALL carry `requirements:
   RequirementRef[]`, where `RequirementRef` is `{ id: RequirementRefId, kind:
   RequirementKind, source: ImportedTypeRef, target: IxTarget, line }` and
   `RequirementKind` is the closed set `StR`, `US`, `FR`, `NFR`, `IT`, `TC`.
-- Both models SHALL carry `invariants?: ClauseRef[]` (semantic-core,
+- The model SHALL carry `invariants?: ClauseRef[]` (semantic-core,
   `minItems: 1`), filled by the FR-004 `ocl-clause` mapping from an optional
   `## Invariants` section; the clause text is never parsed here.
-- The `boundaries`, `capabilities`, `actors`, `interfaces`, `dataDependencies`,
-  and `renderingRequirements` properties belong to `ApplicationSpec` only. A
-  `MasterRequirements` document is the front page of a specification, not a
-  description of a running system, and its artifact type declares no locator
-  that would fill them.
 
 Imported types:
 
@@ -228,7 +222,7 @@ Free text and scope:
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json` and `MasterRequirements.json`, each a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<Model>.json`, and each `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
+| FR-002-AC-1 | `spec_artifacts_app/schemas/` carries `ApplicationSpec.json`, a JSON Schema 2020-12 document whose `$id` is `https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/<Model>.json`, and whose `type` `const` equals the artifact-type name of the map in Outputs. | Test (TC-003) |
 | FR-002-AC-3 | Every `$ref` across the emitted bundle resolves to a shipped sibling or to a file name of the semantic-core bundle, with no network read; no `$ref` names another module's base, another semantic-core version, or an unshipped file. | Test (TC-003) |
 | FR-002-AC-4 | Every property of every emitted object schema is constrained by `pattern`, `minLength`, `minimum`, `enum`, `const`, or `format` (after following `$ref`), or is an object or array of such, or is `boolean`/`null`; and the set of properties whose description begins `free text:` is exactly the nine the Behavior section names — a tenth fails the check. | Test (TC-002) |
 | FR-002-AC-5 | `make schemas-check` exits 0 on the committed tree, and exits non-zero naming the file after any one emitted schema is edited by a single byte; `make schemas` run twice on one tree produces byte-identical output. | Test (TC-008, TC-030) |

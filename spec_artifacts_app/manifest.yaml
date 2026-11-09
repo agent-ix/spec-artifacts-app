@@ -1,7 +1,7 @@
 manifest_version: 1.0.0
 name: spec-artifacts-app
 version: 0.2.0
-description: "Filament Module: application/composite spec artifact templates (ApplicationSpec, MasterRequirements) — absorbed spec-master-requirements"
+description: "Filament Module: application/composite spec artifact templates (ApplicationSpec); master-requirements is imported from spec-artifacts-iso"
 # Semantic-module contract (quoin FR-070/FR-073, agent-ix/spec-artifacts-app#3).
 # `imports` names every module whose types this module's artifacts reference;
 # an artifact references an imported type through `{module, type}` and an id,
@@ -12,7 +12,6 @@ semantic:
   package: agent-ix/spec-artifacts-app
   exports:
   - ApplicationSpec
-  - MasterRequirements
   # FR-035 types `imports` as `<org>/<repo>` -> exact semver, and nothing more.
   # The *types* this module references from each imported package are declared
   # in `mappings.yaml` under `imported_types`, because the contract has no place
@@ -31,7 +30,7 @@ archetypes:
   supports_membership: true
   composition:
     expected_artifacts:
-    - MasterRequirements
+    - master-requirements
     - StR
     - FR
     - NFR
@@ -41,7 +40,6 @@ grammars:
   description: Composite application spec grammar
   doc_kinds:
   - application-spec
-  - master-requirements
 artifact_types:
 - name: ApplicationSpec
   grammar_ref: app-spec
@@ -219,102 +217,7 @@ artifact_types:
           under_section: Invariants
           required: false
           multiple: true
-- name: MasterRequirements
-  grammar_ref: app-spec
-  frontmatter_schema_ref: schemas/masterrequirements-frontmatter.schema.json
-  data_schema:
-    schema: schemas/MasterRequirements.json
-  defaults:
-    id_pattern: MR-{next:03d}
-  allowed_links:
-  - aggregates
-  - depends_on
-  - references
-  examples: []
-  lint_rules_ref: []
-  body_extraction:
-    yield_pattern:
-      match:
-        title:
-          from: heading
-          level: 1
-          required: true
-          assert:
-            level: 1
-        purpose:
-          from: section_body
-          after_heading: Purpose
-          required: true
-          assert:
-            level: 2
-        scope:
-          from: section_body
-          after_heading: Scope
-          required: false
-          assert:
-            level: 2
-        system_overview:
-          from: section_body
-          after_heading: System Overview
-          required: false
-          assert:
-            level: 2
-        structure:
-          from: section_body
-          after_heading: Structure
-          required: false
-          assert:
-            level: 2
-        requirements_architecture:
-          from: section_body
-          after_heading: Requirements Architecture
-          required: false
-          assert:
-            level: 2
-        references:
-          from: section_body
-          after_heading: References
-          required: false
-          assert:
-            level: 2
-        requirements_table:
-          from: table_row
-          under_section: Requirements
-          required: false
-          assert:
-            columns:
-            - ID
-            - Kind
-            - Source
-            - Target
-            min_rows: 1
-            id_column: ID
-            id_pattern: ^(StR|US|FR|NFR|IT|TC)-\d+$
-        properties_table:
-          from: table_row
-          under_section: Properties
-          required: false
-          assert:
-            columns:
-            - Field
-            - Type
-            - Multiplicity
-            - Constraints
-            min_rows: 1
-        properties_fence:
-          from: code_block
-          language: sysml
-          under_section: Properties
-          required: false
-          multiple: false
-        invariants:
-          from: code_block
-          language: ocl
-          under_section: Invariants
-          required: false
-          multiple: true
 doc_kinds:
 - application-spec
-- master-requirements
 object_types: []
 lint_rules: []

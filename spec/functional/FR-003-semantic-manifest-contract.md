@@ -77,7 +77,7 @@ are both detectable from the manifest alone.
 - The manifest SHALL NOT declare an artifact type, an export, or a doc kind for
   `master-requirements`. `spec-artifacts-iso` owns that type (it is the root
   document of the ISO spec); this module references it only through
-  `composition.expected_artifacts` and `imported_types`, spelled
+  `composition.expected_artifacts` and `semantic.import_types`, spelled
   `master-requirements`. A type name has one owning module, so a reference to it
   resolves to one emitted schema whatever order modules load in
   (agent-ix/quoin#338, PLAT-214).
@@ -101,12 +101,16 @@ Imports, cycles, and missing references:
   version, which is the only shape the FR-035 schema and the quire loader admit.
 - The manifest SHALL NOT carry a per-package *type* list under
   `semantic.imports`; the contract has no place for one.
-- The module SHALL declare, in `mappings.yaml` under `imported_types`, the types
-  it references from each imported package. The contract amendment that would
-  move them into the manifest is agent-ix/quoin#339.
+- The module SHALL declare, in the manifest under `semantic.import_types`, the
+  types it references from each imported package; each must be among that
+  package's exports, or the engine refuses the module with
+  `semantic.unknown-import-type`. The module SHALL also carry at least one `$ref`
+  in its own data schemas under each imported package's schema base, because the
+  engine counts an import as used only through such a `$ref`; otherwise it
+  reports `semantic.unused-import`.
 - If a shipped skeleton, negative fixture, or `mappings.yaml` entry names an
   `ImportedTypeRef` whose `module` is absent from `semantic.imports`, or whose
-  `type` is absent from that module's `imported_types` list, then the module's
+  `type` is absent from that module's `semantic.import_types` list, then the module's
   test suite SHALL fail naming the module and the type, and SHALL distinguish
   the two cases.
 - If `semantic.imports` names a package that no `ImportedTypeRef` and no
@@ -158,10 +162,10 @@ Evidence, not obligation:
 | FR-003-AC-1 | The `semantic` block's key set equals exactly `{contract_version, package, exports, imports, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs, and the manifest carrying it loads under quire with every declared artifact type registered. | Test (TC-011, TC-034) |
 | FR-003-AC-2 | For each exported artifact type, `data_schema.schema` names an existing file under `spec_artifacts_app/schemas/` per the FR-002 map, and `exports` equals the set of artifact types carrying a reference. | Test (TC-012) |
 | FR-003-AC-3 | With the block and the references present, `quire.Registry.load_from` over the module's parent directory lists every archetype the manifest declares and `validate_document` passes every shipped skeleton — the block breaks no consumer. | Test (TC-013) |
-| FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` and carries no type list; `mappings.yaml` `imported_types` names the types referenced from it; every `ImportedTypeRef` in a skeleton, a negative fixture, or `mappings.yaml` names a package the manifest pins and a type `imported_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
+| FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` and carries no type list; `semantic.import_types` names the types referenced from it, each exported by the provider, and the module's data schemas carry a `$ref` into the package so the engine reports no `semantic.unused-import`; every `ImportedTypeRef` in a skeleton or a negative fixture names a package the manifest pins and a type `semantic.import_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |
 | FR-003-AC-5 | An import graph built from this module plus synthesized dynamic-module fixtures fails on a cycle naming every module on it in deterministic traversal order, distinctly from the missing-import failure of AC-4; the fixtures exercise a two-module cycle, a three-module cycle, and an acyclic graph that must pass. No fixture is read from the machine's installed module root. | Test (TC-015) |
 | FR-003-AC-6 | A copy of the module whose `semantic` block carries an unknown key, a `package` that is not `<org>/<repo>`, or an unregistered `targets` value is refused at load: `quire.Registry.load_from` registers none of its archetypes, while the unmutated copy registers them. The refusal is claimed; naming the refused key or path is not (agent-ix/quire-rs#221). | Test (TC-016) |
-| FR-003-AC-9 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements` or `MasterRequirements`; `composition.expected_artifacts` names `master-requirements`, and `imported_types` lists it under `agent-ix/spec-artifacts-iso`, which `semantic.imports` pins. | Test (TC-045) |
+| FR-003-AC-9 | The manifest declares no artifact type, export, or doc kind spelled `master-requirements` or `MasterRequirements`; `composition.expected_artifacts` names `master-requirements`, and `semantic.import_types` lists it under `agent-ix/spec-artifacts-iso`, which `semantic.imports` pins. | Test (TC-045) |
 | FR-003-AC-7 | The legacy-manifest fixture (no `semantic` block, no `data_schema`) loads under quire with the same artifact types as the current manifest. | Test (TC-034, TC-043) |
 
 ## Dependencies

@@ -17,5 +17,5 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "A reference to a type another module owns. The reference form this module\npublishes: a module and a type name, never a copy of the imported type's\nfields, and never a cross-module `$ref` (FR-002-AC-10)."
+  "description": "A reference to a type another module owns. The reference form this module\npublishes: a module and a type name, never a copy of the imported type's\nfields. The `$ref` form of the same reference is `IsoRequirement`."
 }

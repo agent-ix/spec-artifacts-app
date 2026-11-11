@@ -10,7 +10,14 @@
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementKind.json"
     },
     "source": {
-      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ImportedTypeRef.json"
+      "anyOf": [
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ImportedTypeRef.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IsoRequirement.json"
+        }
+      ]
     },
     "target": {
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IxTarget.json"

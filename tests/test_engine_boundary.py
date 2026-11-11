@@ -6,8 +6,11 @@ module docstring binds to nothing (quire-rs CR-061).
 
 from __future__ import annotations
 
+import json
+import os
 import pathlib
 import shutil
+import subprocess
 
 import pytest
 import yaml
@@ -121,3 +124,86 @@ def test_a_manifest_the_contract_forbids_is_refused_at_load(
     (module / "manifest.yaml").write_text(yaml.safe_dump(data, sort_keys=False))
     loaded = quire_engine.Registry.load_from([str(tmp_path / label)]).archetype_names()
     assert not loaded, f"{label} loaded anyway: {sorted(loaded)}"
+
+
+def _iso_module_root() -> pathlib.Path:
+    """The installed spec-artifacts-iso module the engine resolves the import to."""
+    modules = os.environ.get("IX_FILAMENT_MODULES_PATH") or str(
+        pathlib.Path.home() / ".ix" / "filament" / "modules"
+    )
+    root = pathlib.Path(modules.split(os.pathsep)[0]) / "spec-artifacts-iso"
+    if not (root / "manifest.yaml").is_file():  # pragma: no cover - environment guard
+        pytest.fail(
+            f"spec-artifacts-iso is not installed at {root}; "
+            "run `quoin module ensure-defaults`"
+        )
+    return root
+
+
+def _load_diagnostics(module_root: pathlib.Path, tmp_path: pathlib.Path) -> list[str]:
+    """Every module-load diagnostic `quire validate` prints for these module roots."""
+    document = tmp_path / "doc.md"
+    document.write_text("---\nid: FR-001\ntype: FR\n---\n# x\n")
+    run = subprocess.run(
+        [
+            "quire",
+            "validate",
+            "--module",
+            str(module_root),
+            "--module",
+            str(_iso_module_root()),
+            "--diagnostics-format",
+            "json",
+            str(document),
+        ],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    messages = []
+    for line in run.stderr.splitlines():
+        try:
+            messages.append(json.loads(line)["message"])
+        except (ValueError, KeyError):
+            continue
+    return messages
+
+
+@pytest.mark.trace("TC-014", "FR-003-AC-4")
+def test_every_import_types_entry_is_exported_by_its_provider(manifest):
+    provider = yaml.safe_load((_iso_module_root() / "manifest.yaml").read_text())
+    package = "agent-ix/spec-artifacts-iso"
+    assert provider["semantic"]["package"] == package
+    exports = set(provider["semantic"]["exports"])
+    listed = manifest["semantic"]["import_types"][package]
+    assert listed and set(listed) <= exports, (
+        f"import_types names types {package} does not export: "
+        f"{sorted(set(listed) - exports)}"
+    )
+
+
+@pytest.mark.trace("TC-014", "FR-003-AC-4")
+def test_the_shipped_module_loads_without_an_unused_import_diagnostic(tmp_path):
+    messages = _load_diagnostics(PACKAGE_ROOT, tmp_path)
+    assert not [m for m in messages if "semantic.unused-import" in m], messages
+    assert not [m for m in messages if "semantic.unknown-import-type" in m], messages
+
+
+@pytest.mark.trace("TC-014", "FR-003-AC-4")
+def test_an_import_no_data_schema_references_is_reported_unused(tmp_path):
+    module = _module_copy(tmp_path / "unreferenced")
+    # Drop the one `$ref` into the imported package: the import is now pinned
+    # and listed but referenced by nothing.
+    (module / "schemas" / "IsoRequirement.json").unlink()
+    requirement_ref = module / "schemas" / "RequirementRef.json"
+    schema = json.loads(requirement_ref.read_text())
+    schema["properties"]["source"] = {
+        "$ref": schema["properties"]["source"]["anyOf"][0]["$ref"]
+    }
+    requirement_ref.write_text(json.dumps(schema, indent=2))
+
+    messages = _load_diagnostics(module, tmp_path)
+    assert any(
+        "semantic.unused-import" in m and "agent-ix/spec-artifacts-iso" in m
+        for m in messages
+    ), messages

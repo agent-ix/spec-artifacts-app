@@ -19,9 +19,11 @@ using AgentIx.Semantic.Core;
  * An application composite *references* what other modules own; it never
  * restates it. A requirement this application rolls up, or a data source it
  * depends on, is carried as an `ImportedTypeRef` plus an id — never as a copy of
- * the imported type's fields (FR-002-AC-10). No `$ref` in this bundle names
- * another module's base, because a cross-module `$ref` cannot resolve offline
- * from this module's shipped bytes (FR-002-CON-2).
+ * the imported type's fields (FR-002-AC-10). The one cross-module `$ref` in this
+ * bundle is `IsoRequirement`: a `$ref` under an imported package's schema base is
+ * how the engine counts an import as used (quire-rs FR-069-AC-18), and it is
+ * admitted without being followed, so it needs no offline resolution
+ * (FR-002-CON-2).
  *
  * Every field carries a constraint. Where a field is free text the doc comment
  * says `free text:` and why (FR-002-AC-4).
@@ -227,7 +229,7 @@ model Verification {
 /**
  * A reference to a type another module owns. The reference form this module
  * publishes: a module and a type name, never a copy of the imported type's
- * fields, and never a cross-module `$ref` (FR-002-AC-10).
+ * fields. The `$ref` form of the same reference is `IsoRequirement`.
  */
 model ImportedTypeRef {
   module: ModuleRef;
@@ -305,6 +307,22 @@ model RenderingRequirement {
 }
 
 /**
+ * A requirement as `spec-artifacts-iso` types it: the `$ref` form of the
+ * reference, naming the requirement types this application aggregates. The
+ * requirement's fields stay owned by that module; this model carries only the
+ * `$ref` (FR-002-AC-10).
+ */
+@extension("anyOf", #[
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/StR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/US.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/FR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/NFR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/IT.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/TC.json" }
+])
+model IsoRequirement {}
+
+/**
  * One row of `## Requirements`: a requirement this composite rolls up. The
  * requirement's own fields belong to the module that owns its type; this record
  * carries only the reference.
@@ -312,7 +330,7 @@ model RenderingRequirement {
 model RequirementRef {
   id: RequirementRefId;
   kind: RequirementKind;
-  source: ImportedTypeRef;
+  source: ImportedTypeRef | IsoRequirement;
   target: IxTarget;
   line: LineNumber;
 }

@@ -89,10 +89,6 @@ record instead of as prose.
   (`agent-ix/quoin#336`). The published quoin carries no semantic-block reader
   at all, so the block is inert to every quoin a user can install today; the
   amendment is quoin's to make and this Module does not bend its exports to it.
-- Declaring, in the manifest, *which types* this Module imports from a package.
-  FR-035 types `semantic.imports` as package to exact semver and carries no type
-  list, so the list is declared in `mappings.yaml` under `imported_types` and
-  the contract amendment is `agent-ix/quoin#339`.
 - Validating an artifact-type record against its `data_schema` at load time.
   quire's `validate_document` validates a *declaration* record
   (`{fields, clauses, operations}`) and never reaches an artifact-type record,

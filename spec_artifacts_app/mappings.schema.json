@@ -9,7 +9,6 @@
     "mapping_version",
     "module",
     "kinds",
-    "imported_types",
     "models"
   ],
   "properties": {
@@ -27,22 +26,6 @@
       "uniqueItems": true,
       "items": {
         "$ref": "#/$defs/kind"
-      }
-    },
-    "imported_types": {
-      "description": "Types this module references from each package semantic.imports pins. FR-035 types `imports` as package -> exact semver and carries no type list (agent-ix/quoin#339), so the list lives here.",
-      "type": "object",
-      "propertyNames": {
-        "pattern": "^[a-z][a-z0-9-]*/[a-z][a-z0-9-]*$"
-      },
-      "additionalProperties": {
-        "type": "array",
-        "minItems": 1,
-        "uniqueItems": true,
-        "items": {
-          "type": "string",
-          "pattern": "^[A-Za-z][A-Za-z0-9_-]*$"
-        }
       }
     },
     "models": {

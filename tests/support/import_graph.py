@@ -89,11 +89,14 @@ def check_over_declared(
     ]
 
 
+def import_types_of(manifest: dict[str, Any]) -> dict[str, list[str]]:
+    return ((manifest.get("semantic") or {}).get("import_types")) or {}
+
+
 def check_reference(
     module: str,
     type_name: str,
     manifest: dict[str, Any],
-    imported_types: dict[str, list[str]],
 ) -> list[ImportDiagnostic]:
     """Two distinct failures: the package is not pinned, or the type is not listed."""
     if module not in imports_of(manifest):
@@ -105,11 +108,12 @@ def check_reference(
                 (module,),
             )
         ]
-    if type_name not in imported_types.get(module, []):
+    if type_name not in import_types_of(manifest).get(module, []):
         return [
             ImportDiagnostic(
                 "semantic.undeclared-import-type",
-                f"type {type_name!r} is not listed under imported_types for {module!r}",
+                f"type {type_name!r} is not listed under semantic.import_types "
+                f"for {module!r}",
                 (module,),
             )
         ]

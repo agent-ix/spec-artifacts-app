@@ -15,13 +15,14 @@ import yaml
 from tests.conftest import (
     NEGATIVE_DIR,
     SKELETONS_DIR,
-    load_mappings,
+    load_manifest,
 )
 from tests.support.import_graph import (
     check_over_declared,
     check_reference,
     check_self_import,
     find_cycles,
+    import_types_of,
     imports_of,
     load_graph,
     package_of,
@@ -38,16 +39,15 @@ def _referenced_pairs() -> set[tuple[str, str]]:
     pairs: set[tuple[str, str]] = set()
     for path in sorted(SKELETONS_DIR.glob("*.md")):
         pairs |= set(IMPORTED_CELL.findall(path.read_text()))
-    mappings = load_mappings()
-    for module, types in mappings["imported_types"].items():
+    for module, types in import_types_of(load_manifest()).items():
         pairs |= {(module, type_name) for type_name in types}
     return pairs
 
 
 @pytest.mark.trace("TC-014", "FR-003-AC-4", "FR-003-CON-3")
-def test_every_import_reference_is_declared(manifest, mappings):
+def test_every_import_reference_is_declared(manifest):
     imports = imports_of(manifest)
-    assert mappings["imported_types"] == {
+    assert import_types_of(manifest) == {
         "agent-ix/spec-artifacts-iso": [
             "StR",
             "US",
@@ -61,7 +61,7 @@ def test_every_import_reference_is_declared(manifest, mappings):
 
     for module, type_name in sorted(_referenced_pairs()):
         assert not check_reference(
-            module, type_name, manifest, mappings["imported_types"]
+            module, type_name, manifest
         ), f"{module}#{type_name} is referenced but not declared"
 
     # No self-import.
@@ -79,20 +79,12 @@ def test_every_import_reference_is_declared(manifest, mappings):
 
 
 @pytest.mark.trace("TC-014", "FR-003-AC-4")
-def test_an_undeclared_module_and_an_undeclared_type_fail_distinctly(
-    manifest, mappings
-):
-    imported_types = mappings["imported_types"]
-
-    module_gap = check_reference(
-        "agent-ix/not-imported", "StR", manifest, imported_types
-    )
+def test_an_undeclared_module_and_an_undeclared_type_fail_distinctly(manifest):
+    module_gap = check_reference("agent-ix/not-imported", "StR", manifest)
     assert [d.code for d in module_gap] == ["semantic.undeclared-import-module"]
     assert "agent-ix/not-imported" in module_gap[0].message
 
-    type_gap = check_reference(
-        "agent-ix/spec-artifacts-iso", "Glossary", manifest, imported_types
-    )
+    type_gap = check_reference("agent-ix/spec-artifacts-iso", "Glossary", manifest)
     assert [d.code for d in type_gap] == ["semantic.undeclared-import-type"]
     assert "Glossary" in type_gap[0].message
 

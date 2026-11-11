@@ -25,11 +25,17 @@ from tests.conftest import (
     SKELETONS_DIR,
     artifact_types,
     emitted_schema_names,
+    load_manifest,
     load_mappings,
     locators,
 )
 
 GENERATOR = REPO_ROOT / "scripts" / "generate-schemas.mjs"
+
+SCHEMA_HOST = "https://schemas.agent-ix.org/"
+
+#: The one model that carries a `$ref` into an imported package (FR-002-AC-10).
+CROSS_MODULE_REF_MODEL = "IsoRequirement"
 
 #: FR-002-AC-4: the closed set of properties allowed to be free text. Every other
 #: property must be constrained after following `$ref`. The list is the
@@ -228,11 +234,16 @@ def test_exported_schemas_carry_the_stable_id_and_every_ref_resolves_offline():
             REPO_ROOT / "node_modules/@agent-ix/semantic-core/generated/json-schema"
         ).glob("*.json")
     }
+    imported = _imported_bases()
     for model, schema in schemas.items():
         for ref in _refs(schema):
-            assert ref in shipped or ref in semantic_core, (
-                f"{model}: `$ref` {ref} resolves to neither a shipped sibling nor "
-                "the semantic-core bundle"
+            assert (
+                ref in shipped
+                or ref in semantic_core
+                or any(ref.startswith(base) for base in imported)
+            ), (
+                f"{model}: `$ref` {ref} resolves to no shipped sibling, no "
+                "semantic-core file, and no declared import"
             )
 
 
@@ -300,6 +311,8 @@ def test_object_schemas_are_inline_and_sealed_and_the_validator_agrees(
         if schema.get("type") != "object":
             continue
         for keyword in ("allOf", "oneOf", "anyOf", "$ref"):
+            if model == CROSS_MODULE_REF_MODEL:
+                continue
             assert (
                 keyword not in schema
             ), f"{model} declares {keyword} at the object's top level"
@@ -323,15 +336,30 @@ def test_object_schemas_are_inline_and_sealed_and_the_validator_agrees(
     ), "an undeclared property was accepted; the schema is not sealed"
 
 
+def _imported_bases() -> list[str]:
+    return [
+        f"{SCHEMA_HOST}{package}/" for package in load_manifest()["semantic"]["imports"]
+    ]
+
+
 @pytest.mark.trace("TC-010", "FR-002-AC-10")
 def test_no_cross_module_ref_and_no_imported_field_is_duplicated():
     schemas = _schemas()
     base = MODULE_BASE
+    imported_types = load_manifest()["semantic"]["import_types"]
+    allowed = {
+        f"{SCHEMA_HOST}{package}/{name}.json"
+        for package, names in imported_types.items()
+        for name in names
+    }
     for model, schema in schemas.items():
         for ref in _refs(schema):
-            assert ref.startswith(base) or ref.startswith(
-                SEMANTIC_CORE_BASE
-            ), f"{model}: `$ref` {ref} names a base this module cannot resolve offline"
+            if ref.startswith(base) or ref.startswith(SEMANTIC_CORE_BASE):
+                continue
+            assert model == CROSS_MODULE_REF_MODEL and ref in allowed, (
+                f"{model}: `$ref` {ref} is a cross-module `$ref` outside "
+                f"{CROSS_MODULE_REF_MODEL} or to a type import_types does not list"
+            )
     imported = schemas["ImportedTypeRef"]
     assert set(imported["properties"]) == {"module", "type"}, (
         "ImportedTypeRef carries more than the module/type reference pair; a "

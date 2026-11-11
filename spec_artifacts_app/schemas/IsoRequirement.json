@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IsoRequirement.json",
+  "type": "object",
+  "properties": {},
+  "unevaluatedProperties": {
+    "not": {}
+  },
+  "description": "A requirement as `spec-artifacts-iso` types it: the `$ref` form of the\nreference, naming the requirement types this application aggregates. The\nrequirement's fields stay owned by that module; this model carries only the\n`$ref` (FR-002-AC-10).",
+  "anyOf": [
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/StR.json"
+    },
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/US.json"
+    },
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/FR.json"
+    },
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/NFR.json"
+    },
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/IT.json"
+    },
+    {
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/TC.json"
+    }
+  ]
+}

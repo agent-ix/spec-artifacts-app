@@ -20,6 +20,7 @@ ADMITTED_SEMANTIC_KEYS = {
     "package",
     "exports",
     "imports",
+    "import_types",
     "targets",
     "mappings",
     "compatibility_posture",
@@ -35,7 +36,7 @@ def test_pack_exposes_manifest_path() -> None:
 
 
 @pytest.mark.trace("TC-011", "FR-003-AC-1")
-def test_the_semantic_block_carries_the_eight_admitted_keys(semantic_block):
+def test_the_semantic_block_carries_the_admitted_keys(semantic_block):
     assert set(semantic_block) == ADMITTED_SEMANTIC_KEYS
     assert semantic_block["contract_version"] == "1.0.0"
     assert semantic_block["package"] == "agent-ix/spec-artifacts-app"
@@ -93,5 +94,5 @@ def test_master_requirements_is_imported_from_iso_and_never_declared_here(
     assert "master-requirements" in expected
     assert "agent-ix/spec-artifacts-iso" in semantic_block["imports"]
     assert "master-requirements" in (
-        mappings["imported_types"]["agent-ix/spec-artifacts-iso"]
+        semantic_block["import_types"]["agent-ix/spec-artifacts-iso"]
     )

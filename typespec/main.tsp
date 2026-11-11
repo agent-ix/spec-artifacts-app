@@ -19,9 +19,11 @@ using AgentIx.Semantic.Core;
  * An application composite *references* what other modules own; it never
  * restates it. A requirement this application rolls up, or a data source it
  * depends on, is carried as an `ImportedTypeRef` plus an id — never as a copy of
- * the imported type's fields (FR-002-AC-10). No `$ref` in this bundle names
- * another module's base, because a cross-module `$ref` cannot resolve offline
- * from this module's shipped bytes (FR-002-CON-2).
+ * the imported type's fields (FR-002-AC-10). The one cross-module `$ref` in this
+ * bundle is `RequirementRef.$defs.isoRequirement`: a `$ref` under an imported
+ * package's schema base is how the engine counts an import as used (quire-rs
+ * FR-069-AC-18), and it is admitted without being followed, so it needs no
+ * offline resolution (FR-002-CON-2).
  *
  * Every field carries a constraint. Where a field is free text the doc comment
  * says `free text:` and why (FR-002-AC-4).
@@ -227,7 +229,7 @@ model Verification {
 /**
  * A reference to a type another module owns. The reference form this module
  * publishes: a module and a type name, never a copy of the imported type's
- * fields, and never a cross-module `$ref` (FR-002-AC-10).
+ * fields.
  */
 model ImportedTypeRef {
   module: ModuleRef;
@@ -308,7 +310,21 @@ model RenderingRequirement {
  * One row of `## Requirements`: a requirement this composite rolls up. The
  * requirement's own fields belong to the module that owns its type; this record
  * carries only the reference.
+ *
+ * `$defs.isoRequirement` is the one cross-package `$ref` in the bundle: the
+ * requirement types of `spec-artifacts-iso` this application aggregates. It sits
+ * in `$defs`, which no property references, because the engine rewrites every
+ * `$ref` under an imported package into a schema that accepts anything — placed on
+ * `source` it would weaken `source`, here it only counts the import as used.
  */
+@extension("$defs", #{ isoRequirement: #{ anyOf: #[
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/StR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/US.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/FR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/NFR.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/IT.json" },
+  #{ `$ref`: "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/TC.json" }
+] } })
 model RequirementRef {
   id: RequirementRefId;
   kind: RequirementKind;

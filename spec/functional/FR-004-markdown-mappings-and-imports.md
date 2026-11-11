@@ -39,8 +39,8 @@ record from the same document.
 - The shipped skeletons of [FR-005](./FR-005-executable-skeletons.md).
 - The emitted schemas of [FR-002](./FR-002-semantic-data-schemas.md), which fix
   the property set every mapping entry must name.
-- The `semantic.imports` block of
-  [FR-003](./FR-003-semantic-manifest-contract.md), which fixes the modules and
+- The `semantic.imports` and `semantic.import_types` blocks of
+  [FR-003](./FR-003-semantic-manifest-contract.md), which fix the modules and
   types an `ImportedTypeRef` may name.
 - The quoin mapping conventions for typed tables and clauses (quoin FR-071,
   FR-072) and the quire-rs extraction semantics for section content (quire-rs

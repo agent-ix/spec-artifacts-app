@@ -421,8 +421,8 @@ def parse_imported_type_ref(
             MappingError(
                 line,
                 "undeclared-import-type",
-                f"type {type_name!r} is not named in mappings.yaml "
-                f"imported_types for module {module!r}",
+                f"type {type_name!r} is not named in manifest "
+                f"semantic.import_types for module {module!r}",
             )
         )
     if errors:
@@ -472,7 +472,9 @@ class ReferenceMapping:
         self.model_name = model_name
         self.model = mappings["models"][model_name]
         self.properties: dict[str, Any] = self.model["properties"]
-        self.imported_types: dict[str, list[str]] = mappings["imported_types"]
+        self.imported_types: dict[str, list[str]] = (
+            manifest.get("semantic") or {}
+        ).get("import_types") or {}
         self.imports: dict[str, str] = (manifest.get("semantic") or {}).get(
             "imports"
         ) or {}

@@ -6,18 +6,28 @@ description: "Filament Module: application/composite spec artifact templates (Ap
 # `imports` names every module whose types this module's artifacts reference;
 # an artifact references an imported type through `{module, type}` and an id,
 # never by restating the imported type's fields (FR-002-AC-10, FR-003-AC-4).
+# The engine counts an import as used only when a `$ref` in the module's own
+# data schemas names a type under that package's schema base (`RequirementRef.$defs`).
 semantic:
   contract_version: 1.0.0
   package: agent-ix/spec-artifacts-app
   exports:
   - ApplicationSpec
-  # FR-035 types `imports` as `<org>/<repo>` -> exact semver, and nothing more.
-  # The *types* this module references from each imported package are declared
-  # in `mappings.yaml` under `imported_types`, because the contract has no place
-  # for them yet (agent-ix/quoin#339). The suite checks every `ImportedTypeRef`
-  # against both: the package here, the type there.
+  # `imports` is `<org>/<repo>` -> exact semver; `import_types` lists the types
+  # this module references from each imported package. The suite checks every
+  # `ImportedTypeRef` against both, and the engine refuses a listed type the
+  # provider does not export.
   imports:
     agent-ix/spec-artifacts-iso: 0.3.0
+  import_types:
+    agent-ix/spec-artifacts-iso:
+    - StR
+    - US
+    - FR
+    - NFR
+    - IT
+    - TC
+    - master-requirements
   targets: [json-schema, markdown]
   mappings: [frontmatter, section, typed-table, sysml-fence, ocl-clause, provenance]
   compatibility_posture: additive

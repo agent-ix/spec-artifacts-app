@@ -34,8 +34,8 @@ GENERATOR = REPO_ROOT / "scripts" / "generate-schemas.mjs"
 
 SCHEMA_HOST = "https://schemas.agent-ix.org/"
 
-#: The one model that carries a `$ref` into an imported package (FR-002-AC-10).
-CROSS_MODULE_REF_MODEL = "IsoRequirement"
+#: The one model that carries a `$ref` into an imported package.
+CROSS_MODULE_REF_MODEL = "RequirementRef"
 
 #: FR-002-AC-4: the closed set of properties allowed to be free text. Every other
 #: property must be constrained after following `$ref`. The list is the
@@ -366,6 +366,31 @@ def test_no_cross_module_ref_and_no_imported_field_is_duplicated():
         "reference that grows fields is a duplication"
     )
     assert imported.get("unevaluatedProperties") == {"not": {}}
+
+
+@pytest.mark.trace("TC-010", "FR-002-AC-10")
+def test_requirement_ref_source_still_requires_module_and_type(schema_registry):
+    """The cross-package `$ref` stays off `source`, so `source` is not weakened.
+
+    The engine rewrites every `$ref` under an imported package into a schema that
+    accepts anything. On `source` that would admit `{}`; in `$defs` it only counts
+    the import as used.
+    """
+    validator = schema_registry("RequirementRef")
+    row = {"id": "FR-001", "kind": "FR", "target": "ix://a/b", "line": 1}
+
+    def errors(source):
+        return list(validator.iter_errors({**row, "source": source}))
+
+    assert not errors({"module": "agent-ix/spec-artifacts-iso", "type": "FR"})
+    for malformed in (
+        {},
+        {"module": "agent-ix/spec-artifacts-iso"},
+        {"type": "FR"},
+        {"id": "FR-001", "type": "FR", "title": "An ISO requirement record"},
+    ):
+        assert errors(malformed), f"source {malformed} was accepted"
+    assert list(validator.iter_errors(row)), "a row without `source` was accepted"
 
 
 @pytest.mark.trace("TC-030", "NFR-001-AC-1")

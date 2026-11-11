@@ -7,7 +7,7 @@ description: "Filament Module: application/composite spec artifact templates (Ap
 # an artifact references an imported type through `{module, type}` and an id,
 # never by restating the imported type's fields (FR-002-AC-10, FR-003-AC-4).
 # The engine counts an import as used only when a `$ref` in the module's own
-# data schemas names a type under that package's schema base (`IsoRequirement`).
+# data schemas names a type under that package's schema base (`RequirementRef.$defs`).
 semantic:
   contract_version: 1.0.0
   package: agent-ix/spec-artifacts-app

@@ -7,7 +7,6 @@ module docstring binds to nothing (quire-rs CR-061).
 from __future__ import annotations
 
 import json
-import os
 import pathlib
 import shutil
 import subprocess
@@ -127,15 +126,21 @@ def test_a_manifest_the_contract_forbids_is_refused_at_load(
 
 
 def _iso_module_root() -> pathlib.Path:
-    """The installed spec-artifacts-iso module the engine resolves the import to."""
-    modules = os.environ.get("IX_FILAMENT_MODULES_PATH") or str(
-        pathlib.Path.home() / ".ix" / "filament" / "modules"
-    )
-    root = pathlib.Path(modules.split(os.pathsep)[0]) / "spec-artifacts-iso"
-    if not (root / "manifest.yaml").is_file():  # pragma: no cover - environment guard
-        pytest.fail(
-            f"spec-artifacts-iso is not installed at {root}; "
-            "run `quoin module ensure-defaults`"
+    """The spec-artifacts-iso module from the declared dev dependency.
+
+    FR-003 builds the import graph from declared inputs, never from whatever
+    module root a machine has installed.
+    """
+    import spec_artifacts_iso
+
+    root = pathlib.Path(spec_artifacts_iso.__file__).parent
+    manifest = root / "manifest.yaml"
+    assert manifest.is_file(), f"{root} is not a module root"
+    if "semantic" not in yaml.safe_load(manifest.read_text()):
+        pytest.skip(
+            "the installed spec-artifacts-iso predates its semantic block, so it "
+            "cannot provide the import; publish a current spec-artifacts-iso to "
+            "internal-pypi"
         )
     return root
 
@@ -144,9 +149,12 @@ def _load_diagnostics(module_root: pathlib.Path, tmp_path: pathlib.Path) -> list
     """Every module-load diagnostic `quire validate` prints for these module roots."""
     document = tmp_path / "doc.md"
     document.write_text("---\nid: FR-001\ntype: FR\n---\n# x\n")
+    quire_cli = shutil.which("quire")
+    if quire_cli is None:  # pragma: no cover - environment guard
+        pytest.fail("the quire CLI is not on PATH; install @agent-ix/quire-cli")
     run = subprocess.run(
         [
-            "quire",
+            quire_cli,
             "validate",
             "--module",
             str(module_root),
@@ -194,12 +202,9 @@ def test_an_import_no_data_schema_references_is_reported_unused(tmp_path):
     module = _module_copy(tmp_path / "unreferenced")
     # Drop the one `$ref` into the imported package: the import is now pinned
     # and listed but referenced by nothing.
-    (module / "schemas" / "IsoRequirement.json").unlink()
     requirement_ref = module / "schemas" / "RequirementRef.json"
     schema = json.loads(requirement_ref.read_text())
-    schema["properties"]["source"] = {
-        "$ref": schema["properties"]["source"]["anyOf"][0]["$ref"]
-    }
+    del schema["$defs"]
     requirement_ref.write_text(json.dumps(schema, indent=2))
 
     messages = _load_diagnostics(module, tmp_path)

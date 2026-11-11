@@ -45,10 +45,13 @@ are both detectable from the manifest alone.
   `extract_semantic`, a dev dependency pinned to the `internal-pypi` source
   and resolved by `poetry install`. The semantic rows **fail** rather than
   skip when the wheel is absent.
+- The `spec-artifacts-iso` module the engine resolves the import to: a dev
+  dependency on the `internal-pypi` source, located from the installed package
+  and never from a machine's installed module root.
 
 ## Outputs
 
-- The `semantic` block: `contract_version: 1.0.0`, `package: agent-ix/spec-artifacts-app`, `exports: [ApplicationSpec]`, `imports` naming `agent-ix/spec-artifacts-iso` and the
+- The `semantic` block: `contract_version: 1.0.0`, `package: agent-ix/spec-artifacts-app`, `exports: [ApplicationSpec]`, `imports` naming `agent-ix/spec-artifacts-iso`, `import_types` listing the
   types this module's artifacts reference from it, `targets: [json-schema,
   markdown]`, `mappings: [frontmatter, section, typed-table, sysml-fence,
   ocl-clause, provenance]`, `compatibility_posture: additive`, and
@@ -67,7 +70,7 @@ are both detectable from the manifest alone.
 
 ## Behavior
 
-- The `semantic` block SHALL carry exactly the eight keys listed in Outputs.
+- The `semantic` block SHALL carry exactly the nine keys listed in Outputs.
   `sweep_report` is absent because `legacy_forms` is `warning`: this module's own
   documents author no legacy `## Properties` form, so `warning` is the value that
   changes nothing, and promoting it to `error` is what would demand a
@@ -107,8 +110,11 @@ Imports, cycles, and missing references:
   `semantic.unknown-import-type`. The module SHALL also carry at least one `$ref`
   in its own data schemas under each imported package's schema base, because the
   engine counts an import as used only through such a `$ref`; otherwise it
-  reports `semantic.unused-import`.
-- If a shipped skeleton, negative fixture, or `mappings.yaml` entry names an
+  reports `semantic.unused-import`. That `$ref` SHALL sit in a `$defs` entry that
+  no property references, because the engine rewrites every `$ref` under an
+  imported package into a schema that accepts anything, so on a property it
+  would weaken that property.
+- If a shipped skeleton or negative fixture names an
   `ImportedTypeRef` whose `module` is absent from `semantic.imports`, or whose
   `type` is absent from that module's `semantic.import_types` list, then the module's
   test suite SHALL fail naming the module and the type, and SHALL distinguish
@@ -159,7 +165,7 @@ Evidence, not obligation:
 
 | ID | Criteria | Verification |
 |----|----------|--------------|
-| FR-003-AC-1 | The `semantic` block's key set equals exactly `{contract_version, package, exports, imports, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs, and the manifest carrying it loads under quire with every declared artifact type registered. | Test (TC-011, TC-034) |
+| FR-003-AC-1 | The `semantic` block's key set equals exactly `{contract_version, package, exports, imports, import_types, targets, mappings, compatibility_posture, legacy_forms}` with the values of Outputs, and the manifest carrying it loads under quire with every declared artifact type registered. | Test (TC-011, TC-034) |
 | FR-003-AC-2 | For each exported artifact type, `data_schema.schema` names an existing file under `spec_artifacts_app/schemas/` per the FR-002 map, and `exports` equals the set of artifact types carrying a reference. | Test (TC-012) |
 | FR-003-AC-3 | With the block and the references present, `quire.Registry.load_from` over the module's parent directory lists every archetype the manifest declares and `validate_document` passes every shipped skeleton — the block breaks no consumer. | Test (TC-013) |
 | FR-003-AC-4 | `semantic.imports` names `agent-ix/spec-artifacts-iso` and carries no type list; `semantic.import_types` names the types referenced from it, each exported by the provider, and the module's data schemas carry a `$ref` into the package so the engine reports no `semantic.unused-import`; every `ImportedTypeRef` in a skeleton or a negative fixture names a package the manifest pins and a type `semantic.import_types` declares; an undeclared module, an undeclared type, an over-declared import, and a self-import each fail with their own distinct diagnostic. | Test (TC-014) |

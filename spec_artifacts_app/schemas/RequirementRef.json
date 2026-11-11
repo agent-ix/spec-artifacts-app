@@ -10,14 +10,7 @@
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/RequirementKind.json"
     },
     "source": {
-      "anyOf": [
-        {
-          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ImportedTypeRef.json"
-        },
-        {
-          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IsoRequirement.json"
-        }
-      ]
+      "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/ImportedTypeRef.json"
     },
     "target": {
       "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-app/IxTarget.json"
@@ -36,5 +29,29 @@
   "unevaluatedProperties": {
     "not": {}
   },
-  "description": "One row of `## Requirements`: a requirement this composite rolls up. The\nrequirement's own fields belong to the module that owns its type; this record\ncarries only the reference."
+  "description": "One row of `## Requirements`: a requirement this composite rolls up. The\nrequirement's own fields belong to the module that owns its type; this record\ncarries only the reference.\n\n`$defs.isoRequirement` is the one cross-package `$ref` in the bundle: the\nrequirement types of `spec-artifacts-iso` this application aggregates. It sits\nin `$defs`, which no property references, because the engine rewrites every\n`$ref` under an imported package into a schema that accepts anything — placed on\n`source` it would weaken `source`, here it only counts the import as used.",
+  "$defs": {
+    "isoRequirement": {
+      "anyOf": [
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/StR.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/US.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/FR.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/NFR.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/IT.json"
+        },
+        {
+          "$ref": "https://schemas.agent-ix.org/agent-ix/spec-artifacts-iso/TC.json"
+        }
+      ]
+    }
+  }
 }

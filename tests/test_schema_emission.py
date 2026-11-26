@@ -393,7 +393,7 @@ def test_requirement_ref_source_still_requires_module_and_type(schema_registry):
     assert list(validator.iter_errors(row)), "a row without `source` was accepted"
 
 
-@pytest.mark.trace("TC-030", "NFR-001-AC-1")
+@pytest.mark.trace("TC-030", "NFR-001-AC-1", "NFR-001-M-1")
 def test_two_consecutive_generator_runs_produce_byte_identical_output(tmp_path):
     work = tmp_path / "repo"
     shutil.copytree(
@@ -435,7 +435,7 @@ def test_two_consecutive_generator_runs_produce_byte_identical_output(tmp_path):
         assert (SCHEMAS_DIR / name).read_bytes() == content
 
 
-@pytest.mark.trace("TC-033", "NFR-001-AC-4")
+@pytest.mark.trace("TC-033", "NFR-001-AC-4", "NFR-001-M-2")
 def test_schemas_check_completes_within_the_threshold():
     """Metric 4's 30 s threshold, measured on whatever machine runs the suite.
 

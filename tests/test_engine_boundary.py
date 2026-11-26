@@ -36,14 +36,12 @@ def _module_copy(destination: pathlib.Path) -> pathlib.Path:
     return target
 
 
-@pytest.mark.trace(
-    "TC-013",
-    "TC-034",
-    "FR-003-AC-1",
-    "FR-003-AC-3",
-    "IT-002-AC-1",
-    "StR-001-VC-3",
-)
+@pytest.mark.trace("TC-013")
+@pytest.mark.trace("TC-034")
+@pytest.mark.trace("FR-003-AC-1")
+@pytest.mark.trace("FR-003-AC-3")
+@pytest.mark.trace("IT-002-AC-1")
+@pytest.mark.trace("StR-001-VC-3")
 def test_the_module_loads_validates_and_extracts_with_the_semantic_block_present(
     quire_engine, semantic_module, tmp_path
 ):
